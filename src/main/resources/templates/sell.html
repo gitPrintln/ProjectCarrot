@@ -11,15 +11,42 @@
     
 </head>
 <body>
-    <h3>물품 등록하기</h3>
-        <div class="card" style="width: 18rem;">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">An item</li>
-                <li class="list-group-item">A second item</li>
-                <li class="list-group-item">A third item</li>
-            </ul>
-        </div>
-
+    <h3>등록하기</h3>
+        <form id="formSell" method="post" action="/sell/create">
+            <div class="card" style="width: 18rem;">
+                <ul class="sellInfo list-group">
+                    <li class="list-group-item">
+                        <div class="contents row photo-preview-container"></div>
+                        <img src="..." class="img-thumbnail" alt="사진을 등록하세요!" style="max-width: 100%; height: auto;">
+                        <div><input type="file" class="w3-input w3-border w3-light-grey" id="images" name="images[]" multiple/></div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="contents">글 제목</div>
+                        <div><input class="w3-input w3-border w3-light-grey" id="title" name="title"/></div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="contents">카테고리</div>
+                        <div><input class="w3-input w3-border w3-light-grey" id="category" name="category"/></div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="contents">가격</div><span>&#8361;</span>
+                        <div><input class="w3-input w3-border w3-light-grey" id="won" name="won"/></div><span>원</span>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="contents">내용</div>
+                        <div><textarea rows="10" class="w3-input w3-border w3-light-grey" style="width:240px;" id="texts" name="texts"></textarea></div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="contents">지역</div>
+                        <div><input class="w3-input w3-border w3-light-grey" id="region" name="region" readonly/></div>
+                        <button class="moreRegionsBtn w3-padding-large w3-button" title="region"><i class="fa fa-caret-down"></i></button>
+                    </li>
+                </ul>
+                <div style="margin-top: 30px; margin-bottom: 30px;">
+                    <input class="w3-button w3-teal w3-round" type="button" id="btnSubmit" value="등록하기"/>
+                </div>
+            </div>
+        </form>
 
 
 <script>
