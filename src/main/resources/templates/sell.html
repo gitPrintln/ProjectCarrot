@@ -4,41 +4,107 @@
     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     layout:decorate="~{ layout/layout-1 }">
 
-<div layout:fragment="content" align="center">
+<div layout:fragment="content" align="left">
 <head>
     <meta charset="UTF-8">
     <title>Carrot Nara</title>
+    <style>
+    input:focus::placeholder {
+        background-color: w3-brown;
+        opacity: 0.4;
+    }
+    input:focus, input:focus:-webkit-autofill {
+        background-color: w3-brown;
+        opacity: 0.2;
+    }
+    textarea:focus, textarea:focus:-webkit-autofill {
+        background-color: w3-brown;
+        opacity: 0.2;
+    }
     
+    </style>
 </head>
 <body>
-    <h3>등록하기</h3>
-        <form id="formSell" method="post" action="/sell/create">
-            <div class="card" style="width: 18rem;">
+        <!-- TODO: 색깔 설정/포커싱 되었을 때 색깔 설정 -->
+            <div class="w3-container w3-brown" style="margin-bottom: 30px;">
+                <h2>등록하기</h2>
+            </div>
+            <form class="w3-container mb-5" id="formSell" method="post" action="/sell/create">
+                <div class="card">
+                <div>
+                    <div class="mb-2"style="width:250px;">
+                    <img src="..." class="img-thumbnail" alt="사진을 등록하세요!" style="max-width: 100%; height: auto;">
+                    <div><input type="file" class="w3-input w3-border w3-sand" id="images" name="images[]" multiple/></div>
+                    </div>
+                </div>
+                <div>
+                    <label class="w3-text-brown"><b>글 제목</b></label>
+                    <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="title" name="title"/></div>
+                </div>
+                <div>
+                    <label class="w3-text-brown"><b>카테고리</b></label>
+                    <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="category" name="category"/></div>
+                </div>
+                <div>
+                    <label class="w3-text-brown"><span>&#8361;</span></label>
+                    <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="won" name="won" oninput="inNumber(event)"
+                     placeholder="숫자로만 입력하세요"/></div>
+                </div>
+                <div>
+                    <label class="w3-text-brown"><b>내용</b></label>
+                    <div><textarea rows="12" class="w3-input w3-border w3-hover-shadow w3-sand" id="texts" name="texts"></textarea></div>
+                </div>
+                <div style="display: inline-block;">
+                    <div style="width:92%; display: inline-block;">
+                        <label class="w3-text-brown"><b>지역</b></label>
+                        <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="region" name="region" readonly/></div>
+                    </div>
+                    <div style="display: inline-block;">
+                        <div class="w3-dropdown-hover w3-hide-small"><!-- 지역 더보기 -->
+                            <button class="moreRegionsBtn w3-button" title="regions"><i class="fa fa-caret-down"></i></button>
+                            <div class="w3-dropdown-content w3-bar-block w3-card-4">
+                                <a href="#" class="w3-bar-item w3-button">서울</a>
+                                <a href="#" class="w3-bar-item w3-button">경기</a>
+                                <a href="#" class="w3-bar-item w3-button">부산</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 30px; margin-bottom: 30px;">
+                    <button class="w3-btn w3-brown">등록 하기</button>
+                </div>
+                </div>
+            </form>
+        <!-- <div class="w3-container w3-brown">
+            <h2>등록하기</h2>
+        </div>
+        <form class="w3-container" id="formSell" method="post" action="/sell/create">
+            <div class="card" style="width: 68rem;">
                 <ul class="sellInfo list-group">
                     <li class="list-group-item">
                         <div class="contents row photo-preview-container"></div>
                         <img src="..." class="img-thumbnail" alt="사진을 등록하세요!" style="max-width: 100%; height: auto;">
-                        <div><input type="file" class="w3-input w3-border w3-light-grey" id="images" name="images[]" multiple/></div>
+                        <div><input type="file" class="w3-input w3-border w3-sand" id="images" name="images[]" multiple/></div>
                     </li>
                     <li class="list-group-item">
                         <div class="contents">글 제목</div>
-                        <div><input class="w3-input w3-border w3-light-grey" id="title" name="title"/></div>
+                        <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="title" name="title"/></div>
                     </li>
                     <li class="list-group-item">
                         <div class="contents">카테고리</div>
-                        <div><input class="w3-input w3-border w3-light-grey" id="category" name="category"/></div>
+                        <div><input class="w3-input w3-border w3-sand" id="category" name="category"/></div>
                     </li>
                     <li class="list-group-item">
                         <div class="contents">가격</div><span>&#8361;</span>
-                        <div><input class="w3-input w3-border w3-light-grey" id="won" name="won"/></div><span>원</span>
+                        <div><input class="w3-input w3-border w3-sand" id="won" name="won"/></div><span>원</span>
                     </li>
                     <li class="list-group-item">
                         <div class="contents">내용</div>
-                        <div><textarea rows="10" class="w3-input w3-border w3-light-grey" style="width:240px;" id="texts" name="texts"></textarea></div>
+                        <div><textarea rows="12" class="w3-input w3-border w3-sand" style="width:990px;" id="texts" name="texts"></textarea></div>
                     </li>
                     <li class="list-group-item">
                         <div class="contents">지역</div>
-                        <div><input class="w3-input w3-border w3-light-grey" id="region" name="region" readonly/></div>
+                        <div><input class="w3-input w3-border w3-sand" id="region" name="region" readonly/></div>
                         <button class="moreRegionsBtn w3-padding-large w3-button" title="region"><i class="fa fa-caret-down"></i></button>
                     </li>
                 </ul>
@@ -47,9 +113,24 @@
                 </div>
             </div>
         </form>
+         -->
 
-
+<!-- 가격: 숫자만 입력, 세 자리마다 콤마 -->
 <script>
+function inNumber(event){
+	const check = /^[0-9,]*$/; // 숫자와 콤마만 입력가능한 변수 설정
+	var inputValue = event.target.value;
+	if (!check.test(inputValue)) { // 입력값이 숫자와 콤마로만 이루어져 있는지 검사
+	    // 사용자에게 알림
+	    alert("숫자로만 입력하세요");
+	    event.target.value = "";
+	    return;
+	  }
+	
+	// 숫자와 콤마로 이루어져 있다면.. 세 자리마다 콤마 설정하기
+	inputValue = event.target.value.replace(/[^\d]/g, ""); // 값을 콤마를 제거하고 숫자로만 이루어지도록 설정
+	return event.target.value = inputValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); // 세 자리 수마다 콤마를 넣어서 내보내줌.
+}
 </script>
 </body>
 </div>

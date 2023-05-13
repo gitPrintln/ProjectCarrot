@@ -41,24 +41,36 @@ body {
     <!-- 메인 bar -->
     <div class="w3-top">
         <div class="w3-bar w3-black w3-card">
+        <!-- 왼쪽 목록 -->
         <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right" href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
         <!-- 로고 이미지 -->
         <a href="/" class="w3-bar-item w3-button w3-padding-large" id="logo-side"><img src="/images/carrot_icon.png" width="19px" /></a>
-        <a href="#" class="w3-bar-item w3-button w3-padding-large">지역</a>
+        <a href="#" class="w3-bar-item w3-button w3-padding-large"><i class="fa fa-map-marker"></i></a>
         <a href="#band" class="w3-bar-item w3-button w3-padding-large w3-hide-small">중고거래</a>
         <a th:href="@{ /sell }" class="w3-bar-item w3-button w3-padding-large w3-hide-small">등록하기</a>
         <a href="#contact" class="w3-bar-item w3-button w3-padding-large w3-hide-small">채팅</a>
-    <div class="w3-dropdown-hover w3-hide-small">
-      <button class="moreBtn w3-padding-large w3-button" title="More">MORE <i class="fa fa-caret-down"></i></button>     
-      <div class="w3-dropdown-content w3-bar-block w3-card-4">
-        <a href="#" class="w3-bar-item w3-button">정보 수정</a>
-        <a href="#" class="w3-bar-item w3-button">판매 목록</a>
-        <a href="#" class="w3-bar-item w3-button">관심 목록</a>
-      </div>
-    </div>
+        <div class="w3-dropdown-hover w3-hide-small"><!-- 왼쪽 더보기 -->
+            <button class="moreBtn w3-padding-large w3-button" title="More"><i class="fa fa-bars"></i></button>     
+            <div class="w3-dropdown-content w3-bar-block w3-card-4">
+                <a href="#" class="w3-bar-item w3-button">공지 사항</a>
+                <a href="#" class="w3-bar-item w3-button">신고 하기</a>
+                <a href="#" class="w3-bar-item w3-button">고객 지원</a>
+            </div>
+        </div><!-- 더보기 끝 -->
+        
+        
+        <!-- 오른쪽 목록 -->      
+        <div class="w3-dropdown-hover w3-hide-small w3-right"><!-- 오른쪽 더보기 -->
+            <button class="moreBtn w3-padding-large w3-button" title="userMore"><i class="fa fa-user"></i></button>     
+            <div class="w3-dropdown-content w3-bar-block w3-card-4" style="position: absolute; right:0px;">
+                <a href="#" class="w3-bar-item w3-button">정보 수정</a>
+                <a href="#" class="w3-bar-item w3-button">판매 목록</a>
+                <a href="#" class="w3-bar-item w3-button">관심 목록</a>
+            </div>
+        </div><!-- 더보기 끝 -->
             <a href="javascript:void(0)" class="w3-padding-large w3-hover-red w3-hide-small w3-right"><i class="fa fa-search"></i></a>
         </div>
-    </div><!-- Navbar End -->
+    </div><!-- 메인 bar End -->
 
 <!-- page content -->
 <div class="w3-main">
