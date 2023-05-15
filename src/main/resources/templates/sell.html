@@ -9,6 +9,16 @@
     <meta charset="UTF-8">
     <title>Carrot Nara</title>
     <style>
+    /* 
+    #card #contentes{
+        width: 100%;
+        display: inline-block;
+    }  */
+    
+    /* .contents input, .contents textarea {
+            width: 100%;
+    } */
+         
     input:focus::placeholder {
         background-color: w3-brown;
         opacity: 0.4;
@@ -31,30 +41,30 @@
             </div>
             <form class="w3-container mb-5" id="formSell" method="post" action="/sell/create">
                 <div class="card">
-                <div>
+                <div class="contents">
                     <div class="mb-2"style="width:250px;">
-                    <img src="..." class="img-thumbnail" alt="사진을 등록하세요!" style="max-width: 100%; height: auto;">
+                    <label class="w3-text-brown"><b>이미지</b></label>
                     <div><input type="file" class="w3-input w3-border w3-sand" id="images" name="images[]" multiple/></div>
                     </div>
                 </div>
-                <div>
+                <div class="contents">
                     <label class="w3-text-brown"><b>글 제목</b></label>
                     <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="title" name="title"/></div>
                 </div>
-                <div>
+                <div class="contents">
                     <label class="w3-text-brown"><b>카테고리</b></label>
                     <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="category" name="category"/></div>
                 </div>
-                <div>
+                <div class="contents">
                     <label class="w3-text-brown"><span>&#8361;</span></label>
-                    <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="won" name="won" oninput="inNumber(event)"
+                    <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="prices" name="prices" oninput="inNumber(event)"
                      placeholder="숫자로만 입력하세요"/></div>
                 </div>
-                <div>
+                <div class="contents">
                     <label class="w3-text-brown"><b>내용</b></label>
-                    <div><textarea rows="12" class="w3-input w3-border w3-hover-shadow w3-sand" id="texts" name="texts"></textarea></div>
+                    <div><textarea rows="12" class="w3-input w3-border w3-hover-shadow w3-sand" id="content" name="content"></textarea></div>
                 </div>
-                <div style="display: inline-block;">
+                <div class="contents">
                     <div style="width:92%; display: inline-block;">
                         <label class="w3-text-brown"><b>지역</b></label>
                         <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="region" name="region" readonly/></div>
@@ -71,7 +81,7 @@
                     </div>
                 </div>
                 <div style="margin-top: 30px; margin-bottom: 30px;">
-                    <button class="w3-btn w3-brown">등록 하기</button>
+                    <button class="w3-btn w3-brown" id="btnSubmit">등록 하기</button>
                 </div>
                 </div>
             </form>
@@ -114,6 +124,9 @@
             </div>
         </form>
          -->
+
+
+<script th:src="@{ /js/sell.js }" ></script>
 
 <!-- 가격: 숫자만 입력, 세 자리마다 콤마 -->
 <script>
