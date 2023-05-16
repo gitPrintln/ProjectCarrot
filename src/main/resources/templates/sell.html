@@ -44,24 +44,27 @@
                 <div class="contents">
                     <div class="mb-2"style="width:250px;">
                     <label class="w3-text-brown"><b>이미지</b></label>
-                    <div><input type="file" class="w3-input w3-border w3-sand" id="images" name="images[]" multiple/></div>
+                    <label class="custom-file-upload" style="cursor: pointer;" for="images"><i class="fa fa-image"></i></label>
+                    <div style="display:none;"><input type="file" class="w3-input w3-border w3-sand" id="images" name="images[]" multiple/></div>
                     </div>
+                    <!-- 선택한 파일이 보여지는 공간 -->
+                    <div id="selectedImage"></div>
                 </div>
                 <div class="contents">
-                    <label class="w3-text-brown"><b>글 제목</b></label>
+                    <label class="w3-text-brown" for="title"><b>글 제목</b></label>
                     <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="title" name="title"/></div>
                 </div>
                 <div class="contents">
-                    <label class="w3-text-brown"><b>카테고리</b></label>
+                    <label class="w3-text-brown" for="category"><b>카테고리</b></label>
                     <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="category" name="category"/></div>
                 </div>
                 <div class="contents">
-                    <label class="w3-text-brown"><span>&#8361;</span></label>
+                    <label class="w3-text-brown" for="prices"><span>&#8361;</span></label>
                     <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="prices" name="prices" oninput="inNumber(event)"
                      placeholder="숫자로만 입력하세요"/></div>
                 </div>
                 <div class="contents">
-                    <label class="w3-text-brown"><b>내용</b></label>
+                    <label class="w3-text-brown" for="content"><b>내용</b></label>
                     <div><textarea rows="12" class="w3-input w3-border w3-hover-shadow w3-sand" id="content" name="content"></textarea></div>
                 </div>
                 <div class="contents">
@@ -70,15 +73,11 @@
                         <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="region" name="region" readonly/></div>
                     </div>
                     <div style="display: inline-block;">
-                        <div class="w3-dropdown-hover w3-hide-small"><!-- 지역 더보기 -->
-                            <button class="moreRegionsBtn w3-button" title="regions"><i class="fa fa-caret-down"></i></button>
-                            <div class="w3-dropdown-content w3-bar-block w3-card-4">
-                                <a href="#" class="w3-bar-item w3-button">서울</a>
-                                <a href="#" class="w3-bar-item w3-button">경기</a>
-                                <a href="#" class="w3-bar-item w3-button">부산</a>
-                            </div>
+                        <div class="w3-dropdown-hover w3-hide-small"><!-- 주소 api 버튼 -->
+                            <a href="javascript:void(0)" class="w3-bar-item w3-button" onclick="detailRegion()"><i class="fa fa-caret-down"></i></a>
                         </div>
                     </div>
+                    <div><input style="display:none;" class="w3-input w3-border w3-hover-shadow w3-sand" id="detailRegion" name="detailRegion" placeholder="상세입력하기"/></div>
                 </div>
                 <div style="margin-top: 30px; margin-bottom: 30px;">
                     <button class="w3-btn w3-brown" id="btnSubmit">등록 하기</button>
@@ -127,24 +126,11 @@
 
 
 <script th:src="@{ /js/sell.js }" ></script>
+<script th:src="@{ /js/img.js }" ></script>
 
-<!-- 가격: 숫자만 입력, 세 자리마다 콤마 -->
-<script>
-function inNumber(event){
-	const check = /^[0-9,]*$/; // 숫자와 콤마만 입력가능한 변수 설정
-	var inputValue = event.target.value;
-	if (!check.test(inputValue)) { // 입력값이 숫자와 콤마로만 이루어져 있는지 검사
-	    // 사용자에게 알림
-	    alert("숫자로만 입력하세요");
-	    event.target.value = "";
-	    return;
-	  }
-	
-	// 숫자와 콤마로 이루어져 있다면.. 세 자리마다 콤마 설정하기
-	inputValue = event.target.value.replace(/[^\d]/g, ""); // 값을 콤마를 제거하고 숫자로만 이루어지도록 설정
-	return event.target.value = inputValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); // 세 자리 수마다 콤마를 넣어서 내보내줌.
-}
-</script>
+<!-- 카카오 주소 API -->
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
 </body>
 </div>
 </html>
