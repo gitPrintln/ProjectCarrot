@@ -23,6 +23,6 @@ public class SellController {
     @PostMapping("/create")
     public String create(PostCreateDto dto) {
         log.info("sellCreate() {}", dto.toString());
-        return "home";
+        return "redirect:/";
     }
 }

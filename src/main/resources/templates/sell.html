@@ -52,20 +52,20 @@
                 </div>
                 <div class="contents">
                     <label class="w3-text-brown" for="title"><b>글 제목</b></label>
-                    <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="title" name="title"/></div>
+                    <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="title" name="title" required/></div>
                 </div>
                 <div class="contents">
                     <label class="w3-text-brown" for="category"><b>카테고리</b></label>
-                    <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="category" name="category"/></div>
+                    <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="category" name="category" required/></div>
                 </div>
                 <div class="contents">
                     <label class="w3-text-brown" for="prices"><span>&#8361;</span></label>
                     <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="prices" name="prices" oninput="inNumber(event)"
-                     placeholder="숫자로만 입력하세요"/></div>
+                     placeholder="숫자로만 입력하세요" required/></div>
                 </div>
                 <div class="contents">
                     <label class="w3-text-brown" for="content"><b>내용</b></label>
-                    <div><textarea rows="12" class="w3-input w3-border w3-hover-shadow w3-sand" id="content" name="content"></textarea></div>
+                    <div><textarea rows="12" class="w3-input w3-border w3-hover-shadow w3-sand" id="content" name="content" required></textarea></div>
                 </div>
                 <div class="contents">
                     <div style="width:92%; display: inline-block;">
@@ -80,7 +80,7 @@
                     <div><input style="display:none;" class="w3-input w3-border w3-hover-shadow w3-sand" id="detailRegion" name="detailRegion" placeholder="상세입력하기"/></div>
                 </div>
                 <div style="margin-top: 30px; margin-bottom: 30px;">
-                    <button class="w3-btn w3-brown" id="btnSubmit">등록 하기</button>
+                    <button type="button" class="w3-btn w3-brown" id="btnSubmit">등록 하기</button>
                 </div>
                 </div>
             </form>

@@ -7,13 +7,32 @@ window.addEventListener('DOMContentLoaded', () => {
     
 const btnSubmit = document.querySelector('#btnSubmit');
 
+// 등록하기 버튼 눌렀을 때
 btnSubmit.addEventListener('click', function () {
     const title = document.querySelector('#title').value;
     const category = document.querySelector('#category').value;
     const prices = document.querySelector('#prices').value;
     const content = document.querySelector('#content').value;
     const region = document.querySelector('#region').value;
+    const detailRegion = document.querySelector('#detailRegion').value;
+    
+    if (title == '' || category == '' || prices == '' || content == '') {
+        alert('빠진 부분을 채워넣어주세요!');
+        return;
+    }
+    
+    const result = confirm('정말 등록하시겠습니까?');
+    
+    if (result) {
+            document.querySelector('#formSell').submit();
+            formSell.action = '/sell/create';
+            formSell.method = 'post';
+            formSell.submit();
+    }
+    
+    
 });
+
 
 // region-input 창 클릭해도 열리게
 const regionInput = document.getElementById('region');
