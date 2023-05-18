@@ -21,9 +21,10 @@ public class PostCreateDto {
     private String content;
     private String region;
     
-    public Post toEntity(User user) {
+    // TODO: USER ID userID로 해놨는데 추후에 user 만들어지면 User user로 변경해서 넣을것.
+    public Post toEntity(Integer userId) {
         
-        return Post.builder().userId(user.getId()).title(title).
+        return Post.builder().userId(userId).title(title).
                 category(category).prices(prices).content(content).region(region).build();
     }
 }

@@ -42,9 +42,15 @@
             <form class="w3-container mb-5" id="formSell" method="post" action="/sell/create">
                 <div class="card">
                 <div class="contents">
-                    <div class="mb-2"style="width:250px;">
+                    <div class="mb-2"style="width:350px;">
                     <label class="w3-text-brown"><b>이미지</b></label>
                     <label class="custom-file-upload" style="cursor: pointer;" for="images"><i class="fa fa-image"></i></label>
+                        <div id="explain">
+                            <div style="color: maroon; font-size:12px;">
+                                * 상품의 이미지 및 상태를 설명할 수 있는 사진을 첨부해주세요. <br/>
+                                * 사진은 복수 선택 가능합니다. <br/>
+                                * 사진의 크기에 따라서 조정이 될 수도 있습니다.</div>
+                        </div>
                     <div style="display:none;"><input type="file" class="w3-input w3-border w3-sand" id="images" name="images[]" multiple/></div>
                     </div>
                     <!-- 선택한 파일이 보여지는 공간 -->
@@ -67,14 +73,14 @@
                     <label class="w3-text-brown" for="content"><b>내용</b></label>
                     <div><textarea rows="12" class="w3-input w3-border w3-hover-shadow w3-sand" id="content" name="content" required></textarea></div>
                 </div>
-                <div class="contents">
+                <div class="contents" id="location">
                     <div style="width:92%; display: inline-block;">
                         <label class="w3-text-brown"><b>지역</b></label>
-                        <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="region" name="region" readonly/></div>
+                        <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="regionMain" name="regionMain" readonly/></div>
                     </div>
                     <div style="display: inline-block;">
                         <div class="w3-dropdown-hover w3-hide-small"><!-- 주소 api 버튼 -->
-                            <a href="javascript:void(0)" class="w3-bar-item w3-button" onclick="detailRegion()"><i class="fa fa-caret-down"></i></a>
+                            <a href="javascript:void(0)" class="w3-bar-item w3-button" onclick="serchRegion()"><i class="fa fa-caret-down"></i></a>
                         </div>
                     </div>
                     <div><input style="display:none;" class="w3-input w3-border w3-hover-shadow w3-sand" id="detailRegion" name="detailRegion" placeholder="상세입력하기"/></div>

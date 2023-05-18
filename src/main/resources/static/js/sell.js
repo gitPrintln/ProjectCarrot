@@ -13,8 +13,9 @@ btnSubmit.addEventListener('click', function () {
     const category = document.querySelector('#category').value;
     const prices = document.querySelector('#prices').value;
     const content = document.querySelector('#content').value;
-    const region = document.querySelector('#region').value;
+    const regionMain = document.querySelector('#regionMain').value;
     const detailRegion = document.querySelector('#detailRegion').value;
+    
     
     if (title == '' || category == '' || prices == '' || content == '') {
         alert('빠진 부분을 채워넣어주세요!');
@@ -24,6 +25,14 @@ btnSubmit.addEventListener('click', function () {
     const result = confirm('정말 등록하시겠습니까?');
     
     if (result) {
+        const region = regionMain + ', ' + detailRegion; // Main주소 + 상세 주소
+        
+        // 완성된 전체 주소 input창에 만들어주기
+        const location = document.getElementById('location');
+        const jusoStr = `<div><input type="hidden" class="w3-input w3-border w3-hover-shadow w3-sand" id="region" name="region" value="${region}" readonly/></div>`;
+        location.innerHTML += jusoStr;
+        
+        
             document.querySelector('#formSell').submit();
             formSell.action = '/sell/create';
             formSell.method = 'post';
@@ -35,9 +44,8 @@ btnSubmit.addEventListener('click', function () {
 
 
 // region-input 창 클릭해도 열리게
-const regionInput = document.getElementById('region');
-regionInput.addEventListener('click', detailRegion);
-
+const regionMainInput = document.getElementById('regionMain');
+regionMainInput.addEventListener('click', serchRegion);
 
 
 
@@ -48,12 +56,13 @@ regionInput.addEventListener('click', detailRegion);
 });
 
 // 주소 api 팝업창
-function detailRegion(){
+function serchRegion(){
 new daum.Postcode({
     oncomplete: function(data) {
-         document.getElementById('region').value = data.address; // 선택된 주소 넣기
+         document.getElementById('regionMain').value = data.address; // 사용자가 찾은 main주소 input창에 넣기
          const region = document.querySelector('#detailRegion');
          region.style.display = 'block'; // 상세 입력창 등장
+         region.value = '';
          region.focus(); // 상세 입력 포커싱
     }
 }).open();
