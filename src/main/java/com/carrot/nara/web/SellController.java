@@ -1,5 +1,6 @@
 package com.carrot.nara.web;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +20,8 @@ public class SellController {
     
     private final SellService sellService;
     
-    
+    @Value("${com.carrot.nara.upload.path}")
+    private String uploadPath;
     
     @GetMapping("")
     public String sell() {
