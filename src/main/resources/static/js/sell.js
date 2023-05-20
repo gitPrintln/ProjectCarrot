@@ -27,7 +27,7 @@ btnSubmit.addEventListener('click', function () {
     if (result) {
         const region = regionMain + ', ' + detailRegion; // Main주소 + 상세 주소
         
-        // 완성된 전체 주소 input창에 만들어주기
+        // 전달해줄 완성된 전체 주소 input창 만들어주기
         const location = document.getElementById('location');
         const jusoStr = `<div><input type="hidden" class="w3-input w3-border w3-hover-shadow w3-sand" id="region" name="region" value="${region}" readonly/></div>`;
         location.innerHTML += jusoStr;
@@ -74,7 +74,7 @@ function inNumber(event){
     var inputValue = event.target.value;
     if (!check.test(inputValue)) { // 입력값이 숫자와 콤마로만 이루어져 있는지 검사
         // 사용자에게 알림
-        alert("숫자로만 입력하세요");
+        alert("숫자로만 입력하세요!!");
         event.target.value = "";
         return;
       }

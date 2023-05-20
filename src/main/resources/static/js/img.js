@@ -46,7 +46,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 image = `<img src="${imageDataUrl}" width="150" height="150"/>`;
                 const htmlStr = `<div class="card" style="display:inline-block;">
                                     <div class="card-header">
-                                        <button type="button" class="btnDelete btn-close" aria-label="Close" data-src="${i + '_' + imageDataUrl}"></button>
+                                        <button type="button" class="btnDelete btn-close" aria-label="Close"></button>
                                         <div style="display:inline-block;">${fileName}</div>
                                     </div>
                                     <div class="card-body">
