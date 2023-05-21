@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,15 +26,23 @@ public class PostImage {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "POSTIMAGE_SEQ_GEN")
     private Integer id;
     
-//    @Column(nullable = false)
-//    private 
-//    
-//    @Column
-//    private String originFileName;
-//    
-//    @Column
-//    private String fileName;
-//    
-//    @Column
-//    private String filePath;
+    // 외래키 postId, 이미지 테이블에 저장 후 postid를 생성하기 때문에 null 가능하도록 설정.
+    // 그냥 integer 타입으로 서로 연결지어서 찾도록 했음.
+    // ManyToOne 사용하려면, ORM의 이점을 이용하기 위해서 관계를 명확히 해주는 것이 좋음. 
+    @Column
+    private Integer postId;
+    
+    @Column
+    private String originFileName; // 원래 파일 이름
+    
+    @Column
+    private String fileName; // UUID_원래파일이름
+    
+    @Column
+    private String filePath; // 로컬 저장소 경로
+    
+    public PostImage update(Integer postId) {
+        this.postId = postId;
+        return this;
+    }
 }

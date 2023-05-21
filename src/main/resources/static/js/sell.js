@@ -33,13 +33,14 @@ btnSubmit.addEventListener('click', function () {
         // Array.from(iterable, mapFn, thisArg) 이런 형태
         // iterable: 배열로 변환할 유사 배열 객체 또는 이터러블 객체
         // mapFn (선택적): 배열의 각 요소에 대해 호출될 맵핑 함수
-        // thisArg (선택적): mapFn에서 사용할 this 값을 지정
+        // thisArg (선택적): mapFn에서 사용할 this 값을 지정        
         Array.from(imageFileInput).forEach(f => {
             imageData.append('files', f);
         });
         
+        if(imageData != null) {
         uploadImages(imageData);
-        
+        }
         
         // (2) 전달해줄 완성된 전체 주소 input창 만들어주기
         const region = regionMain + ', ' + detailRegion; // Main주소 + 상세 주소

@@ -15,13 +15,18 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.carrot.nara.dto.FileUploadDto;
 import com.carrot.nara.dto.ImageUploadDto;
+import com.carrot.nara.service.SellService;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@RequiredArgsConstructor
 @RestController
 @Slf4j
 @RequestMapping("/img")
 public class ImageUploadController {
+    
+    private final SellService sellService;
     
     @Value("${com.carrot.nara.upload.path}")
     private String uploadPath; // application.properties 파일에 설정된 값을 읽어서 변수에 할당.
@@ -41,6 +46,9 @@ public class ImageUploadController {
             FileUploadDto result = saveImg(multipartFile);
             list.add(result);
         });
+        
+        // DB에 이미지 정보(경로, 이름, postId) 저장.
+        sellService.createImg(list);
         
         return ResponseEntity.ok(list);
         
