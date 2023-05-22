@@ -34,6 +34,7 @@ public class ImageUploadController {
     // 이미지 파일 로컬 저장소에 저장하기
     @PostMapping("/upload")
     public ResponseEntity<List<FileUploadDto>> uploadImg(ImageUploadDto dto){
+        log.info("uploadImg(dto={})", dto);
         List<MultipartFile> files = dto.getFiles();
         if(files == null) {
             return ResponseEntity.noContent().build(); //응답 본문이 없는 경우, 상태 코드 204 No Content를 포함한 빈 응답을 생성
@@ -61,6 +62,7 @@ public class ImageUploadController {
     // |__ 이 객체를 통해 파일의 원본 이름, 크기, MIME 타입 등과 같은 정보에 접근 가능. 또한, 파일 데이터 자체에 접근하여 파일을 읽고 저장 가능
     // |__ Spring의 MultipartFile 구현체인 CommonsMultipartFile은 업로드된 파일을 처리하는 데 사용되며, 더 많은 메서드를 제공함.
     private FileUploadDto saveImg(MultipartFile file) {
+        log.info("saveImg(file={})", file);
         FileUploadDto result = null;
         
         String originName = file.getOriginalFilename();

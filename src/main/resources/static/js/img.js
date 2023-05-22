@@ -26,14 +26,17 @@ window.addEventListener('DOMContentLoaded', () => {
     observer.observe(targetDiv, explainConfig);
     
     
-    
+    var imgFiles = []; // 올릴 이미지 파일들 저장할 최종 배열
     imageInput.addEventListener('change', (event) => {
         const files = event.target.files; // 파일 리스트들에 대한 정보를 files에 담음
         
         
         for (let i =0; i< files.length; i++){
             const file = files[i];
+            imgFiles.push(file); // 선택된 파일 목록에서 추가
+            
             const fileReader = new FileReader(); // 복수 선택 경우 각 파일들을 각각의 reader로 파일 읽기 위해서
+            
             
             
             // 파일 로드 처리할 작업 수행
@@ -64,6 +67,7 @@ window.addEventListener('DOMContentLoaded', () => {
             };
         fileReader.readAsDataURL(file); //  파일을 읽기 시작
         
+        filesHiddenInputTest() // 최종으로 올릴 파일들을 저장해 둠.
         }
         
         
@@ -85,13 +89,20 @@ window.addEventListener('DOMContentLoaded', () => {
     // 선택한 이미지 제거
     function deleteImg(event) {
         event.preventDefault();
+        
+        imgFiles.splice(index, 1) // 선택된 파일 목록에서 해당 인덱스 제거
+        
         const selectedParent = event.target.parentNode; // 선택한 버튼의 부모요소
         const deleteSelectedCard = selectedParent.parentNode.parentNode; // 선택한 버튼의 부모의 부모의 요소
-        
         deleteSelectedCard.removeChild(selectedParent.parentNode);
+        
+        
     }
     
-    
+    function filesHiddenInputTest(){
+        var filesHiddenInput = document.getElementById('images'); // img input 태그 찾기.
+        filesHiddenInput.value = imgFiles; // 이미지 파일들을 hiddenInput창에 넣기
+    }
     
     
     
