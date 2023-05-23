@@ -1,7 +1,8 @@
 package com.carrot.nara.dto;
 
+import java.util.List;
+
 import com.carrot.nara.domain.Post;
-import com.carrot.nara.domain.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +21,8 @@ public class PostCreateDto {
     private String prices;
     private String content;
     private String region;
+    
+    private List<Integer> imgIds;
     
     // TODO: USER ID userID로 해놨는데 추후에 user 만들어지면 User user로 변경해서 넣을것.
     public Post toEntity(Integer userId) {

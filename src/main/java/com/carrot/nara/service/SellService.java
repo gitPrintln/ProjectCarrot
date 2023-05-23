@@ -1,6 +1,6 @@
 package com.carrot.nara.service;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -31,18 +31,27 @@ public class SellService {
     public void create(PostCreateDto dto) {
         log.info("create(dto={})", dto);
         // TODO: USER 만들어지면 USER ID 넣을 것.(createDTO도 수정) -> 임시로 userID : 1
-        postRepository.save(dto.toEntity(1));
+        Integer p1 = postRepository.save(dto.toEntity(1)).getId();
+        
+        for (Integer n : dto.getImgIds()) {
+            PostImage entity = postImageRepository.findById(n).get();
+            entity.update(p1);
+        }
     }
     
     @Transactional
-    public void createImg(List<FileUploadDto> files) {
+    public List<Integer> createImg(List<FileUploadDto> files) {
         log.info("createImg(files={})", files);
+        List<Integer> imgIds = new ArrayList<>();
         for (FileUploadDto f : files) {
             String originFileName = f.getFileName().split("_")[1];
             PostImage entity = PostImage.builder().fileName(f.getFileName()).filePath(uploadPath + f.getFileName())
                     .originFileName(originFileName).postId(null).build();
             postImageRepository.save(entity);
+            imgIds.add(entity.getId());
         }
+        
+        return imgIds;
     }
     
 }

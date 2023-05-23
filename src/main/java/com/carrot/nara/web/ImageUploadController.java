@@ -33,7 +33,7 @@ public class ImageUploadController {
     
     // 이미지 파일 로컬 저장소에 저장하기
     @PostMapping("/upload")
-    public ResponseEntity<List<FileUploadDto>> uploadImg(ImageUploadDto dto){
+    public ResponseEntity<List<Integer>> uploadImg(ImageUploadDto dto){
         log.info("uploadImg(dto={})", dto);
         List<MultipartFile> files = dto.getFiles();
         if(files == null) {
@@ -48,11 +48,12 @@ public class ImageUploadController {
             list.add(result);
         });
         
+        
         // DB에 이미지 정보(경로, 이름, postId) 저장.
-        sellService.createImg(list);
+        List<Integer> imgIds = sellService.createImg(list);
         
-        return ResponseEntity.ok(list);
         
+        return ResponseEntity.ok(imgIds);
     }
     
     // UUID 클래스를 통해서 파일 저장하기 위해 만든 메서드

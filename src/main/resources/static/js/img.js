@@ -26,14 +26,14 @@ window.addEventListener('DOMContentLoaded', () => {
     observer.observe(targetDiv, explainConfig);
     
     
-    var imgFiles = []; // 올릴 이미지 파일들 저장할 최종 배열
+    //var imgFiles = []; // 올릴 이미지 파일들 저장할 최종 배열
     imageInput.addEventListener('change', (event) => {
         const files = event.target.files; // 파일 리스트들에 대한 정보를 files에 담음
         
         
         for (let i =0; i< files.length; i++){
             const file = files[i];
-            imgFiles.push(file); // 선택된 파일 목록에서 추가
+            //imgFiles.push(file); // 선택된 파일 목록에서 추가
             
             const fileReader = new FileReader(); // 복수 선택 경우 각 파일들을 각각의 reader로 파일 읽기 위해서
             
@@ -67,9 +67,8 @@ window.addEventListener('DOMContentLoaded', () => {
             };
         fileReader.readAsDataURL(file); //  파일을 읽기 시작
         
-        filesHiddenInputTest() // 최종으로 올릴 파일들을 저장해 둠.
+        //filesHiddenInputTest() // 최종으로 올릴 파일들을 저장해 둠.
         }
-        
         
     });
     
@@ -90,7 +89,7 @@ window.addEventListener('DOMContentLoaded', () => {
     function deleteImg(event) {
         event.preventDefault();
         
-        imgFiles.splice(index, 1) // 선택된 파일 목록에서 해당 인덱스 제거
+        //imgFiles.splice(index, 1) // 선택된 파일 목록에서 해당 인덱스 제거
         
         const selectedParent = event.target.parentNode; // 선택한 버튼의 부모요소
         const deleteSelectedCard = selectedParent.parentNode.parentNode; // 선택한 버튼의 부모의 부모의 요소
@@ -99,12 +98,21 @@ window.addEventListener('DOMContentLoaded', () => {
         
     }
     
-    function filesHiddenInputTest(){
+    /*function filesHiddenInputTest(){
         var filesHiddenInput = document.getElementById('images'); // img input 태그 찾기.
         filesHiddenInput.value = imgFiles; // 이미지 파일들을 hiddenInput창에 넣기
-    }
-    
+    }*/
     
     
     
 });
+/*
+// 이미지 파일 인풋창 동적 생성
+function img() {
+        const imgPlace = document.querySelector('.imgContents');
+        console.log(imgPlace)
+        const imgInput = '<div style="display:none;"><input type="file" class="imgInputs w3-input w3-border w3-sand" id="images" name="images" multiple/></div>';
+        imgPlace.innerHTML += imgInput;
+    }
+    */
+    

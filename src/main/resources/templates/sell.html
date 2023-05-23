@@ -41,9 +41,10 @@
             </div>
             <form class="w3-container mb-5" id="formSell" method="post" action="/sell/create">
                 <div class="card">
-                <div class="contents">
+                <div class="contents" id="imgs">
                     <div class="mb-2"style="width:350px;">
-                    <label class="w3-text-brown"><b>이미지</b></label>
+                    <label class="w3-text-brown" for="img"><b>이미지</b></label>
+                    <!--<a href="javascript:void(0)" class="w3-bar-item" onclick="img()"><i class="fa fa-image"></i></a>-->
                     <label class="custom-file-upload" style="cursor: pointer;" for="images"><i class="fa fa-image"></i></label>
                         <div id="explain">
                             <div style="color: maroon; font-size:12px;">
@@ -88,7 +89,6 @@
                 </div>
                 <div style="margin-top: 30px; margin-bottom: 30px;">
                     <button type="button" class="w3-btn w3-brown" id="btnSubmit">등록 하기</button>
-                    <button type="button" class="w3-btn w3-brown" id="btnImg">이미지 등록 하기</button>
                 </div>
                 </div>
             </form>
