@@ -72,7 +72,44 @@ window.addEventListener('DOMContentLoaded', () => {
         
     });
     
+    // 이미지 등록 버튼 눌렀을 때
+    const btnImg = document.getElementById('btnImg');
+    btnImg.addEventListener('click', function(){
+        // (1) 최종적으로 등록된 이미지들을 DB에 저장.
+        const imageData = new FormData(); //  HTML <form> 요소의 데이터를 캡슐화하고, Ajax를 통해 서버로 전송하기 위해 사용
+        const imageFileInput = document.querySelector('input[name="images"]');
+        
+        console.log(imageFileInput.files);
+        // Array.from()은 유사 배열 객체나 이터러블(iterable) 객체를 배열로 변환하는 메서드
+        // Array.from(iterable, mapFn, thisArg) 이런 형태
+        // iterable: 배열로 변환할 유사 배열 객체 또는 이터러블 객체
+        // mapFn (선택적): 배열의 각 요소에 대해 호출될 맵핑 함수
+        // thisArg (선택적): mapFn에서 사용할 this 값을 지정        
+        Array.from(imageFileInput.files).forEach(f => {
+            imageData.append('files', f);
+        });
+        console.log(imageData);
+        
+
+        /*if(imageData != null) {
+        uploadImages(imageData);
+        }*/
+        uploadImages(imageData);
+    });
     
+    
+    // 이미지 업로드
+    function uploadImages(imageData) {
+        axios.post('/img/upload', imageData)
+            .then(drawInput)
+            .catch(err => { alert(err + '인데요, 확인해보세요!!') });
+    }
+    function drawInput(response) {
+        const imgIds = response.data.join(', ');
+        const imgs = document.getElementById('imgs');
+        const imgIdsForDbSave = `<div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="imgIds" name="imgIds" value="${imgIds}" readonly/></div>`;
+        imgs.innerHTML += imgIdsForDbSave;
+    }
     /*
     // 선택한 이미지 파일 보여주는 함수
     function displayImage(imageDataUrl) {
