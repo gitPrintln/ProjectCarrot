@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "com.carrot.nara.upload.path",
+  "type": "java.lang.String",
+  "description": "A description for 'com.carrot.nara.upload.path'"
+}]}
