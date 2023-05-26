@@ -74,11 +74,11 @@ window.addEventListener('DOMContentLoaded', () => {
     
     // 이미지 등록 버튼 눌렀을 때
     const btnImg = document.getElementById('btnImg');
-    btnImg.addEventListener('click', function(){
+    btnImg.addEventListener('click', function() {
         // (1) 최종적으로 등록된 이미지들을 DB에 저장.
         const imageData = new FormData(); //  HTML <form> 요소의 데이터를 캡슐화하고, Ajax를 통해 서버로 전송하기 위해 사용
         const imageFileInput = document.querySelector('input[name="images"]');
-        
+
         console.log(imageFileInput.files);
         // Array.from()은 유사 배열 객체나 이터러블(iterable) 객체를 배열로 변환하는 메서드
         // Array.from(iterable, mapFn, thisArg) 이런 형태
@@ -89,7 +89,7 @@ window.addEventListener('DOMContentLoaded', () => {
             imageData.append('files', f);
         });
         console.log(imageData);
-        
+
 
         /*if(imageData != null) {
         uploadImages(imageData);

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{ layout/layout-1 }">
+
+<div layout:fragment="content" align="center">
+<head>
+    <meta charset="UTF-8">
+    <title>Carrot Nara</title>
+</head>
+<body>
+
+
+    <div style="border: solid;"><!-- Main Div -->
+        <div class="w3-container" th:each="list : ${ list }"><!-- 카드 하나 -->
+            <div class="content w3-card" style="display: table; border: 1px solid;">
+                <div class="image" style="display: table-cell; margin-right: 10px; border: 1px solid; width:200px; height:200px;">
+                    <img src="" style="width:200px; height:200px;">
+                </div>
+                <div style="border: 1px solid; display: table-cell; width:200px; height:200px;">
+                    <div>
+                        <span th:text="${ list.title }"></span>
+                    </div>
+                    <div>
+                        <span th:text="${ list.region }"></span>
+                    </div>
+                    <div>
+                        <span th:text="${ list.prices }"></span>
+                    </div>
+                    <div>
+                        <span th:text="${ #temporals.format(list.modifiedTime, 'MM-dd HH:mm') }"></span>
+                    </div>
+                </div>
+            </div>
+        </div><!-- 카드 하나 end -->
+    </div><!-- Main Div end -->
+    
+
+
+
+
+<th:block layout:fragment="script">
+    <script>
+    
+    </script>
+</th:block>
+</body>
+</div>
+</html>

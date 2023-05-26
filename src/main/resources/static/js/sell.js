@@ -7,8 +7,8 @@ window.addEventListener('DOMContentLoaded', () => {
     
     const btnSubmit = document.querySelector('#btnSubmit');
         
-        // 등록하기 버튼 눌렀을 때
-        btnSubmit.addEventListener('click', function () {
+    // 등록하기 버튼 눌렀을 때
+    btnSubmit.addEventListener('click', function() {
 
         const title = document.querySelector('#title').value;
         const category = document.querySelector('#category').value;
@@ -16,31 +16,30 @@ window.addEventListener('DOMContentLoaded', () => {
         const content = document.querySelector('#content').value;
         const regionMain = document.querySelector('#regionMain').value;
         const detailRegion = document.querySelector('#detailRegion').value;
-        const test = document.getElementById('imgIds').value;
-    
-    if (title == '' || category == '' || prices == '' || content == '') {
-        alert('빠진 부분을 채워넣어주세요!');
-        return;
-    }
-    
-    const result = confirm('정말 등록하시겠습니까?');
-    
-    if (result) {
-        // (1) 전달해줄 완성된 전체 주소 input창 만들어주기
-        const region = regionMain + ', ' + detailRegion; // Main주소 + 상세 주소
-        const location = document.getElementById('location');
-        const jusoStr = `<div><input type="hidden" class="w3-input w3-border w3-hover-shadow w3-sand" id="region" name="region" value="${region}" readonly/></div>`;
-        location.innerHTML += jusoStr;
-        
-        
-        // (2) 그 외 나머지 정보 DB에 저장.
+
+        if (title == '' || category == '' || prices == '' || content == '') {
+            alert('빠진 부분을 채워넣어주세요!');
+            return;
+        }
+
+        const result = confirm('정말 등록하시겠습니까?');
+
+        if (result) {
+            // (1) 전달해줄 완성된 전체 주소 input창 만들어주기
+            const region = regionMain + ', ' + detailRegion; // Main주소 + 상세 주소
+            const location = document.getElementById('location');
+            const jusoStr = `<div><input type="hidden" class="w3-input w3-border w3-hover-shadow w3-sand" id="region" name="region" value="${region}" readonly/></div>`;
+            location.innerHTML += jusoStr;
+
+
+            // (2) 그 외 나머지 정보 DB에 저장.
             document.querySelector('#formSell').submit();
             formSell.action = '/sell/create';
             formSell.method = 'post';
             formSell.submit();
-    
+
         }// if end
-});
+    });
 
 
 // region-input 창 클릭해도 열리게
