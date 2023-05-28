@@ -16,7 +16,7 @@
         <div class="w3-container" th:each="list : ${ list }"><!-- 카드 하나 -->
             <div class="content w3-card" style="display: table; border: 1px solid;">
                 <div class="image" style="display: table-cell; margin-right: 10px; border: 1px solid; width:200px; height:200px;">
-                    <img src="" style="width:200px; height:200px;">
+                    <img th:src="${ '/img/view/'+ list.imageFileName }" style="width:200px; height:200px;">
                 </div>
                 <div style="border: 1px solid; display: table-cell; width:200px; height:200px;">
                     <div>
