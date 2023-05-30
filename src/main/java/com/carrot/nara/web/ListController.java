@@ -37,12 +37,12 @@ public class ListController {
             Optional<PostImage> pi = Optional.ofNullable(postImageRepository.findFirstByPostId(p.getId()));
             if(pi.isPresent()) {
             PostImage pig = pi.get();
-            ListReadDto listElement = ListReadDto.builder().imageFileName(pig.getFileName())
+            ListReadDto listElement = ListReadDto.builder().id(p.getId()).imageFileName(pig.getFileName())
                     .imageFilePath(pig.getFilePath()).title(p.getTitle()).region(p.getRegion())
                     .prices(p.getPrices()).modifiedTime(p.getModifiedTime()).build();
             list.add(listElement);
             } else {
-                ListReadDto listElement = ListReadDto.builder().imageFileName("빈")
+                ListReadDto listElement = ListReadDto.builder().id(p.getId()).imageFileName("빈")
                         .imageFilePath("빈").title(p.getTitle()).region(p.getRegion())
                         .prices(p.getPrices()).modifiedTime(p.getModifiedTime()).build();
                 list.add(listElement);

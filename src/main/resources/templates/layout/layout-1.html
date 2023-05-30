@@ -52,9 +52,9 @@ body {
         <div class="w3-dropdown-hover w3-hide-small"><!-- 왼쪽 더보기 -->
             <button class="moreBtn w3-padding-large w3-button" title="More"><i class="fa fa-bars"></i></button>     
             <div class="w3-dropdown-content w3-bar-block w3-card-4">
-                <a href="#" class="w3-bar-item w3-button">공지 사항</a>
-                <a href="#" class="w3-bar-item w3-button">신고 하기</a>
-                <a href="#" class="w3-bar-item w3-button">고객 지원</a>
+                <a th:href="@{ /board/notice }" class="w3-bar-item w3-button">공지 사항</a>
+                <a th:href="@{ /board/report }" class="w3-bar-item w3-button">신고 하기</a>
+                <a th:href="@{ /board/cs }" class="w3-bar-item w3-button">고객 지원</a>
             </div>
         </div><!-- 더보기 끝 -->
         

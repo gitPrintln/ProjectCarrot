@@ -13,6 +13,7 @@ import lombok.ToString;
 @ToString
 public class ListReadDto {
     
+    private Integer id;
     private String imageFileName;
     private String imageFilePath;
     private String title;
