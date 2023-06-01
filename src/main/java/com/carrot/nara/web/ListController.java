@@ -42,8 +42,8 @@ public class ListController {
                     .prices(p.getPrices()).modifiedTime(p.getModifiedTime()).build();
             list.add(listElement);
             } else {
-                ListReadDto listElement = ListReadDto.builder().id(p.getId()).imageFileName("빈")
-                        .imageFilePath("빈").title(p.getTitle()).region(p.getRegion())
+                ListReadDto listElement = ListReadDto.builder().id(p.getId()).imageFileName("")
+                        .imageFilePath("").title(p.getTitle()).region(p.getRegion())
                         .prices(p.getPrices()).modifiedTime(p.getModifiedTime()).build();
                 list.add(listElement);
             }

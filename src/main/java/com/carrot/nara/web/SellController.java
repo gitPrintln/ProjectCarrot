@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.carrot.nara.dto.PostCreateDto;
 import com.carrot.nara.service.SellService;
@@ -28,7 +29,7 @@ public class SellController {
     @PostMapping("/create")
     public String create(PostCreateDto dto) {
         log.info("sellCreate(dto={}, {})", dto, dto.getImgIds());
-        sellService.create(dto);
-        return "redirect:/";
+        Integer postId = sellService.create(dto);
+        return "redirect:/detail?id=" + postId;
     }
 }

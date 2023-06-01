@@ -26,19 +26,23 @@ window.addEventListener('DOMContentLoaded', () => {
 
         if (result) {
             // (1) 전달해줄 완성된 전체 주소 input창 만들어주기
+            if(detailRegion != '') { // 상세 주소까지 있을 경우
             const region = regionMain + ', ' + detailRegion; // Main주소 + 상세 주소
             const location = document.getElementById('location');
             const jusoStr = `<div><input type="hidden" class="w3-input w3-border w3-hover-shadow w3-sand" id="region" name="region" value="${region}" readonly/></div>`;
             location.innerHTML += jusoStr;
-
-
+            } else if(regionMain != ''){ // 상세 주소는 없고 Main 주소만 있을 경우
+                const location = document.getElementById('location');
+                const jusoStr = `<div><input type="hidden" class="w3-input w3-border w3-hover-shadow w3-sand" id="region" name="region" value="${regionMain}" readonly/></div>`;
+                location.innerHTML += jusoStr;
+            }
+            
             // (2) 그 외 나머지 정보 DB에 저장.
             document.querySelector('#formSell').submit();
             formSell.action = '/sell/create';
             formSell.method = 'post';
             formSell.submit();
-
-        }// if end
+        }
     });
 
 
