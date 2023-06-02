@@ -24,7 +24,7 @@ dependencies {
 	// Thymeleaf에 layout 기능을 추가
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.2.1'
 	// security
-	// implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 	
 	// thymeleaf
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
