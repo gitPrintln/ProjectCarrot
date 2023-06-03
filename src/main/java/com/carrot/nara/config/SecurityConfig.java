@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 
 @EnableMethodSecurity(prePostEnabled = true)
@@ -25,9 +26,15 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.csrf().disable(); // 토큰이 필요한 post/put/delete 요청에 대해 403err를 막고 구현을 간단히 하기 위해
         
-        http.formLogin(Customizer.withDefaults())
-            .logout()
-            .logoutSuccessUrl("/");
+        http.formLogin()
+            .loginPage("/user/signin")
+            .defaultSuccessUrl("/")
+            .permitAll();
+        
+        http.logout()
+            .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+            .logoutSuccessUrl("/")
+            .invalidateHttpSession(true);
         
         http.authorizeHttpRequests() // 요청에 따른 권한 설정 시작.
             .requestMatchers("") //  로 시작하는 모든 경로 .hasRole("USER")로 원하는 권한에 해당하는 설정
@@ -35,7 +42,8 @@ public class SecurityConfig {
             .anyRequest() // 그 이외의 모든 요청
             .permitAll();
         
-        
+        http.exceptionHandling()
+            .accessDeniedPage("/user/singup");
         
         return http.build();
     }

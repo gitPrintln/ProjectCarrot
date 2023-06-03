@@ -2,6 +2,7 @@ package com.carrot.nara.web;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +25,7 @@ public class DetailController {
     private final PostRepository postRepository;
     private final PostImageRepository postImageRepository;
     
-    
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("")
     public String detail(Integer id, Model model) {
         log.info("detail(id={})", id);
