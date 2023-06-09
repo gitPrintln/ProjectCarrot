@@ -8,14 +8,79 @@
 <head>
     <meta charset="UTF-8">
     <title>Carrot Nara</title>
+    <style>
     
+    .signUpBtn {
+        background-color: #20c997; 
+        border-color: #20c997;
+    }
+    .btn:disabled{
+        background-color: #20c997;
+        border-color: #20c997;
+    }
+    
+    </style>
     
 </head>
 <body>
 
-<th:block layout:fragment="script">
-	
-</th:block>
+        <!-- login form -->
+        <div class="w3-container">
+            <h2>회원가입</h2>
+            <p>The w3-xlarge class creates an extra large list.</p>
+            <form id="formCreate" method="post" action="/user/signin">
+            <ul class="w3-ul w3-xlarge">
+                <li>
+                    <div style="display: inline-block;">아이디</div>
+                    <input class="form-control" style="display: inline-block;" type="text" id="username" name="username" placeholder="사용할 아이디" required/>
+                    <div class="idAvailabe" style="color: green; display: none;">사용 가능한 아이디입니다.</div>
+                    <div class="idUnavailabe" style="color: red; display: none;">이미 사용중인 아이디입니다.</div>
+                </li>
+                <li>
+                    <div>비밀번호</div>
+                    <input class="form-control" type="password" id="password" name="password" placeholder="사용할 비밀번호" required/>
+                    <div>비밀번호확인</div>
+                    <input class="form-control" type="password" id="passwordChk" name="passwordChk" placeholder="비밀번호 확인" required/>
+                    <div class="pwAvailabe" style="color: green; display: none;">비밀 번호가 일치합니다.</div>
+                    <div class="pwUnavailabe" style="color: red; display: none;">비밀 번호가 일치하지 않습니다.</div>
+                </li>
+                <li>
+                    <div>이름</div>
+                    <input class="form-control" type="text" id="name" name="name" placeholder="이름" required/>
+                </li>
+                <li>
+                    <div>닉네임</div>
+                    <input class="form-control" type="text" id="nickName" name="nickName" placeholder="사용할 닉네임" required/>
+                    <div class="nickAvailabe" style="color: green; display: none;">사용 가능한 닉네임입니다.</div>
+                    <div class="nickUnavailable" style="color: red; display: none;">이미 사용중인 닉네임입니다.</div>
+                </li>
+                <li>
+                    <div>휴대폰 번호</div>
+                    <input class="form-control" type="tel" id="phone" name="phone" placeholder="010-1234-5678" required maxlength="13"/>
+                    <div style="font-size: 3px; color: gray;">숫자를 입력하면 자동으로 ('-')이 입력됩니다.</div>
+                </li>
+                <li>
+                    <div>이메일</div>
+                    <input class="form-control" type="email" id="email" name="email" placeholder="[선택] 비밀번호 분실 시 확인에 이용됩니다."/>
+                </li>
+                <li>
+                    <div>지역</div>
+                    <input class="form-control" type="text" id="region" name="region" placeholder="[선택] 자주 이용할 지역"/>
+                </li>
+                <li>
+                    <button type="button" class="signUpBtn btn btn-primary" id="btnSubmit" disabled>가입 하기</button>
+                </li>
+            </ul>
+            </form>
+        </div> <!-- login form end -->
+
+
+    <th:block layout:fragment="script">
+	    <script th:src="@{ /js/signup.js }" ></script>
+        <!-- Ajax -->
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+          
+    </th:block>
 </body>
 </div>
 </html>

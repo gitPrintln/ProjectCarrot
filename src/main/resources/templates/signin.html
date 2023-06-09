@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{ layout/layout-1 }">
+
+<div layout:fragment="content" align="center">
+<head>
+    <meta charset="UTF-8">
+    <title>Carrot Nara</title>
+    
+    
+</head>
+<body>
+
+        <!-- login form -->
+        <div class="w3-container">
+            <h2>로그인 페이지</h2>
+            <p>The w3-xlarge class creates an extra large list.</p>
+            <form id="formCreate" method="post" action="/user/signin">
+            <ul class="w3-ul w3-xlarge">
+                <li>
+                    <div style="display: inline-block;">아이디</div>
+                    <input class="form-control" style="display: inline-block;" type="text" id="username" name="username" placeholder="아이디" required autofocus/>
+                </li>
+                <li>
+                    <div>비밀번호</div>
+                    <input class="form-control" type="password" id="password" name="password" placeholder="비밀번호" required/>
+                </li>
+            </ul>
+            </form>
+        </div> <!-- login form end -->
+
+    <div>
+        <a th:href="@{ /user/signup }">회원 가입</a>
+    </div>
+
+    <th:block layout:fragment="script">
+	    <script th:src="@{ /js/signup.js }" ></script>
+        <!-- Ajax -->
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+          
+    </th:block>
+</body>
+</div>
+</html>

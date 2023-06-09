@@ -12,4 +12,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     // 사용자 로그인 아이디가 일치하는 정보가 있는지 검색
     @EntityGraph(attributePaths = "roles")
     Optional<User> findByUsername(String username);
+
+    Optional<User> findByNickName(String nickName);
 }
