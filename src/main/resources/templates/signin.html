@@ -17,7 +17,7 @@
         <div class="w3-container">
             <h2>로그인 페이지</h2>
             <p>The w3-xlarge class creates an extra large list.</p>
-            <form id="formCreate" method="post" action="/user/signin">
+            <form id="formLogin" method="post" action="signin">
             <ul class="w3-ul w3-xlarge">
                 <li>
                     <div style="display: inline-block;">아이디</div>
@@ -26,6 +26,13 @@
                 <li>
                     <div>비밀번호</div>
                     <input class="form-control" type="password" id="password" name="password" placeholder="비밀번호" required/>
+                </li>
+                <li>
+                    <button type="submit" class="w3-btn submit" id="submitBtn">로그인</button>
+                </li>
+                <li>
+                    <input name="${_csrf.parameterName}" type="hidden"
+                                value="${_csrf.token}" />
                 </li>
             </ul>
             </form>
@@ -36,10 +43,6 @@
     </div>
 
     <th:block layout:fragment="script">
-	    <script th:src="@{ /js/signup.js }" ></script>
-        <!-- Ajax -->
-        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-          
     </th:block>
 </body>
 </div>

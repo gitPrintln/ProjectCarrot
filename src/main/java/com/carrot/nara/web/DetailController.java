@@ -25,7 +25,7 @@ public class DetailController {
     private final PostRepository postRepository;
     private final PostImageRepository postImageRepository;
     
-    @PreAuthorize("hasRole('USER')")
+    
     @GetMapping("")
     public String detail(Integer id, Model model) {
         log.info("detail(id={})", id);

@@ -106,7 +106,7 @@ window.addEventListener('DOMContentLoaded', () => {
         if((idAcc && idAcc.style.display !== "none") &&
            (pwAcc && pwAcc.style.display !== "none") &&
            (nickAcc && nickAcc.style.display !== "none")){
-            alert("check")
+            alert("check");
         }
     }
 });
