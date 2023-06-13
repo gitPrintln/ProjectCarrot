@@ -8,6 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Carrot Nara</title>
+    <script src="https://kit.fontawesome.com/009f152c56.js" crossorigin="anonymous"></script>
     <style>
     
     .signUpBtn {
@@ -19,6 +20,58 @@
         border-color: #20c997;
     }
     
+    .w3-ul li{
+        margin-top: 10px;
+        margin-bottom: 10px;
+        text-align: left;
+        display: flex;
+    }
+    .w3-ul li .label{
+        min-width: 190px;
+    }
+    .w3-ul li input{
+        flex: 0.4;
+    }
+    .w3-ul li span{
+        margin-right: 8px;
+    }
+    .w3-ul li i{
+        min-width: 35px;
+    }
+    
+    
+    
+    
+    .w3-ul .pwLi{
+        flex-direction: column;
+    }
+    .w3-ul .pwLi .pwDiv{
+        flex: 1;
+        display: flex;
+        margin-bottom: 6px;
+    }
+    .w3-ul .pwLi .pwChkDiv{
+        display: flex;
+    }
+    .w3-ul .pwLi .pwChkDiv .label{
+        margin-left: 35px;
+        min-width: 155px;
+    }
+    .w3-ul .pwLi .pwDiv input, .w3-ul .pwLi .pwChkDiv input{
+        flex: 0.4;
+    }
+    
+    
+    
+    
+    
+    .w3-ul li .pnDiv{
+        flex-direction: column;
+    }
+    .w3-ul li .pnLi .pnExplain{
+        flex: 1;
+    }
+    
     </style>
     
 </head>
@@ -27,48 +80,58 @@
         <!-- login form -->
         <div class="w3-container">
             <h2>회원가입</h2>
-            <p>The w3-xlarge class creates an extra large list.</p>
             <form id="formRegister" method="post" action="/user/signup">
             <ul class="w3-ul w3-xlarge">
                 <li>
-                    <div style="display: inline-block;">아이디</div>
-                    <input class="form-control requiredInput" style="display: inline-block;" type="text" id="username" name="username" placeholder="사용할 아이디" required/>
+                    <div style="display: inline-block;">
+                    <div class="label" style="display: inline-block;"><i class="fa-solid fa-user"></i>아이디</div><span style="font-size: 22px; color: red;">*</span>
+                    </div>
+                    <input class="form-control requiredInput" style="display: inline-block;" type="text" id="username" name="username" placeholder="사용할 아이디" required autofocus/>
                     <div id="idAvailable" style="color: green; display: none;">사용 가능한 아이디입니다.</div>
                     <div id="idUnavailable" style="color: red; display: none;">이미 사용중인 아이디입니다.</div>
                 </li>
-                <li>
-                    <div>비밀번호</div>
+                <li class="pwLi">
+                    <div class="pwDiv">
+                    <div class="label" style="display: inline-block;"><i class="fa-solid fa-lock"></i>비밀번호</div><span style="font-size: 22px; color: red;">*</span>
                     <input class="form-control requiredInput" type="password" id="password" name="password" placeholder="사용할 비밀번호" required/>
-                    <div>비밀번호확인</div>
+                    </div>
+                    <div class="pwChkDiv">
+                    <div class="label" style="display: inline-block;">비밀번호 확인</div><span style="font-size: 22px; color: red;">*</span>
                     <input class="form-control requiredInput" type="password" id="passwordChk" name="passwordChk" placeholder="비밀번호 확인" required/>
+                    </div>
                     <div id="pwAvailable" style="color: green; display: none;">비밀 번호가 일치합니다.</div>
                     <div id="pwUnavailable" style="color: red; display: none;">비밀 번호가 일치하지 않습니다.</div>
                 </li>
                 <li>
-                    <div>이름</div>
+                    <div class="label" style="display: inline-block;"><i class="fa-solid fa-pencil"></i>이름</div><span style="font-size: 22px; color: red;">*</span>
                     <input class="form-control requiredInput" type="text" id="name" name="name" placeholder="이름" required/>
                 </li>
                 <li>
-                    <div>닉네임</div>
+                    <div class="label" style="display: inline-block;"><i class="fa-solid fa-user-tag"></i>닉네임</div><span style="font-size: 22px; color: red;">*</span>
                     <input class="form-control requiredInput" type="text" id="nickName" name="nickName" placeholder="사용할 닉네임" required/>
                     <div id="nickAvailable" style="color: green; display: none;">사용 가능한 닉네임입니다.</div>
                     <div id="nickUnavailable" style="color: red; display: none;">이미 사용중인 닉네임입니다.</div>
                 </li>
                 <li>
-                    <div>휴대폰 번호</div>
-                    <input class="form-control requiredInput" type="tel" id="phone" name="phone" placeholder="010-1234-5678" required maxlength="13"/>
-                    <div style="font-size: 3px; color: gray;">숫자를 입력하면 자동으로 ('-')이 입력됩니다.</div>
+                    <div class="label" style="display: inline-block;"><i class="fa-solid fa-phone"></i>휴대폰 번호</div><span style="font-size: 22px; color: red;">*</span>
+                    <div class="pnDiv">
+                    <input class="form-control mb-2 requiredInput" type="tel" id="phone" name="phone" placeholder="010-1234-5678" required maxlength="13"/>
+                    <div class="pnExplain" style="font-size: 1px; color: gray;">숫자를 입력하면 자동으로 ('-')이 입력됩니다.</div>
+                    </div>
                 </li>
                 <li>
-                    <div>이메일</div>
+                    <div class="label" style="margin-right: 18px;"><i class="fa-solid fa-envelope-o"></i>이메일</div>
                     <input class="form-control" type="email" id="email" name="email" placeholder="[선택] 비밀번호 분실 시 확인에 이용됩니다."/>
                 </li>
                 <li>
-                    <div>지역</div>
+                    <div class="label" style="margin-right: 18px;"><i class="fa-solid fa-location-dot"></i>지역</div>
                     <input class="form-control" type="text" id="region" name="region" placeholder="[선택] 자주 이용할 지역"/>
                 </li>
                 <li>
+                    <p style="font-size: 11px; color: red;">* 있는 부분은 필수 입력 사항입니다.</p>
                     <button type="button" class="signUpBtn btn btn-primary" id="btnSubmit" disabled>가입 하기</button>
+                </li>
+                <li>
                 </li>
             </ul>
             </form>

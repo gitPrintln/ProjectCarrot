@@ -8,24 +8,43 @@
 <head>
     <meta charset="UTF-8">
     <title>Carrot Nara</title>
+    <script src="https://kit.fontawesome.com/009f152c56.js" crossorigin="anonymous"></script>
+    <style>
+    .w3-ul li {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .w3-ul li input{
+        min-width: 40%;
+    }
+    .w3-ul li i{
+        margin-right: 8px;
+    }
+    .w3-ul li .label{
+        width: 150px;
+    }
+    .w3-ul li .form-control{
+        width: 70px;
+    }
     
     
+    </style>
 </head>
 <body>
 
         <!-- login form -->
         <div class="w3-container">
             <h2>로그인 페이지</h2>
-            <p>The w3-xlarge class creates an extra large list.</p>
             <form id="formLogin" method="post" action="signin">
             <ul class="w3-ul w3-xlarge">
                 <li>
-                    <div style="display: inline-block;">아이디</div>
+                    <div class="label" style="display: inline-block;"><i class="fa-solid fa-user"></i>아이디</div>
                     <input class="form-control" style="display: inline-block;" type="text" id="username" name="username" placeholder="아이디" required autofocus/>
                 </li>
                 <li>
-                    <div>비밀번호</div>
-                    <input class="form-control" type="password" id="password" name="password" placeholder="비밀번호" required/>
+                    <div class="label" style="display: inline-block;"><i class="fa-solid fa-lock"></i>비밀번호</div>
+                    <input class="form-control" style="display: inline-block;" type="password" id="password" name="password" placeholder="비밀번호" required/>
                 </li>
                 <li>
                     <button type="submit" class="w3-btn submit" id="submitBtn">로그인</button>
@@ -39,7 +58,7 @@
         </div> <!-- login form end -->
 
     <div>
-        <a th:href="@{ /user/signup }">회원 가입</a>
+        <a style="margin-right: 10px;" th:href="@{ /user/signup }">회원 가입</a><a href="#">로그인에 문제가 있어요</a>
     </div>
 
     <th:block layout:fragment="script">
