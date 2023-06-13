@@ -59,15 +59,25 @@ body {
         </div><!-- 더보기 끝 -->
         
         
-        <!-- 오른쪽 목록 -->      
+        
+        <!-- 오른쪽 목록(로그인하지 않은 상태) -->   
+        <th:block sec:authorize="isAnonymous()">
+        <div class="w3-dropdown-hover w3-hide-small w3-right">
+            <a th:href="@{ /user/signin }"><i class="fa fa-user"></i></a>
+        </div>
+        </th:block>
+        <!-- 오른쪽 목록(로그인한 상태) -->      
+        <th:block sec:authorize="isAuthenticated()">
         <div class="w3-dropdown-hover w3-hide-small w3-right"><!-- 오른쪽 더보기 -->
             <button class="moreBtn w3-padding-large w3-button" title="userMore"><i class="fa fa-user"></i></button>     
             <div class="w3-dropdown-content w3-bar-block w3-card-4" style="position: absolute; right:0px;">
                 <a href="#" class="w3-bar-item w3-button">정보 수정</a>
                 <a href="#" class="w3-bar-item w3-button">판매 목록</a>
                 <a href="#" class="w3-bar-item w3-button">관심 목록</a>
+                <a th:href="@{ /logout }" class="w3-bar-item w3-button">로그 아웃</a>
             </div>
         </div><!-- 더보기 끝 -->
+        </th:block>
             <a href="javascript:void(0)" class="w3-padding-large w3-hover-red w3-hide-small w3-right"><i class="fa fa-search"></i></a>
         </div>
     </div><!-- 메인 bar End -->
