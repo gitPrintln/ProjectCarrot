@@ -56,6 +56,7 @@
                     </div>
                     <!-- 선택한 파일이 보여지는 공간 -->
                     <div id="selectedImage"></div>
+                    <output id="output"></output>
                 </div>
                 <div class="contents">
                     <label class="w3-text-brown" for="title"><b>글 제목</b></label>
@@ -133,16 +134,17 @@
         </form>
          -->
 
+<th:block layout:fragment="script">
+    <script th:src="@{ /js/img.js }" ></script>
+    <script th:src="@{ /js/sell.js }" ></script>
 
-<script th:src="@{ /js/img.js }" ></script>
-<script th:src="@{ /js/sell.js }" ></script>
+    <!-- Ajax -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-<!-- Ajax -->
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- 카카오 주소 API -->
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+</th:block>
 
-
-<!-- 카카오 주소 API -->
-<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
 </body>
 </div>

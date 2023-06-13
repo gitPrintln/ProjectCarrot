@@ -1,5 +1,7 @@
 package com.carrot.nara.repository;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,6 +34,14 @@ public class PostRepositoryTest {
         Post p2 = postRepository.save(p1);
         log.info("저장 확인{} | {} | {}", p2, p2.getCreatedTime(), p2.getModifiedTime());
         
+    }
+    
+    @Test
+    public void selectAll() {
+        List<Post> list = postRepository.findAll();
+        for (Post p : list) {
+            log.info("p={}", p);
+        }
     }
     
 }

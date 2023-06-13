@@ -1,7 +1,12 @@
 package com.carrot.nara.domain;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -35,10 +40,9 @@ public class User {
     @Column(nullable = false)
     private String password;
     
-    @Column(unique = true, nullable = false)
     private String email;
     
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String phone;
     
     private String address;
@@ -48,13 +52,23 @@ public class User {
     
     @Setter
     @Column(length = 1000)
-    private String userImage;
+    private String userImage; // 유저 이미지 저장된 경로
     
-    @Setter
-    @Column(length = 1000)
-    private String fileName;
+    // USER_ROLES 테이블이 생성(컬럼: USER_ID, ROLES)
+    @ElementCollection(fetch = FetchType.LAZY)
+    @Builder.Default // 초기값이 설정되어 있으면 null이 되지 않음.
+    private Set<UserRole> roles = new HashSet<>();  // 권한 부여를 위한 해시셋
     
-    @Setter
-    @Column(length = 1000)
-    private String filePath;
+    public User addRole(UserRole role) { // 유저 권한 부여
+        roles.add(role);
+        
+        return this;
+    }
+    
+    public User clearRoles() { // 유저가 가진 모든 권한 삭제
+        roles.clear();
+        
+        return this;
+    }
+    
 }

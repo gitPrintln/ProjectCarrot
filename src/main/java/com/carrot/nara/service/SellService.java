@@ -28,15 +28,18 @@ public class SellService {
     private String uploadPath;
     
     @Transactional
-    public void create(PostCreateDto dto) {
+    public Integer create(PostCreateDto dto) {
         log.info("create(dto={})", dto);
         // TODO: USER 만들어지면 USER ID 넣을 것.(createDTO도 수정) -> 임시로 userID : 1
-        Integer p1 = postRepository.save(dto.toEntity(1)).getId();
+        Integer postId = postRepository.save(dto.toEntity(1)).getId();
         
+        if(dto.getImgIds() != null && !dto.getImgIds().isEmpty()) {
         for (Integer n : dto.getImgIds()) {
             PostImage entity = postImageRepository.findById(n).get();
-            entity.update(p1);
+            entity.update(postId);
         }
+        }
+        return postId;
     }
     
     @Transactional

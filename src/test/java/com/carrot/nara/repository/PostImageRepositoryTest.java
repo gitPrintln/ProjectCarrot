@@ -30,7 +30,7 @@ public class PostImageRepositoryTest {
         log.info("{}|{}", pi, pi.getFilePath());
     }
     
-    @Test
+//    @Test
 //    @Order(2)
     public void testImagePostIdInsert() {
         Integer postId = 41;
@@ -41,4 +41,13 @@ public class PostImageRepositoryTest {
         pi = postImageRepository.save(pi);
         log.info("업데이트 후 pi:{}", pi);
     }
+    
+    @Test
+    public void testSelectListImage() {
+        Integer postId = 52;
+        PostImage p = postImageRepository.findFirstByPostId(postId);
+        log.info("p={}",p);
+    }
+    
+    
 }
