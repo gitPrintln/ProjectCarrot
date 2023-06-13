@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.carrot.nara.dto.UserRegisterDto;
 import com.carrot.nara.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,13 +31,13 @@ public class UserController {
     
     @GetMapping("/signup")
     public String signUp() {
-        log.info("signup()");
+        log.info("signUp()");
         return "signup";
     }
     
     @GetMapping("/signin")
     public String signIn() {
-        log.info("signin()");
+        log.info("signIn()");
         return "signin";
     }
     
@@ -83,4 +84,13 @@ public class UserController {
             session.setAttribute("previousUrl", previousUrl);
         }
     }
+    
+    @PostMapping("/signup")
+    public String signup(UserRegisterDto dto) {
+        log.info("signup(dto={})", dto);
+        userService.registerUser(dto);
+        return "redirect:/";
+    }
+    
+    
 }
