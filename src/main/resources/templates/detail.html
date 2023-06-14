@@ -7,9 +7,27 @@
 <div layout:fragment="content" align="center">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Carrot Nara</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <style>
-     
+    
+        .mySlides {
+            display: none;
+        }
+        .w3-left, .w3-right, .w3-badge {
+            cursor: pointer;
+            color: lightgray;
+        }
+        .w3-badge {
+            height: 13px;
+            width: 13px;
+            margin-left: 5px;
+            margin-right: 5px;
+            padding: 5px;
+        }
+        
+        
     </style>
     
 </head>
@@ -20,27 +38,19 @@
     <div class="rounded" style="border: 1px solid">
         <div style="margin: 10px; border-top: 1px solid silver">
             <div class="container-fluid">
-                <!-- 이미지 캐러셀 시작 -->
-                <div class="images">
-                    <div id="carouselExampleIndicators" class="carousel slide">
-                        <!-- 캐러셀 버튼 개수 동적으로 변경 -->
-                        <div class="carousel-indicators">
+                
+                <!-- 이미지 시작 -->
+                     <div class="w3-content w3-display-container" style="max-width:600px">
+                        <div class="mySlides" th:each="i : ${ postImage }">
+                            <img th:src="${ '/img/view/'+ i.fileName }" style="width:100%">
                         </div>
-                        <div class="carousel-inner" th:each="i : ${ postImage }">
-                            <div class="carousel-item">
-                                <img th:src="${ '/img/view/'+ i.fileName }" class="d-block w-100" style="width:400px; height:400px;">
-                            </div>
+                        <!-- next, prev 버튼, indicator 버튼들 -->
+                        <div class="slideBtnsDiv">
                         </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
-                    </div>
-                </div><!-- 이미지 끝 -->
+                     </div>
+                <!-- 이미지 끝 -->
+                
+                
                 
                 <!-- 본문 내용 시작 -->
                 <div class="post" th:each="p : ${ post }">
@@ -99,34 +109,72 @@
 
 
 <th:block layout:fragment="script">
-    <script>
-    // 이미지 슬라이드
-    var slideIndex = 0;
-    var carouselItem;
-    activeSlideImages();
-    function activeSlideImages(){
-    slideIndex++;
-    carouselItem = document.getElementsByClassName('carousel-item');
-    if(slideIndex > carouselItem.length){
-    	slideIndex = 1;
-    }
-    carouselItem[slideIndex-1].className += ' active';
-    }
     
+    <script>
+    var slideIndex = 1;
+    var mySlidesItems = document.getElementsByClassName('mySlides');
     indicatorsController();
     // carousel-indicators 컨트롤러
     function indicatorsController(){
-    	const indicatorsCount = carouselItem.length;
-    	if(indicatorsCount>1){ // 이미지 개수가 1개보다 많을 때만 가운데 버튼과 양쪽 prev, next button 보이게 하기.
-    	    const carouselBtnDiv = document.querySelector('.carousel-indicators');
-    	    for(let i=0; i < indicatorsCount; i++){
-    	    	   const carouselBtnStr = `<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="${i}" class="active" aria-current="true" aria-label="Slide ${i+1}"></button>`
-    	    		   carouselBtnDiv.innerHTML += carouselBtnStr;
-    	    }
-    	}
-        
+        const indicatorsCount = mySlidesItems.length;
+        if(indicatorsCount>1) { // 이미지 개수가 1개보다 많을 때만 가운데 버튼과 양쪽 prev, next button 보이게 하기.
+        	// next, prev 버튼
+        	const slideBtnsDiv = document.querySelector('.slideBtnsDiv');
+            let nextPrevBtnStr = '';
+            nextPrevBtnStr += '<div class="w3-center w3-container w3-section w3-large w3-text-white w3-display-bottommiddle" style="width:100%">'
+                + '<div class="w3-left w3-hover-text-khaki" onclick="plusDivs(-1)">&#10094;</div>'
+                + '<div class="w3-right w3-hover-text-khaki" onclick="plusDivs(1)">&#10095;</div>'
+                + '<!-- 아래쪽 버튼 개수 동적으로 변경 -->'
+                + '<div class="indicatorsBtnDiv">'
+                + '</div>'
+                + '</div>';
+            	slideBtnsDiv.innerHTML += nextPrevBtnStr;
+            // indicators 버튼
+        	const indicatorsBtnDiv = document.querySelector('.indicatorsBtnDiv');
+            for(let i=0; i < indicatorsCount; i++){
+                   const slideBtnStr = `<span class="w3-badge demo w3-border w3-transparent w3-hover-white" onclick="currentDiv(${i+1})"></span>`
+                	   indicatorsBtnDiv.innerHTML += slideBtnStr;
+            }
+            
+            // slides script
+            showDivs(slideIndex);
+            
+        } else if(indicatorsCount === 1){ // 이미지 개수가 딱 1개일 때
+        	var y = document.getElementsByClassName("mySlides");
+        	y[slideIndex-1].style.display = "block";
+        }
     }
-	</script>
+    
+    
+    
+    function plusDivs(n) {
+      showDivs(slideIndex += n);
+    }
+
+    function currentDiv(n) {
+      showDivs(slideIndex = n);
+    }
+
+    function showDivs(n) {
+      var i;
+      var x = document.getElementsByClassName("mySlides");
+      var dots = document.getElementsByClassName("demo");
+      if (n > x.length) {
+    	  slideIndex = 1
+      }
+      if (n < 1) {
+    	  slideIndex = x.length
+      }
+      for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none";  
+      }
+      for (i = 0; i < dots.length; i++) {
+        dots[i].className = dots[i].className.replace(" w3-white", "");
+      }
+      x[slideIndex-1].style.display = "block";  
+      dots[slideIndex-1].className += " w3-white";
+    }
+    </script>
 </th:block>
 </body>
 </div>

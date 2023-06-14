@@ -125,13 +125,4 @@ window.addEventListener('DOMContentLoaded', () => {
     
     
 });
-/*
-// 이미지 파일 인풋창 동적 생성
-function img() {
-        const imgPlace = document.querySelector('.imgContents');
-        console.log(imgPlace)
-        const imgInput = '<div style="display:none;"><input type="file" class="imgInputs w3-input w3-border w3-sand" id="images" name="images" multiple/></div>';
-        imgPlace.innerHTML += imgInput;
-    }
-    */
     
