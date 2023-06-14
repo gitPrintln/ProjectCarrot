@@ -62,15 +62,17 @@
     }
     
     
-    
-    
-    
     .w3-ul li .pnDiv{
         flex-direction: column;
     }
     .w3-ul li .pnLi .pnExplain{
         flex: 1;
     }
+    
+    .btnLiDiv{
+        flex-direction: column;
+    }
+    
     
     </style>
     
@@ -87,8 +89,8 @@
                     <div class="label" style="display: inline-block;"><i class="fa-solid fa-user"></i>아이디</div><span style="font-size: 22px; color: red;">*</span>
                     </div>
                     <input class="form-control requiredInput" style="display: inline-block;" type="text" id="username" name="username" placeholder="사용할 아이디" required autofocus/>
-                    <div id="idAvailable" style="color: green; display: none;">사용 가능한 아이디입니다.</div>
-                    <div id="idUnavailable" style="color: red; display: none;">이미 사용중인 아이디입니다.</div>
+                    <div id="idAvailable" style="color: green; margin-left: 15px; display: none;">사용 가능한 아이디입니다.</div>
+                    <div id="idUnavailable" style="color: red; margin-left: 15px; display: none;">이미 사용중인 아이디입니다.</div>
                 </li>
                 <li class="pwLi">
                     <div class="pwDiv">
@@ -98,9 +100,9 @@
                     <div class="pwChkDiv">
                     <div class="label" style="display: inline-block;">비밀번호 확인</div><span style="font-size: 22px; color: red;">*</span>
                     <input class="form-control requiredInput" type="password" id="passwordChk" name="passwordChk" placeholder="비밀번호 확인" required/>
+                    <div id="pwAvailable" style="color: green; margin-left: 15px; display: none;">비밀 번호가 일치합니다.</div>
+                    <div id="pwUnavailable" style="color: red; margin-left: 15px; display: none;">비밀 번호가 일치하지 않습니다.</div>
                     </div>
-                    <div id="pwAvailable" style="color: green; display: none;">비밀 번호가 일치합니다.</div>
-                    <div id="pwUnavailable" style="color: red; display: none;">비밀 번호가 일치하지 않습니다.</div>
                 </li>
                 <li>
                     <div class="label" style="display: inline-block;"><i class="fa-solid fa-pencil"></i>이름</div><span style="font-size: 22px; color: red;">*</span>
@@ -109,8 +111,8 @@
                 <li>
                     <div class="label" style="display: inline-block;"><i class="fa-solid fa-user-tag"></i>닉네임</div><span style="font-size: 22px; color: red;">*</span>
                     <input class="form-control requiredInput" type="text" id="nickName" name="nickName" placeholder="사용할 닉네임" required/>
-                    <div id="nickAvailable" style="color: green; display: none;">사용 가능한 닉네임입니다.</div>
-                    <div id="nickUnavailable" style="color: red; display: none;">이미 사용중인 닉네임입니다.</div>
+                    <div id="nickAvailable" style="color: green; margin-left: 15px; display: none;">사용 가능한 닉네임입니다.</div>
+                    <div id="nickUnavailable" style="color: red; margin-left: 15px; display: none;">이미 사용중인 닉네임입니다.</div>
                 </li>
                 <li>
                     <div class="label" style="display: inline-block;"><i class="fa-solid fa-phone"></i>휴대폰 번호</div><span style="font-size: 22px; color: red;">*</span>
@@ -127,9 +129,11 @@
                     <div class="label" style="margin-right: 18px;"><i class="fa-solid fa-location-dot"></i>지역</div>
                     <input class="form-control" type="text" id="region" name="region" placeholder="[선택] 자주 이용할 지역"/>
                 </li>
-                <li>
+                <li class="btnLi">
+                    <div class="btnLiDiv">
                     <p style="font-size: 11px; color: red;">* 있는 부분은 필수 입력 사항입니다.</p>
                     <button type="button" class="signUpBtn btn btn-primary" id="btnSubmit" disabled>가입 하기</button>
+                    </div>
                 </li>
                 <li>
                 </li>

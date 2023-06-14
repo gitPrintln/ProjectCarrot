@@ -35,6 +35,7 @@
 
         <!-- login form -->
         <div class="w3-container">
+            <h1></h1>
             <h2>로그인 페이지</h2>
             <form id="formLogin" method="post" action="signin">
             <ul class="w3-ul w3-xlarge">
@@ -47,7 +48,7 @@
                     <input class="form-control" style="display: inline-block;" type="password" id="password" name="password" placeholder="비밀번호" required/>
                 </li>
                 <li>
-                    <button type="submit" class="w3-btn submit" id="submitBtn">로그인</button>
+                    <button type="submit" class="w3-btn submit" id="submitBtn"><i style="margin-right: 14px;" class="fa-solid fa-right-to-bracket"></i>로그인</button>
                 </li>
                 <li>
                     <input name="${_csrf.parameterName}" type="hidden"
