@@ -31,7 +31,7 @@ public class SellService {
     public Integer create(PostCreateDto dto) {
         log.info("create(dto={})", dto);
         // TODO: USER 만들어지면 USER ID 넣을 것.(createDTO도 수정) -> 임시로 userID : 1
-        Integer postId = postRepository.save(dto.toEntity(1)).getId();
+        Integer postId = postRepository.save(dto.toEntity(dto.getUserId())).getId();
         
         if(dto.getImgIds() != null && !dto.getImgIds().isEmpty()) {
         for (Integer n : dto.getImgIds()) {

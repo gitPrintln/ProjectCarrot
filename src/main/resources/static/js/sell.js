@@ -9,7 +9,6 @@ window.addEventListener('DOMContentLoaded', () => {
         
     // 등록하기 버튼 눌렀을 때
     btnSubmit.addEventListener('click', function() {
-
         const title = document.querySelector('#title').value;
         const category = document.querySelector('#category').value;
         const prices = document.querySelector('#prices').value;
