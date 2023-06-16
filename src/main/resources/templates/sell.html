@@ -56,7 +56,6 @@
                     </div>
                     <!-- 선택한 파일이 보여지는 공간 -->
                     <div id="selectedImage"></div>
-                    <output id="output"></output>
                 </div>
                 <div class="contents">
                     <label class="w3-text-brown" for="title"><b>글 제목</b></label>
@@ -90,57 +89,17 @@
                 </div>
                 <div style="margin-top: 30px; margin-bottom: 30px;">
                     <button type="button" class="w3-btn w3-brown" id="btnSubmit">등록 하기</button>
-                    <button type="button" class="w3-btn w3-brown" id="btnImg">이미지 등록 하기</button>
                 </div>
                 </div>
             </form>
-        <!-- <div class="w3-container w3-brown">
-            <h2>등록하기</h2>
-        </div>
-        <form class="w3-container" id="formSell" method="post" action="/sell/create">
-            <div class="card" style="width: 68rem;">
-                <ul class="sellInfo list-group">
-                    <li class="list-group-item">
-                        <div class="contents row photo-preview-container"></div>
-                        <img src="..." class="img-thumbnail" alt="사진을 등록하세요!" style="max-width: 100%; height: auto;">
-                        <div><input type="file" class="w3-input w3-border w3-sand" id="images" name="images[]" multiple/></div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="contents">글 제목</div>
-                        <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="title" name="title"/></div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="contents">카테고리</div>
-                        <div><input class="w3-input w3-border w3-sand" id="category" name="category"/></div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="contents">가격</div><span>&#8361;</span>
-                        <div><input class="w3-input w3-border w3-sand" id="won" name="won"/></div><span>원</span>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="contents">내용</div>
-                        <div><textarea rows="12" class="w3-input w3-border w3-sand" style="width:990px;" id="texts" name="texts"></textarea></div>
-                    </li>
-                    <li class="list-group-item">
-                        <div class="contents">지역</div>
-                        <div><input class="w3-input w3-border w3-sand" id="region" name="region" readonly/></div>
-                        <button class="moreRegionsBtn w3-padding-large w3-button" title="region"><i class="fa fa-caret-down"></i></button>
-                    </li>
-                </ul>
-                <div style="margin-top: 30px; margin-bottom: 30px;">
-                    <input class="w3-button w3-teal w3-round" type="button" id="btnSubmit" value="등록하기"/>
-                </div>
-            </div>
-        </form>
-         -->
 
 <th:block layout:fragment="script">
+    <!-- Ajax -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script th:src="@{ /js/img.js }" ></script>
     <script th:src="@{ /js/sell.js }" ></script>
 
-    <!-- Ajax -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
+    
     <!-- 카카오 주소 API -->
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </th:block>

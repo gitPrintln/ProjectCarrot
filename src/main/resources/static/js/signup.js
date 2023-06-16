@@ -122,7 +122,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 console.log('비활성화');
                 btnSubmit.disabled = true;
             }
-            }, 20);
+            }, 25);
     }
     
     

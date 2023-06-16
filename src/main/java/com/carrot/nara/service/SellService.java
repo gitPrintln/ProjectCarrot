@@ -30,7 +30,6 @@ public class SellService {
     @Transactional
     public Integer create(PostCreateDto dto) {
         log.info("create(dto={})", dto);
-        // TODO: USER 만들어지면 USER ID 넣을 것.(createDTO도 수정) -> 임시로 userID : 1
         Integer postId = postRepository.save(dto.toEntity(dto.getUserId())).getId();
         
         if(dto.getImgIds() != null && !dto.getImgIds().isEmpty()) {
@@ -43,12 +42,15 @@ public class SellService {
     }
     
     @Transactional
-    public List<Integer> createImg(List<FileUploadDto> files) {
-        log.info("createImg(files={})", files);
+    public List<Integer> createImg(String[] files) {
+        log.info("createImg()");
+        for (String f : files) {
+            log.info("files={}", f);
+        }
         List<Integer> imgIds = new ArrayList<>();
-        for (FileUploadDto f : files) {
-            String originFileName = f.getFileName().split("_")[1];
-            PostImage entity = PostImage.builder().fileName(f.getFileName()).filePath(uploadPath + f.getFileName())
+        for (String file : files) {
+            String originFileName = file.split("_")[1];
+            PostImage entity = PostImage.builder().fileName(file).filePath(uploadPath + file)
                     .originFileName(originFileName).postId(null).build();
             postImageRepository.save(entity);
             imgIds.add(entity.getId());

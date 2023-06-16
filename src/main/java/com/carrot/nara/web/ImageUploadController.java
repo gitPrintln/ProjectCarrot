@@ -11,10 +11,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,9 +40,13 @@ public class ImageUploadController {
     @Value("${com.carrot.nara.upload.path}")
     private String uploadPath; // application.properties 파일에 설정된 값을 읽어서 변수에 할당.
     
-    // 이미지 파일 로컬 저장소에 저장하기
+    /**
+     * 이미지 파일들을 로컬 저장소에 저장
+     * @param dto 저장할 이미지 파일들이 list로 전달 받음.(dto는 List<MultipartFile> files를 받도록 되어있음.)
+     * @return 올릴 파일들을 미리보기 할 수 있도록 html로 전달.
+     */
     @PostMapping("/upload")
-    public ResponseEntity<List<Integer>> uploadImg(ImageUploadDto dto){
+    public ResponseEntity<List<FileUploadDto>> uploadImg(ImageUploadDto dto){
         log.info("uploadImg(dto={})", dto);
         List<MultipartFile> files = dto.getFiles();
         if(files == null) {
@@ -55,11 +62,7 @@ public class ImageUploadController {
         });
         
         
-        // DB에 이미지 정보(경로, 이름, postId) 저장.
-        List<Integer> imgIds = sellService.createImg(list);
-        
-        
-        return ResponseEntity.ok(imgIds);
+        return ResponseEntity.ok(list);
     }
     
     // UUID 클래스를 통해서 파일 저장하기 위해 만든 메서드
@@ -87,7 +90,8 @@ public class ImageUploadController {
             
             result = FileUploadDto.builder()
                     .uuid(uuid)
-                    .fileName(finalFileName)
+                    .imageFileName(finalFileName)
+                    .originFileName(originName)
                     .image(image)
                     .build();
         } catch (IllegalStateException | IOException e) {
@@ -121,4 +125,33 @@ public class ImageUploadController {
         
         return ResponseEntity.ok().headers(headers).body(resource);
     }
+    
+    // 로컬에 저장되어 있는 선택된 이미지 파일 삭제
+    @DeleteMapping("/upload/{fileName}")
+    public ResponseEntity<?> currentDeleteImg(@PathVariable String fileName){
+        log.info("currentDeleteImg({})", fileName);
+        File file = new File(uploadPath, fileName);
+        boolean result = file.delete();
+        if (result) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 실패 상태 코드 500 반환
+        }
+    }
+    
+    /***
+     * 등록할 이미지들을 SQL DB에 저장
+     * @param imageData 업로드할 file_name으로 구성된 배열
+     * @return 이미지 ID들 전달. 최종적으로 POST 글 생성하기 전에 postId를 postImage DB에도 저장하기 위함.
+     */
+    @PostMapping("/upload/db")
+    public ResponseEntity<List<Integer>> saveImgForDb(@RequestBody String[] imageData){
+        log.info("saveImgForDb()");
+        for (String f : imageData) {
+            log.info("imageData={}", f);
+        }
+        List<Integer> imgIds = sellService.createImg(imageData);
+        return ResponseEntity.ok(imgIds);
+    }
+    
 }
