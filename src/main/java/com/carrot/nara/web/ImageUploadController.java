@@ -65,6 +65,11 @@ public class ImageUploadController {
         return ResponseEntity.ok(list);
     }
     
+    /**
+     * UUID 클래스를 통해서 고유의 파일 네임을 만들어서 로컬에 저장하기 위함.
+     * @param file MultipartFile type으로 여러 장의 파일을 받아서 UUID_FileName 형태로 만듦
+     * @return FileUploadDto type의 UUID, filename, originfilename, image 유무 정보의 result
+     */
     // UUID 클래스를 통해서 파일 저장하기 위해 만든 메서드
     // UUID(Universally Unique Identifier)
     // 무작위로 생성되므로 각 실행마다 다른 값이 생성
@@ -154,4 +159,19 @@ public class ImageUploadController {
         return ResponseEntity.ok(imgIds);
     }
     
+    /**
+     * 등록하려다가 안하는 경우에 로컬에 저장된 이미지를 삭제.
+     * @param temporaryData 최종 등록이 되지 않은 이미지 파일들의 이름들의 집합.
+     * @return 성공 문자열
+     */
+    @DeleteMapping("/delete/{temporaryData}")
+    public ResponseEntity<String> deleteTemporaryFile(@PathVariable String[] temporaryData) {
+        log.info("deleteTemporaryFile()");
+        for (String f : temporaryData) {
+            File file = new File(uploadPath, f);
+            file.delete();
+        }
+        
+        return ResponseEntity.ok("success");
+    }
 }

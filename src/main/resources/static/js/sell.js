@@ -26,6 +26,9 @@ window.addEventListener('DOMContentLoaded', () => {
         const result = confirm('정말 등록하시겠습니까?');
 
         if (result) {
+            // 제출했음을 변수에 저장
+            submitted = true; 
+            
             // (1) 전달해줄 완성된 전체 주소 input창 만들어주기
             if(detailRegion != '') { // 상세 주소까지 있을 경우
             const region = regionMain + ', ' + detailRegion; // Main주소 + 상세 주소
@@ -86,8 +89,31 @@ window.addEventListener('DOMContentLoaded', () => {
 const regionMainInput = document.getElementById('regionMain');
 regionMainInput.addEventListener('click', serchRegion);
 
-
 });
+
+let submitted = false; // 제출 여부 확인
+
+// 제출하지 않고 페이지를 벗어날 시 발생하는 이벤트 리스너(실제 등록되지 않은 로컬저장소 이미지 삭제)
+window.addEventListener('beforeunload', function(event) {
+    if(!submitted){ // 제출하지 않았을 때 실행
+    deleteTemporaryFile();
+    }
+});
+
+// 로컬저장소에 저장되어있지만 최종 등록 되지 않은 이미지 삭제
+function deleteTemporaryFile(){
+    let temporaryData = [];
+    const selectedImage = document.querySelector('#selectedImage');
+    const finalImgs = selectedImage.querySelectorAll('img')        
+        for (let file of finalImgs) {
+                const imgSrc = file.getAttribute('data-src');
+                temporaryData.push(imgSrc);
+           }
+        axios.delete('/img/delete/' + temporaryData)
+            .then(response => {console.log('이미지 삭제 완료');
+            })
+            .catch(err=>{console.log(err)});
+}
 
 // 주소 api 팝업창
 function serchRegion(){
