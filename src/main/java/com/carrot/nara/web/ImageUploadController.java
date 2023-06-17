@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.carrot.nara.dto.FileUploadDto;
 import com.carrot.nara.dto.ImageUploadDto;
 import com.carrot.nara.service.SellService;
+import com.carrot.nara.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ImageUploadController {
     
     private final SellService sellService;
+    private final UserService userService;
     
     @Value("${com.carrot.nara.upload.path}")
     private String uploadPath; // application.properties 파일에 설정된 값을 읽어서 변수에 할당.
@@ -111,6 +113,27 @@ public class ImageUploadController {
     @GetMapping("/view/{fileName}")
     public ResponseEntity<Resource> currentImg(@PathVariable String fileName){
         log.info("currentImg({})", fileName);
+        return loadResource(fileName);
+    }
+
+    // 로컬에 저장되어 있는 유저 이미지 파일을 보려고 할 때
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Resource> userImg(@PathVariable Integer userId){
+        log.info("userImg({})", userId);
+        String fileName = userService.getImageName(userId);
+        if(fileName != null) { // 유저 이미지가 있을 때
+            return loadResource(fileName);
+        } else { // 유저 이미지가 없을 때
+            return loadResource("noProfile.png");
+        }
+    }
+    
+    /**
+     * 파일 이름을 통해 파일 불러오기
+     * @param fileName 파일이름
+     * @return 읽어온 파일을 반환 headers(HTTP 응답 헤더(Content-Type 헤더 필드)를 설정), body(resource 타입 객체)로 구성
+     */
+    private ResponseEntity<Resource> loadResource(String fileName){
         
         File file = new File(uploadPath, fileName); // 로컬 저장소(파일 저장 경로)와, 파일이름으로 File 타입 file을 생성
         
@@ -174,4 +197,6 @@ public class ImageUploadController {
         
         return ResponseEntity.ok("success");
     }
+    
+    
 }

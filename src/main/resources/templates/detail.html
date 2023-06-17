@@ -15,6 +15,16 @@
         .mySlides {
             display: none;
         }
+        .mySlides {/* TODO: 이미지 크기 조정중*/
+            /* min-width: 400px;
+            min-height: 400px;*/
+            max-width: 600px;
+            max-height: 600px;
+        }
+        .mySlides > img{
+            max-width: 100%;
+            height: auto;
+        }
         .w3-left, .w3-right, .w3-badge {
             cursor: pointer;
             color: lightgray;
@@ -26,6 +36,41 @@
             margin-right: 5px;
             padding: 5px;
         }
+        .postContentInfo{
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .postContentInfo > div{
+            margin: 10px;
+        }
+        
+        
+        .middlebar, .middlebar .sellerInfo{
+            display: flex;
+        }
+        .middlebar .sellerImage{
+            flex: 0.1;
+        }
+        .middlebar .sellerImage > img{
+            width: 57.5px; 
+            height: 57.5px; 
+            border-radius: 100%; /* 50%로 설정하여 동그란 원 형태로 만듦 */
+            object-fit: cover;
+        }
+        .middlebar .seller .sellerNick{
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .middlebar .hopeArea{
+            margin-left: 5px;
+            text-align: left;
+        }
+        .middlebar .status {
+            margin-left: auto;
+        }
+        
+        
         
         
     </style>
@@ -40,9 +85,9 @@
             <div class="container-fluid">
                 
                 <!-- 이미지 시작 -->
-                     <div class="w3-content w3-display-container" style="max-width:600px">
+                     <div class="w3-content w3-display-container imgsSlide">
                         <div class="mySlides" th:each="i : ${ postImage }">
-                            <img th:src="${ '/img/view/'+ i.fileName }" style="width:100%">
+                            <img th:src="${ '/img/view/'+ i.fileName }">
                         </div>
                         <!-- next, prev 버튼, indicator 버튼들 -->
                         <div class="slideBtnsDiv">
@@ -55,26 +100,31 @@
                 <!-- 본문 내용 시작 -->
                 <div class="post" th:each="p : ${ post }">
                     <div class="middlebar w3-pale-blue">
-                        <div class="sellerInfo" style="display: inline-block;">
-                            <div style="margin: 10px;">
-                                <span th:text ="${ '글쓴이: ' + p.userId }"></span>
+                        <div class="sellerInfo">
+                            <div class="sellerImage">
+                                <img th:src="${ '/img/user/'+ p.userId }" alt="..."/>
                             </div>
-                            <div style="margin: 10px; font-size: 4px; color: gray;">
-                                <span>ㅇㅇ시 ㅇㅇ동</span>
+                            <div class="seller" style="margin-left: 10px;">
+                                <div class="sellerNick">
+                                    <span th:text ="${ '판매자: ' + p.userId }"></span>
+                                </div>
+                                <div class="hopeArea" style="font-size: 4px; color: gray;">
+                                    <span>ㅇㅇ시 ㅇㅇ동</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="w3-right" style="margin: 10px; display: inline-block;">
+                        <div class="w3-right status">
                             <span th:text ="${ p.status }"></span>
                         </div>
                     </div>
                     <div class="postContentInfo">
-                        <div style="margin: 10px;">
+                        <div>
                             <span th:text ="${ '제목: ' + p.title }"></span>
                         </div>
-                        <div style="margin: 10px;">
+                        <div>
                             <span th:text ="${ '카테고리: ' + p.category }"></span>
                         </div>
-                        <div style="margin: 10px;">
+                        <div>
                             <span th:text ="${ '내용: ' + p.content }"></span>
                         </div>
                         <div class="countInfo" style="font-size: 4px; color: gray;">
@@ -88,13 +138,13 @@
                                 <span th:text ="${ '조회 ' + p.hits }"></span>
                             </div>
                         </div>
-                        <div style="margin: 10px;">
-                            <span th:text ="${ '거래 희망: ' + p.region }"></span>
+                        <div>
+                            <span th:if="${ p.region != null }" th:text ="${ '거래 희망: ' + p.region }"></span>
                         </div>
                     </div>
                     <div class="footBar" style="background-color: lightgray;">
                         <div style="margin: 10px; display: inline-block;">
-                            <span th:text ="${ '가격: ' + p.prices }"></span>
+                            <span th:text ="${ '가격: ' + p.prices }"></span><span> 원</span>
                         </div>
                         <div style="margin: 10px; display: inline-block;">
                             <button class="w3-button w3-pale-red w3-round-xlarge">채팅하기</button>
