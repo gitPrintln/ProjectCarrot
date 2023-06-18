@@ -67,5 +67,11 @@ public class Post extends TimeEntity {
         return this;
     }
     
+    // 조회수 증가
+    public Post hitsUp() {
+        this.hits++;
+        
+        return this;
+    }
     
 }

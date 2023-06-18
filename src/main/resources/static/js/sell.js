@@ -27,7 +27,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
         if (result) {
             // 제출했음을 변수에 저장
-            submitted = true; 
+            submitted = true;
             
             // (1) 전달해줄 완성된 전체 주소 input창 만들어주기
             if(detailRegion != '') { // 상세 주소까지 있을 경우

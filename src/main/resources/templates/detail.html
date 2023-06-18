@@ -68,6 +68,7 @@
         }
         .middlebar .status {
             margin-left: auto;
+            cursor: default;
         }
         
         
@@ -106,10 +107,10 @@
                             </div>
                             <div class="seller" style="margin-left: 10px;">
                                 <div class="sellerNick">
-                                    <span th:text ="${ '판매자: ' + p.userId }"></span>
+                                    <span style="font-family: Georgia, '굴림';" th:text="${ createrNick }"></span>
                                 </div>
-                                <div class="hopeArea" style="font-size: 4px; color: gray;">
-                                    <span>ㅇㅇ시 ㅇㅇ동</span>
+                                <div class="hopeArea" style="color: gray;">
+                                    <span th:if="${ p.region != null }" style="font-size: 11px;" th:text="${ p.region.split(' ')[1] } + ' ' + ${ p.region.split(' ')[2] }"></span>
                                 </div>
                             </div>
                         </div>
@@ -139,7 +140,7 @@
                             </div>
                         </div>
                         <div>
-                            <span th:if="${ p.region != null }" th:text ="${ '거래 희망: ' + p.region }"></span>
+                            <span th:if="${ p.region != null }" th:text ="${ '희망 지역: ' + p.region }"></span>
                         </div>
                     </div>
                     <div class="footBar" style="background-color: lightgray;">
@@ -147,7 +148,8 @@
                             <span th:text ="${ '가격: ' + p.prices }"></span><span> 원</span>
                         </div>
                         <div style="margin: 10px; display: inline-block;">
-                            <button class="w3-button w3-pale-red w3-round-xlarge">채팅하기</button>
+                            <button th:if="${ p.userId != #authentication.principal.id }" class="w3-button w3-pale-red w3-round-xlarge">채팅하기</button>
+                            <button th:if="${ p.userId == #authentication.principal.id }" class="w3-button w3-pale-red w3-round-xlarge">수정하기</button>
                         </div>
                     </div>
                 </div><!-- 본문 내용 끝 -->

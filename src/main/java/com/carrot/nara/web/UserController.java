@@ -2,6 +2,7 @@ package com.carrot.nara.web;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,6 +37,7 @@ public class UserController {
         return "signin";
     }
     
+    @Transactional(readOnly = true)
     @GetMapping("/idChk")
     @ResponseBody
     public ResponseEntity<Boolean> idChk(@RequestParam String username){
@@ -45,6 +47,7 @@ public class UserController {
         return ResponseEntity.ok(result);
     }
     
+    @Transactional(readOnly = true)
     @GetMapping("/nicknameChk")
     @ResponseBody
     public ResponseEntity<Boolean> nicknameChk(@RequestParam String nickName){
