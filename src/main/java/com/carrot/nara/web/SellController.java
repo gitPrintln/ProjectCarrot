@@ -1,6 +1,7 @@
 package com.carrot.nara.web;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.carrot.nara.dto.PostCreateDto;
+import com.carrot.nara.dto.UserSecurityDto;
 import com.carrot.nara.service.SellService;
 
 import lombok.RequiredArgsConstructor;
@@ -30,7 +32,8 @@ public class SellController {
     
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/create")
-    public String create(PostCreateDto dto) {
+    public String create(@AuthenticationPrincipal UserSecurityDto userDto, PostCreateDto dto) {
+        dto.setUserId(userDto.getId());
         log.info("sellCreate(dto={}, {})", dto, dto.getImgIds());
         Integer postId = sellService.create(dto);
         return "redirect:/detail?id=" + postId;

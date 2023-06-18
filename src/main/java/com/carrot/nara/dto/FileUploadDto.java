@@ -12,12 +12,13 @@ import lombok.NoArgsConstructor;
 public class FileUploadDto {
     
     private String uuid;
-    private String fileName;
+    private String imageFileName;
+    private String originFileName;
     private boolean image;
     
     public String getLink() {
         if (image) {
-            return uuid + "_" + fileName;            
+            return imageFileName;            
         } else {
             return "noImage";
         }

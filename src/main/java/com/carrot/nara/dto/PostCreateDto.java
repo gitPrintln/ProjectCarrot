@@ -6,6 +6,7 @@ import com.carrot.nara.domain.Post;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -13,6 +14,7 @@ import lombok.ToString;
 @Builder
 @Getter
 @ToString
+@Data
 public class PostCreateDto {
     
     private Integer userId;

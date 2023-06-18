@@ -36,4 +36,9 @@ public class UserService {
         userRepository.save(dto.toEntity());
     }
 
+    public String getImageName(Integer userId) {
+        log.info("getImageName()");
+        return userRepository.findById(userId).get().getUserImage();
+    }
+
 }

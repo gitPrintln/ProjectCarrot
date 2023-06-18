@@ -14,7 +14,8 @@
 
     <div style="border: solid;"><!-- Main Div -->
         <div class="w3-container" th:each="list : ${ list }"><!-- 카드 하나 -->
-            <div class="content w3-card" style="cursor:pointer; display: table; border: 1px solid;" th:onclick="|location.href='@{/detail?id={id} (id=${list.id})}'|">
+            <div class="content w3-card" style="cursor:pointer; display: table; border: 1px solid;" th:id="${ list.id }" th:username="${ #authentication.name }" 
+                th:onclick="|hitUp(this.getAttribute('id'), this.getAttribute('username')); location.href='@{ /detail?id=' + this.getAttribute('id') + '}';|">
                 <div class="image" style="display: table-cell; vertical-align: middle; margin-right: 10px; border: 1px solid; width:200px; height:200px;">
                     <img th:if="${not #strings.isEmpty(list.imageFileName)}" th:src="${ '/img/view/'+ list.imageFileName }" style="width:200px; height:200px;">
                     <img th:if="${#strings.isEmpty(list.imageFileName)}" src="/images/image-fill.png" style="width:50px; height:50px;">
@@ -42,8 +43,19 @@
 
 
 <th:block layout:fragment="script">
+    <!-- Ajax -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-    
+    function hitUp(id, username){
+    	axios.get('/postHitCount', {params: {id : id, username : username}})
+    	   .then(response => {
+            console.log(response);
+            return true;
+            })
+    	   .catch(err =>{
+            console.log(err);
+            });
+    }
     </script>
 </th:block>
 </body>
