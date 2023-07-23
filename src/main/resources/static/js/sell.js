@@ -14,7 +14,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const title = document.querySelector('#title').value;
         const category = document.querySelector('#category').value;
         const prices = document.querySelector('#prices').value;
-        const content = document.querySelector('#content').value;
+        let content = document.querySelector('#content').value;
         const regionMain = document.querySelector('#regionMain').value;
         const detailRegion = document.querySelector('#detailRegion').value;
 
@@ -28,7 +28,8 @@ window.addEventListener('DOMContentLoaded', () => {
         if (result) {
             // 제출했음을 변수에 저장
             submitted = true;
-            
+            content = content.replaceAll(/(\n|\r\n)/g, "<br>");
+            alert(content);
             // (1) 전달해줄 완성된 전체 주소 input창 만들어주기
             if(detailRegion != '') { // 상세 주소까지 있을 경우
             const region = regionMain + ', ' + detailRegion; // Main주소 + 상세 주소
