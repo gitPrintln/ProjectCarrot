@@ -13,6 +13,6 @@ public interface PostImageRepository extends JpaRepository<PostImage, Integer>  
 
     List<PostImage> findByPostId(Integer postId);
     
-    // Home에 띄울 slide Image 5개
+    // Home에 띄울 slide Image 5개(postid 중복 제외)
     List<PostImage> findTop5ByOrderByIdDesc();
 }
