@@ -29,7 +29,7 @@ window.addEventListener('DOMContentLoaded', () => {
             // 제출했음을 변수에 저장
             submitted = true;
             content = content.replaceAll(/(\n|\r\n)/g, "<br>");
-            alert(content);
+            alert("줄바꿈 체크중" +   content);
             // (1) 전달해줄 완성된 전체 주소 input창 만들어주기
             if(detailRegion != '') { // 상세 주소까지 있을 경우
             const region = regionMain + ', ' + detailRegion; // Main주소 + 상세 주소

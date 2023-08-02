@@ -8,11 +8,68 @@
 <head>
     <meta charset="UTF-8">
     <title>Carrot Nara</title>
+    <style>
     
-    
+    .service .serviceList {
+        overflow: hidden;
+        margin-top: 20px;
+    }
+    .service .serviceList li{
+        list-style: none;
+        float: left;
+        width: 200px;
+        margin: 5px 0 20px 20px;
+    }
+    .sourceList li{
+        list-style: none;
+    }
+    </style>
 </head>
 <body>
-
+<!-- Main content -->
+<div>
+    <article>
+    <h2 class="screen_out">고객지원 서비스 본문</h2>
+        <div class="wrapService">
+            <h3>아래 서비스를 이용해 궁금증을 해결해보세요</h3>
+            <div class="service">
+                <h4>주요 서비스 내용</h4>
+                <ul class="serviceList">
+                    <li>
+                        <a>
+                        <img src="/images/faq.jpg" alt="자주 하는 질문" style="display:block;" width="140" height="140"/>
+                        <span>FAQ</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a>
+                        <img src="/images/report.jpg" alt="불량 유저 신고" style="display:block;" width="140" height="140"/>
+                        <span>신고</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a>계정 관리
+                        <span>계정</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a>문의 남기기
+                        <span>문의</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </article>
+</div><!-- content End -->
+<ul class="sourceList">
+    <li>
+        이미지 출처 <a href="https://kr.freepik.com/free-photo/question-mark-on-yellow-background_32468634.htm#page=2&query=faq&position=12&from_view=search&track=sph">Freepik</a>
+    </li>
+    <li>
+        <a href="https://kr.freepik.com/free-psd/isolate-of-realistic-red-triangle-caution-warning-sing-for-attention-exclamation-mark-traffic-sign-by-3d-render-illustration_28521051.htm#query=%EC%8B%A0%EA%B3%A0&position=5&from_view=search&track=sph">작가 DilokaStudio</a> 출처 Freepik
+    </li>
+</ul>
 <th:block layout:fragment="script">
 	
 </th:block>

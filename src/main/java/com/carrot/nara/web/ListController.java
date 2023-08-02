@@ -32,7 +32,7 @@ public class ListController {
         log.info("list()");
         List<ListReadDto> list = new ArrayList<>();
         
-        List<Post> postList = postRepository.findAll();
+        List<Post> postList = postRepository.findAllByOrderByModifiedTimeDesc();
         for (Post p : postList) {
             Optional<PostImage> pi = Optional.ofNullable(postImageRepository.findFirstByPostId(p.getId()));
             if(pi.isPresent()) { // 이미지가 있을 경우
