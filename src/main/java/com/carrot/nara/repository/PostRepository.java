@@ -9,7 +9,7 @@ import com.carrot.nara.domain.Post;
 
 public interface PostRepository extends JpaRepository<Post, Integer> {
 
-    @Query(value = "SELECT p.id FROM POST p ORDER BY p.id desc", nativeQuery = true)
+    @Query(value = "SELECT p.id FROM POST p ORDER BY p.modified_time desc", nativeQuery = true)
     List<Integer> findRecentPostIds();
 
     List<Post> findAllByOrderByModifiedTimeDesc();

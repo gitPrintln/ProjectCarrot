@@ -33,6 +33,9 @@ public class HomeService {
             list.add(entity);
             cnt++;
         }
+        for (PostImage p : list) {
+            log.info("최신 post 5개{},{},{}", p.getId(), p.getPostId(), p.getOriginFileName());
+        }
         return list;
     }
 }
