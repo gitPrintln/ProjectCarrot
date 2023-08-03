@@ -8,67 +8,37 @@
 <head>
     <meta charset="UTF-8">
     <title>Carrot Nara</title>
+    <style>
+        .mySlides img {
+            margin-bottom: 50px;
+        }
     
+    </style>
     
 </head>
 <body>
-    <!-- Page content -->
-    <div class="w3-content" style="max-width:2000px;margin-top:46px">
-    
-    <!-- Automatic Slideshow Images -->
-    <div class="mySlides w3-display-container w3-center">
-        <img src="/images/보물지도.jpg" style="width: 75%">
-        <div
-            class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small">
-            <h3>보물지도</h3>
-            <p>
-                <b>Onepiece treasure map!!</b>
-            </p>
-        </div>
-    </div>
-    <div class="mySlides w3-display-container w3-center">
-        <img src="/images/안마기200.jpg" style="width: 75%">
-        <div
-            class="w3-display-bottommiddle w3-container w3-text-pink w3-padding-32 w3-hide-small">
-            <h3>목-어깨 안마기 200</h3>
-            <p>
-                <b>Relieve fatigue neck, Fresh shoulder</b>
-            </p>
-        </div>
-    </div>
-    <div class="mySlides w3-display-container w3-center">
-        <img src="/images/잠만보.jpg" style="width: 75%">
-        <div
-            class="w3-display-bottommiddle w3-container w3-text-black w3-padding-32 w3-hide-small">
-            <h3>헤롱헤롱 잠만보</h3>
-            <p>
-                <b>잠만보 인형입니다..!!</b>
-            </p>
-        </div>
-    </div>
-    <!-- Automatic Slideshow Images End -->
-
+    <!-- Page content(slide) -->
+    <div class="w3-content" style="max-width:1000px;margin-top:16px">
+            <!-- Automatic Slideshow Images -->
+            <div class="slideContent" th:each="list : ${ mainImages }">
+                <div class="mySlides w3-display-container w3-center">
+                    <img th:src="${ '/img/view/'+ list.fileName }" style="width: 75%">
+                    <div class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small">
+                        <h3 th:text="${ list.originFileName }"></h3>
+                        <p>
+                            <b>Onepiece treasure map!!</b>
+                        </p>
+                    </div>
+                </div>
+            </div>
     </div><!-- Page content End -->
     
-
-<script>
-// 자동 슬라이드 이미지 - 3초 후 이미지 변경
-var myIndex = 0;
-SlideImages();
-function SlideImages() {
-  var i;
-  var x = document.getElementsByClassName("mySlides");
-  for (i = 0; i < x.length; i++) {
-    x[i].style.display = "none";  
-  }
-  myIndex++;
-  if (myIndex > x.length) {
-	  myIndex = 1;
-	  }    
-  x[myIndex-1].style.display = "block";  
-  setTimeout(SlideImages, 3000);    
-}
-</script>
+<th:block layout:fragment="script">
+    <!-- Ajax -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script th:src="@{ /js/home.js }" ></script>
+    
+</th:block>
 </body>
 
 

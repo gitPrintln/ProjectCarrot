@@ -32,16 +32,16 @@ public class ListController {
         log.info("list()");
         List<ListReadDto> list = new ArrayList<>();
         
-        List<Post> postList = postRepository.findAll();
+        List<Post> postList = postRepository.findAllByOrderByModifiedTimeDesc();
         for (Post p : postList) {
             Optional<PostImage> pi = Optional.ofNullable(postImageRepository.findFirstByPostId(p.getId()));
-            if(pi.isPresent()) {
+            if(pi.isPresent()) { // 이미지가 있을 경우
             PostImage pig = pi.get();
             ListReadDto listElement = ListReadDto.builder().id(p.getId()).imageFileName(pig.getFileName())
                     .imageFilePath(pig.getFilePath()).title(p.getTitle()).region(p.getRegion())
                     .prices(p.getPrices()).modifiedTime(p.getModifiedTime()).build();
             list.add(listElement);
-            } else {
+            } else { // 이미지 없는 경우
                 ListReadDto listElement = ListReadDto.builder().id(p.getId()).imageFileName("")
                         .imageFilePath("").title(p.getTitle()).region(p.getRegion())
                         .prices(p.getPrices()).modifiedTime(p.getModifiedTime()).build();

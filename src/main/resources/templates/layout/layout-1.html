@@ -48,7 +48,7 @@ body {
         <a href="#" class="w3-bar-item w3-button w3-padding-large"><i class="fa fa-map-marker"></i></a>
         <a th:href="@{ /list }" class="w3-bar-item w3-button w3-padding-large w3-hide-small">중고거래</a>
         <a th:href="@{ /sell }" class="w3-bar-item w3-button w3-padding-large w3-hide-small">등록하기</a>
-        <a href="#contact" class="w3-bar-item w3-button w3-padding-large w3-hide-small">채팅</a>
+        <a th:href="@{ /chat }" class="w3-bar-item w3-button w3-padding-large w3-hide-small">채팅</a>
         <div class="w3-dropdown-hover w3-hide-small"><!-- 왼쪽 더보기 -->
             <button class="moreBtn w3-padding-large w3-button" title="More"><i class="fa fa-bars"></i></button>     
             <div class="w3-dropdown-content w3-bar-block w3-card-4">
@@ -68,9 +68,9 @@ body {
         </th:block>
         <!-- 오른쪽 목록(로그인한 상태) -->      
         <th:block sec:authorize="isAuthenticated()">
-        <div class="w3-dropdown-hover w3-hide-small w3-right"><!-- 오른쪽 더보기 -->
-            <span sec:authentication="principal.nickName"></span>
-            <button class="moreBtn w3-padding-large w3-button" title="userMore"><i class="fa fa-user"></i></button>     
+        <div class="topUserPart w3-dropdown-hover w3-hide-small w3-right"><!-- 오른쪽 더보기 -->
+            <span class="topNickName" sec:authentication="principal.nickName"></span>
+            <button class="moreBtn w3-padding-large w3-button" title="userMore"><i class="originIcon fa fa-user"></i></button>     
             <div class="w3-dropdown-content w3-bar-block w3-card-4" style="position: absolute; right:0px;">
                 <a href="#" class="w3-bar-item w3-button">정보 수정</a>
                 <a href="#" class="w3-bar-item w3-button">판매 목록</a>
@@ -80,6 +80,7 @@ body {
         </div><!-- 더보기 끝 -->
         </th:block>
             <a href="javascript:void(0)" class="w3-padding-large w3-hover-red w3-hide-small w3-right"><i class="fa fa-search"></i></a>
+            <input class="w3-right" type="text" style="background-color: black; border:0; border-bottom: 1px solid white; position: relative; top: 12px; margin-right: 5px; color:white;" width="20px;"/>
         </div>
     </div><!-- 메인 bar End -->
 
@@ -110,7 +111,24 @@ body {
 <!-- bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
 <!-- script block -->
-<th:block layout:fragment="script"></th:block>
+<th:block layout:fragment="script">
+<script>
+ const userPart = document.querySelector('.topUserPart');
+ const originNick = document.querySelector('.topNickName');
+ const originIcon = document.querySelector('.originIcon');
+ 
+ userPart.addEventListener('mouseover', () => {
+	 originIcon.classList.remove('fa-user');
+	 originIcon.classList.add('fa-id-card');
+	 originIcon.style.transform = "rotate(15deg) translateX(5px) scale(1.2)";
+ });
+ userPart.addEventListener('mouseout', () => {
+	 originIcon.classList.add('fa-user');
+	 originIcon.classList.remove('fa-id-card');
+	 originIcon.style.transform = "none";
+ });
+</script>
+</th:block>
 
 </body>
 </html>
