@@ -9,7 +9,21 @@
     <meta charset="UTF-8">
     <title>Carrot Nara</title>
     <style>
-    
+    .screenOut{
+        overflow: hidden;
+        position: absolute;
+        text-indent: 100%;    /* 박스영역 100프로 들여쓰기*/
+        white-space: nowrap; /* Image Replacement >> text-indent:-9999px 보다 문자열이 길어져도 박스영역에서 흐르지 않고 멀어짐, 성능도 올려줌*/
+    }
+    a:link {
+        text-decoration: none;
+    }
+    a:visited {
+        text-decoration: none;
+    }
+    a:hover {
+        text-decoration: underline;
+    }
     .service .serviceList {
         overflow: hidden;
         margin-top: 20px;
@@ -29,11 +43,11 @@
 <!-- Main content -->
 <div>
     <article>
-    <h2 class="screen_out">고객지원 서비스 본문</h2>
+    <h2 class="screenOut">고객지원 서비스 본문</h2>
         <div class="wrapService">
             <h3>아래 서비스를 이용해 궁금증을 해결해보세요</h3>
             <div class="service">
-                <h4>주요 서비스 내용</h4>
+                <h4  class="screenOut">주요 서비스 내용</h4>
                 <ul class="serviceList">
                     <li>
                         <a>
@@ -42,19 +56,27 @@
                         </a>
                     </li>
                     <li>
-                        <a>
+                        <a th:href="@{ /board/report }">
                         <img src="/images/report.jpg" alt="불량 유저 신고" style="display:block;" width="140" height="140"/>
                         <span>신고</span>
                         </a>
                     </li>
                     <li>
-                        <a>계정 관리
+                        <a>
+                        <img src="/images/account.jpg" alt="계정 관리" style="display:block;" width="140" height="140"/>
                         <span>계정</span>
                         </a>
                     </li>
                     <li>
-                        <a>문의 남기기
+                        <a>
+                        <img src="/images/check.jpg" alt="문의 남기기" style="display:block;" width="140" height="140"/>
                         <span>문의</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a>
+                        <img src="/images/map.jpg" alt="위치 서비스" style="display:block;" width="140" height="140"/>
+                        <span>위치</span>
                         </a>
                     </li>
                 </ul>
@@ -68,6 +90,15 @@
     </li>
     <li>
         <a href="https://kr.freepik.com/free-psd/isolate-of-realistic-red-triangle-caution-warning-sing-for-attention-exclamation-mark-traffic-sign-by-3d-render-illustration_28521051.htm#query=%EC%8B%A0%EA%B3%A0&position=5&from_view=search&track=sph">작가 DilokaStudio</a> 출처 Freepik
+    </li>
+    <li>
+        <a href="https://kr.freepik.com/free-photo/register-sign-up-membership-concept_16459719.htm#query=%EA%B3%84%EC%A0%95%20%EA%B4%80%EB%A6%AC&position=3&from_view=search&track=ais">작가 rawpixel.com</a> 출처 Freepik
+    </li>
+    <li>
+        <a href="https://kr.freepik.com/free-photo/3d-render-chat-bubbles-isolated-speech-balloons_33309568.htm#query=%EB%AC%B8%EC%9D%98&position=31&from_view=search&track=sph">작가 upklyak</a> 출처 Freepik
+    </li>
+    <li>
+        <a href="https://kr.freepik.com/free-vector/location_3425240.htm#query=%EC%A7%80%EB%8F%84&position=9&from_view=search&track=sph">작가 rawpixel.com</a> 출처 Freepik
     </li>
 </ul>
 <th:block layout:fragment="script">
