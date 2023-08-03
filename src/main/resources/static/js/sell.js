@@ -80,7 +80,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     formSell.action = '/sell/create';
                     formSell.method = 'post';
                     formSell.submit();
-            }, 50);
+            }, 75);
             
         }
     });
