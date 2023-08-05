@@ -63,7 +63,7 @@ body {
         <!-- 오른쪽 목록(로그인하지 않은 상태) -->   
         <th:block sec:authorize="isAnonymous()">
         <div class="w3-dropdown-hover w3-hide-small w3-right">
-            <a th:href="@{ /user/signin }"><i class="fa fa-user"></i></a>
+            <a th:href="@{ /user/signin }"><button class="w3-padding-large w3-button"><i class="fa fa-power-off"></i></button></a>
         </div>
         </th:block>
         <!-- 오른쪽 목록(로그인한 상태) -->      
@@ -83,6 +83,7 @@ body {
             <input class="w3-right" type="text" style="background-color: black; border:0; border-bottom: 1px solid white; position: relative; top: 12px; margin-right: 5px; color:white;" width="20px;"/>
         </div>
     </div><!-- 메인 bar End -->
+
 
 <!-- page content -->
 <div class="w3-main">
