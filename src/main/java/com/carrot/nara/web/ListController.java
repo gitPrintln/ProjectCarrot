@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +34,7 @@ public class ListController {
      * @param model html로 리스트를 구성할 데이터를 전달해줌.
      * @return list.html로 연결
      */
+    @Transactional(readOnly = true)
     @GetMapping("")
     public String list(Model model) {
         log.info("list()");
@@ -40,6 +42,8 @@ public class ListController {
         
         List<Post> postList = postRepository.findAllByOrderByModifiedTimeDesc();
         for (Post p : postList) {
+            // 이미지가 있을 수도 있고 없을 수도 있기 때문에 optional로 조회 후 optional로 감싸서 객체를 생성
+            // 주의, 전달된 값이 null이라면 Optional.empty()를 반환함.
             Optional<PostImage> pi = Optional.ofNullable(postImageRepository.findFirstByPostId(p.getId()));
             if(pi.isPresent()) { // 이미지가 있을 경우
             PostImage pig = pi.get();
