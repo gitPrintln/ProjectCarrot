@@ -38,14 +38,14 @@ window.addEventListener('DOMContentLoaded', () => {
     function passwordCoincide(){
     const pwAva = document.querySelector('#pwAvailable');
     const pwUnava = document.querySelector('#pwUnavailable');
-    if(password.value != "" && passwordChk.value != "" && password.value === passwordChk.value){
+    if(password.value != "" && passwordChk.value != "" && password.value === passwordChk.value){ // 값이 비어있을 땐 비교 하지않음.
         pwAva.style.display = "block";
         pwUnava.style.display = "none";
     } else {
         pwAva.style.display = "none";
         pwUnava.style.display = "block";
     }
-    passwordCoincide
+    passwordCoincide // 비밀번호 일치여부를 상시 체크하기 위해 실행.
     }
     
     // nickname 중복 체크

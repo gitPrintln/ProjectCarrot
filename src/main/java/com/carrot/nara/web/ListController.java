@@ -27,6 +27,12 @@ public class ListController {
     private final PostRepository postRepository;
     private final PostImageRepository postImageRepository;
     
+    /**
+     * 수정된 시간을 기준으로 내림차순으로 postList를 찾아옴.
+     * 그리고 이미지가 있는 경우와 없는 경우로 나눠서 넘겨줄 list에 담아서 준비함.
+     * @param model html로 리스트를 구성할 데이터를 전달해줌.
+     * @return list.html로 연결
+     */
     @GetMapping("")
     public String list(Model model) {
         log.info("list()");

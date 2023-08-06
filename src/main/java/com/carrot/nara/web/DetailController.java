@@ -31,7 +31,7 @@ public class DetailController {
     
     @GetMapping("")
     public String detail(Integer id, Model model) {
-        log.info("detail(id={})", id);
+        log.info("detail(id={})", id); // 클릭한 id를 통해서 상세하게 볼 수 있게 정보를 불러옴.
         Post post = postRepository.findById(id).get();
         List<PostImage> postImage = postImageRepository.findByPostId(id);
         String createrNick = userRepository.findById(post.getUserId()).get().getNickName();

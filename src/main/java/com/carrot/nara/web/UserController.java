@@ -37,6 +37,11 @@ public class UserController {
         return "signin";
     }
     
+    /**
+     * id 중복체크 기능.
+     * @param username 중복체크할 id
+     * @return 생성가능한 id면 true, 그렇지 않으면 false.
+     */
     @Transactional(readOnly = true)
     @GetMapping("/idChk")
     @ResponseBody
@@ -47,6 +52,11 @@ public class UserController {
         return ResponseEntity.ok(result);
     }
     
+    /**
+     * nickname 중복체크 기능.
+     * @param nickName 중복체크할 nickname
+     * @return 생성가능한 nickname이면 true, 그렇지 않으면 false.
+     */
     @Transactional(readOnly = true)
     @GetMapping("/nicknameChk")
     @ResponseBody
@@ -57,10 +67,15 @@ public class UserController {
         return ResponseEntity.ok(result);
     }
     
+    /**
+     * 제출버튼을 클릭했을 때 dto를 저장하고 redirect시킴.
+     * @param dto 회원가입 완료하게 될 dto
+     * @return
+     */
     @PostMapping("/signup")
     public String signup(UserRegisterDto dto) {
         log.info("signup(dto={})", dto);
-        userService.registerUser(dto);
+        userService.registerUser(dto); // 비밀번호는 encode()를 통해서 암호화한 뒤 db에 저장.
         return "redirect:/";
     }
     

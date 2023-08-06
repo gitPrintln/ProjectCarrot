@@ -27,6 +27,8 @@ public class SellService {
     @Value("${com.carrot.nara.upload.path}")
     private String uploadPath;
     
+    // DB에 save하면 id가 생길 테고 그 생긴 id를 postimage에서도 저장된 이미지에 저장해둬야 나중에 불러옴.
+    // 이미지가 없다면 넘어감.
     @Transactional
     public Integer create(PostCreateDto dto) {
         log.info("create(dto={})", dto);
@@ -41,6 +43,7 @@ public class SellService {
         return postId;
     }
     
+    // 글작성을 했을 경우 중간 과정 중 하나인데 이미지를 postimage table에 저장함.
     @Transactional
     public List<Integer> createImg(String[] files) {
         log.info("createImg()");
