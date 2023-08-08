@@ -14,9 +14,11 @@
     <meta charset="UTF-8">
     <title>Carrot Nara</title>
     <style>
+    .w3-quarter{
+        margin-right: 1%;
+    }
     .w3-rest {
         padding-left: 14px;
-        border-left: 1px solid gray;
     }
     .sellerInfo{
         text-align: left;
@@ -112,12 +114,13 @@
                             <i class="w3-xlarge fa fa-send"></i>
                     </button>
             </div>
+            <input id="loginUser" th:value="${ #authentication.name }"/>
         </div><!-- 현재 대화 section End -->
     </div><!-- content End -->
     
     
 <th:block layout:fragment="script">
-    <script th:src="@{ /js/chat.js }" ></script>
+    <script th:src="@{ /js/chat.js }"></script>
 </th:block>
 </body>
 </div>

@@ -96,7 +96,8 @@ let submitted = false; // 제출 여부 확인
 
 // 제출하지 않고 페이지를 벗어날 시 발생하는 이벤트 리스너(실제 등록되지 않은 로컬저장소 이미지 삭제)
 window.addEventListener('beforeunload', function(event) {
-    if(!submitted){ // 제출하지 않았을 때 실행
+    const selectedImage = document.querySelector('#selectedImage');
+    if(!submitted && selectedImage.children.length > 0){ // 제출하지 않았을 때, 등록하려던 이미지가 있을 때만 실행
     deleteTemporaryFile();
     }
 });
@@ -105,7 +106,7 @@ window.addEventListener('beforeunload', function(event) {
 function deleteTemporaryFile(){
     let temporaryData = [];
     const selectedImage = document.querySelector('#selectedImage');
-    const finalImgs = selectedImage.querySelectorAll('img')        
+    const finalImgs = selectedImage.querySelectorAll('img');
         for (let file of finalImgs) {
                 const imgSrc = file.getAttribute('data-src');
                 temporaryData.push(imgSrc);

@@ -5,6 +5,8 @@
  window.addEventListener('DOMContentLoaded', () => {
     
     var stompClient = null;
+    var sender = $('#loginUser').val();
+    var partner = 11;
     // invoke when DOM(Documents Object Model; HTML(<head>, <body>...etc) is ready
     $(document).ready(connect());
     
@@ -19,17 +21,56 @@
                 // url: 채팅방 참여자들에게 공유되는 경로
                 // callback(function()): 클라이언트가 서버(Controller broker)로부터 메시지를 수신했을 때(== STOMP send()가 실행되었을 때) 실행
                 stompClient.subscribe(url, function(output) { // 메세지에 관한 구독
-                    // JSP <body>에 append할 메시지 contents
+                    // html <body>에 append할 메시지 contents
                     showBroadcastMessage(createTextNode(JSON.parse(output.body)));
                 });
                 }, 
                     // connect() 에러 발생 시 실행
                         function (err) {
-                            alert('error' + err);
+                            console.log('error' + err);
             });
  
         };
     
+    // 메세지 보내는 버튼 클릭 시 
+    // webSocket broker 에게 JSON 타입 메시지 데이터를 전송
+    function sendChat(json){
+        stompClient.send("/app/chat/" + partner, {}, JSON.stringify(json));
+    }
+    const btnSend = document.querySelector('#btnSend');
+    const messageInput = document.querySelector('#message');
+    
+    btnSend.addEventListener('click', send);
+    
+    function send(){
+        var message = $('#message').val();
+        sendChat({
+            'sender': sender,
+            'message': message,
+            'sendTime': getCurrentTime()
+        });
+        $('#message').val('');
+        btnSend.disabled = true;
+        btnSend.style.color = "silver";
+    }
+    
+    // 채팅 주고 받는 현재 시간
+    function getCurrentTime(){
+        return new Date().toLocaleString();
+    }
+    
+    // btn 활성화 버튼 이벤트
+    messageInput.addEventListener('keyup', activateBtn);
+    function activateBtn(){
+        const messageValue = document.querySelector('#message').value;
+        if(messageValue == ''){
+            btnSend.disabled = true;
+            btnSend.style.color = "silver";
+        } else{
+            btnSend.disabled = false;
+            btnSend.style.color = "blue";
+        }
+    }
     
     // HTML 형태의 메시지를 화면에 출력해줌
     // 해당되는 id 태그의 모든 하위 내용들을 message가 추가된 내용으로 갱신해줌

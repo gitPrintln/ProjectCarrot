@@ -81,6 +81,7 @@ body {
         </th:block>
             <a href="javascript:void(0)" class="w3-padding-large w3-hover-red w3-hide-small w3-right"><i class="fa fa-search"></i></a>
             <input class="w3-right" type="text" style="background-color: black; border:0; border-bottom: 1px solid white; position: relative; top: 12px; margin-right: 5px; color:white;" width="20px;"/>
+            <input type="hidden" id="isSignInChk" th:value="${ #authentication.name }"/>
         </div>
     </div><!-- 메인 bar End -->
 
@@ -118,16 +119,24 @@ body {
  const originNick = document.querySelector('.topNickName');
  const originIcon = document.querySelector('.originIcon');
  
- userPart.addEventListener('mouseover', () => {
-	 originIcon.classList.remove('fa-user');
-	 originIcon.classList.add('fa-id-card');
-	 originIcon.style.transform = "rotate(15deg) translateX(5px) scale(1.2)";
+ document.addEventListener('DOMContentLoaded', function(){
+		 var signInChk = document.querySelector('#isSignInChk').value;
+		 if(signInChk != "anonymousUser"){
+			 effect();
+		 }
  });
- userPart.addEventListener('mouseout', () => {
-	 originIcon.classList.add('fa-user');
-	 originIcon.classList.remove('fa-id-card');
-	 originIcon.style.transform = "none";
- });
+ function effect(){
+         userPart.addEventListener('mouseover', () => {
+             originIcon.classList.remove('fa-user');
+             originIcon.classList.add('fa-id-card');
+             originIcon.style.transform = "rotate(15deg) translateX(5px) scale(1.2)";
+         });
+         userPart.addEventListener('mouseout', () => {
+             originIcon.classList.add('fa-user');
+             originIcon.classList.remove('fa-id-card');
+             originIcon.style.transform = "none";
+         });
+ }
 </script>
 </th:block>
 
