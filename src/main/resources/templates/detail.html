@@ -55,7 +55,7 @@
             width: 57.5px; 
             height: 57.5px; 
             border-radius: 100%; /* 50%로 설정하여 동그란 원 형태로 만듦 */
-            object-fit: cover;
+            object-fit: cover; /* 이미지를 원에 꽉 차게 */
         }
         .middlebar .seller .sellerNick{
             margin-top: 10px;
@@ -148,8 +148,13 @@
                             <span th:text ="${ '가격: ' + p.prices }"></span><span> 원</span>
                         </div>
                         <div style="margin: 10px; display: inline-block;">
-                            <button th:if="${ p.userId != #authentication.principal.id }" class="w3-button w3-pale-red w3-round-xlarge">채팅하기</button>
-                            <button th:if="${ p.userId == #authentication.principal.id }" class="w3-button w3-pale-red w3-round-xlarge">수정하기</button>
+                            <!-- 비로그인(anonymousUser)일 때 '채팅하기' -->
+                            <button th:if="${ #authentication.name == 'anonymousUser' }" class="w3-button w3-pale-red w3-round-xlarge">채팅하기</button>
+                            <!-- 글작성자와 로그인 유저가 다를 때는 '채팅하기', 같을 때는 '수정하기' -->
+                            <div th:if="${#authentication.name != 'anonymousUser'}">
+                                <button th:if="${ p.userId != #authentication.principal.id }" class="w3-button w3-pale-red w3-round-xlarge">채팅하기</button> 
+                                <button th:if="${ p.userId == #authentication.principal.id }" class="w3-button w3-pale-red w3-round-xlarge">수정하기</button> 
+                            </div>
                         </div>
                     </div>
                 </div><!-- 본문 내용 끝 -->

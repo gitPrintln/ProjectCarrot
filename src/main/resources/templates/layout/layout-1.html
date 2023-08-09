@@ -63,7 +63,7 @@ body {
         <!-- 오른쪽 목록(로그인하지 않은 상태) -->   
         <th:block sec:authorize="isAnonymous()">
         <div class="w3-dropdown-hover w3-hide-small w3-right">
-            <a th:href="@{ /user/signin }"><i class="fa fa-user"></i></a>
+            <a th:href="@{ /user/signin }"><button class="w3-padding-large w3-button"><i class="fa fa-power-off"></i></button></a>
         </div>
         </th:block>
         <!-- 오른쪽 목록(로그인한 상태) -->      
@@ -81,8 +81,10 @@ body {
         </th:block>
             <a href="javascript:void(0)" class="w3-padding-large w3-hover-red w3-hide-small w3-right"><i class="fa fa-search"></i></a>
             <input class="w3-right" type="text" style="background-color: black; border:0; border-bottom: 1px solid white; position: relative; top: 12px; margin-right: 5px; color:white;" width="20px;"/>
+            <input type="hidden" id="isSignInChk" th:value="${ #authentication.name }"/>
         </div>
     </div><!-- 메인 bar End -->
+
 
 <!-- page content -->
 <div class="w3-main">
@@ -117,16 +119,24 @@ body {
  const originNick = document.querySelector('.topNickName');
  const originIcon = document.querySelector('.originIcon');
  
- userPart.addEventListener('mouseover', () => {
-	 originIcon.classList.remove('fa-user');
-	 originIcon.classList.add('fa-id-card');
-	 originIcon.style.transform = "rotate(15deg) translateX(5px) scale(1.2)";
+ document.addEventListener('DOMContentLoaded', function(){
+		 var signInChk = document.querySelector('#isSignInChk').value;
+		 if(signInChk != "anonymousUser"){
+			 effect();
+		 }
  });
- userPart.addEventListener('mouseout', () => {
-	 originIcon.classList.add('fa-user');
-	 originIcon.classList.remove('fa-id-card');
-	 originIcon.style.transform = "none";
- });
+ function effect(){
+         userPart.addEventListener('mouseover', () => {
+             originIcon.classList.remove('fa-user');
+             originIcon.classList.add('fa-id-card');
+             originIcon.style.transform = "rotate(15deg) translateX(5px) scale(1.2)";
+         });
+         userPart.addEventListener('mouseout', () => {
+             originIcon.classList.add('fa-user');
+             originIcon.classList.remove('fa-id-card');
+             originIcon.style.transform = "none";
+         });
+ }
 </script>
 </th:block>
 

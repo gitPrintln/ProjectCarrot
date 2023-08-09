@@ -26,7 +26,6 @@ public class PostCreateDto {
     
     private List<Integer> imgIds;
     
-    // TODO: USER ID userID로 해놨는데 추후에 user 만들어지면 User user로 변경해서 넣을것.
     public Post toEntity(Integer userId) {
         
         return Post.builder().userId(userId).title(title).

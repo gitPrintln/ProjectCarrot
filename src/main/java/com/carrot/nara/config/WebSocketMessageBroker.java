@@ -21,7 +21,6 @@ public class WebSocketMessageBroker implements WebSocketMessageBrokerConfigurer 
     
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // 1/1000초 단위로 연결 상태 확인  
         registry.addEndpoint("/chat").setAllowedOriginPatterns("*").withSockJS();
     }
     

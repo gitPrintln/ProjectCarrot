@@ -10,28 +10,77 @@
     <title>Carrot Nara</title>
     <style>
         #footer{
-            clear:both;
+            clear: both;
+        }
+        .reportList li{
+            border-style: none;
+            padding: 0;
+            text-align: center;
+            font-size: 21px;
+            cursor: pointer;
+        }
+        .detailItems {
+          display: none;
+          padding: 10px;
         }
     </style>
 </head>
 <body>
 <main class="mainContent">
-<div id="header"style="height:140px; border:1px solid gold; margin-bottom: 2%;">
-
-</div>
-<!-- left content -->
-<aside class="leftContent" style="width: 30%; height:1000px; border:1px solid red; float: left; margin-right: 5%;">
-    <div>
-        <span></span>
+    <!-- header -->
+    <div id="header"style="height:140px; border:1px solid gold; margin-bottom: 2%;">
+        <div>
+            <h3>불량유저 신고하기</h3>
+        </div>
     </div>
-</aside><!-- left content end -->
-<!-- right content -->
-<section class="rightContent" style="width: 65%; height:1000px; float: right; border:1px solid green;">
     
-</section><!-- right content end -->
+    <!-- left content -->
+    <aside class="leftContent" style="width: 30%; height:1000px; border:1px solid red; float: left; margin-right: 5%;">
+        <ul class="reportList list-group">
+          <li class="list-group-item list-group-item-action" aria-disabled="true">
+            <div onclick="toggleDetails(1)"><span>불량 유저 신고하기</span></div>
+            <div class="detailItems" id="details1">
+              <p>Detail 1-1</p>
+              <p>Detail 1-2</p>
+              <p>Detail 1-3</p>
+            </div>
+          </li>
+          <li class="list-group-item list-group-item-action">
+            <div onclick="toggleDetails(2)"><span>개인 정보 신고하기</span></div>
+            <div class="detailItems" id="details2">
+              <p>Detail 1-1</p>
+              <p>Detail 1-2</p>
+              <p>Detail 1-3</p>
+            </div>
+          </li>
+          <li class="list-group-item list-group-item-action">
+            <div onclick="toggleDetails(3)"><span>해킹 관련 계정 신고하기</span></div>
+            <div class="detailItems" id="details3">
+              <p>Detail 1-1</p>
+              <p>Detail 1-2</p>
+              <p>Detail 1-3</p>
+            </div>
+          </li>
+          <li class="list-group-item list-group-item-action">
+            <div onclick="toggleDetails(4)"><span>기타 신고</span></div>
+            <div class="detailItems" id="details4">
+              <p>Detail 1-1</p>
+              <p>Detail 1-2</p>
+              <p>Detail 1-3</p>
+            </div>
+          </li>
+          <li class="list-group-item list-group-item-action disabled">미구현</li>
+        </ul>
+    </aside><!-- left content end -->
+    
+    <!-- right content -->
+    <section class="rightContent" style="width: 65%; height:1000px; float: right; border:1px solid green;">
+        
+    </section><!-- right content end -->
 </main>
+
 <th:block layout:fragment="script">
-	
+	<script th:src="@{ /js/report.js }"></script>
 </th:block>
 </body>
 </div>
