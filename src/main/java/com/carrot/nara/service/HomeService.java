@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.carrot.nara.domain.PostImage;
 import com.carrot.nara.repository.PostImageRepository;
@@ -21,6 +22,7 @@ public class HomeService {
     private final PostImageRepository postImageRepository;
     private final PostRepository postRepository;
     
+    @Transactional(readOnly = true)
     public List<PostImage> recentList(){
         log.info("recentList()");
         List<PostImage> list = new ArrayList<>();

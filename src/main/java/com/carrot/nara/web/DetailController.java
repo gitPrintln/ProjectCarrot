@@ -13,6 +13,8 @@ import com.carrot.nara.domain.PostImage;
 import com.carrot.nara.repository.PostImageRepository;
 import com.carrot.nara.repository.PostRepository;
 import com.carrot.nara.repository.UserRepository;
+import com.carrot.nara.service.PostService;
+import com.carrot.nara.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +25,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class DetailController {
 
-    private final PostRepository postRepository;
-    private final PostImageRepository postImageRepository;
-    private final UserRepository userRepository;
-
+    private final PostService postService;
+    private final UserService userService;
+    
     @GetMapping("")
     @Transactional(readOnly = true)
     public String detail(Integer id, Model model) {
@@ -44,12 +45,14 @@ public class DetailController {
          * 2)OSIV(Open-Session-In-View)를 OFF하지 않은 것
          * 근데 dirty checking 에서 @LastModifiedDate, @OneToOne, @ManyToOne은 제외되는데..?
          */
-        Post post = postRepository.findById(id).get();
-        List<PostImage> postImage = postImageRepository.findByPostId(id);
-        String createrNick = userRepository.findById(post.getUserId()).get().getNickName();
-        model.addAttribute("createrNick", createrNick);
+        Post post = postService.readByPostId(id);
         model.addAttribute("post", post);
+        
+        List<PostImage> postImage = postService.readImgsByPostId(id);
         model.addAttribute("postImage", postImage);
+        
+        String createrNick = userService.getNickName(post.getUserId());
+        model.addAttribute("createrNick", createrNick);
         return "detail";
     }
 }

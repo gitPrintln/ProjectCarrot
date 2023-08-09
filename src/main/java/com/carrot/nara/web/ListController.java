@@ -15,6 +15,7 @@ import com.carrot.nara.domain.PostImage;
 import com.carrot.nara.dto.ListReadDto;
 import com.carrot.nara.repository.PostImageRepository;
 import com.carrot.nara.repository.PostRepository;
+import com.carrot.nara.service.PostService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class ListController {
 
-    private final PostRepository postRepository;
-    private final PostImageRepository postImageRepository;
+    private final PostService postService;
     
     /**
      * 수정된 시간을 기준으로 내림차순으로 postList를 찾아옴.
@@ -40,11 +40,11 @@ public class ListController {
         log.info("list()");
         List<ListReadDto> list = new ArrayList<>();
         
-        List<Post> postList = postRepository.findAllByOrderByModifiedTimeDesc();
+        List<Post> postList = postService.readAllByUpdateTime();
         for (Post p : postList) {
             // 이미지가 있을 수도 있고 없을 수도 있기 때문에 optional로 조회 후 optional로 감싸서 객체를 생성
             // 주의, 전달된 값이 null이라면 Optional.empty()를 반환함.
-            Optional<PostImage> pi = Optional.ofNullable(postImageRepository.findFirstByPostId(p.getId()));
+            Optional<PostImage> pi = Optional.ofNullable(postService.readThumbnail(p.getId()));
             if(pi.isPresent()) { // 이미지가 있을 경우
             PostImage pig = pi.get();
             ListReadDto listElement = ListReadDto.builder().id(p.getId()).imageFileName(pig.getFileName())

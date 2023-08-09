@@ -1,0 +1,14 @@
+package com.carrot.nara.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.carrot.nara.domain.Chat;
+
+public interface ChatRepository extends JpaRepository<Chat, Integer>   {
+
+    // 내 대화 목록들을 불러옴
+    List<Chat> findByUserId(Integer userId);
+
+}
