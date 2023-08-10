@@ -23,4 +23,14 @@ public class ChatService {
         log.info("myChatList()");
         return chatRepository.findByUserId(userId);
     }
+    
+    /**
+     * chatId를 통해서 postId 가져옴
+     * @param postId에 해당하는 chatId
+     * @return chatId에 해당하는 postId
+     */
+    public Integer getPostId(Integer chatId) {
+        log.info("getPostId()");
+        return chatRepository.findById(chatId).get().getPostId();
+    }
 }

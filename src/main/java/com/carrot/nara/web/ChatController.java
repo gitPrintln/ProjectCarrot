@@ -1,6 +1,7 @@
 package com.carrot.nara.web;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,13 +11,19 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.carrot.nara.domain.Chat;
+import com.carrot.nara.domain.Post;
+import com.carrot.nara.domain.PostImage;
+import com.carrot.nara.dto.ChatListDto;
+import com.carrot.nara.dto.CurrentChatDto;
 import com.carrot.nara.dto.MessageReadDto;
 import com.carrot.nara.dto.UserSecurityDto;
 import com.carrot.nara.service.ChatService;
+import com.carrot.nara.service.PostService;
 import com.carrot.nara.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -34,17 +41,49 @@ public class ChatController {
     private ChatService chatService;
     @Autowired
     private UserService userService;
-    
+    @Autowired
+    private PostService postService;
     
     
     // 주의: @GetMapping, @PostMapping 에서 @RequestMapping이 공유 되지만 @MessageMapping에서는 공유 안됨.
+    @Transactional(readOnly = true)
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/chat")
     public String chat(@AuthenticationPrincipal UserSecurityDto userDto, Model model) {
         log.info("chat(user={},{})", userDto.getNickName(), userDto.getUsername());
+        
+        // 내가 속해 있는 모든 대화 채팅 목록
+        List<ChatListDto> list = new ArrayList<>(); // chat 목록에 사용될 list
         List<Chat> chatList = chatService.myChatList(userDto.getId());
-        model.addAttribute("chatList", chatList);
-        // TODO: chatList에 해당하는 id마다 usernickname 불러와서 chatListDto 채우기 그리고 그것을 전달.
+        for (Chat chat : chatList) {
+            String sellerImage = userService.getImageName(chat.getSellerId());
+            String sellerNick = userService.getNickName(chat.getSellerId());
+            // TODO: seller image와 lastchat을 넣어줘야함. lastchat이나 그런건 redis로 가능하다던데
+            ChatListDto entity = ChatListDto.builder()
+                                .id(chat.getId())
+                                .sellerId(chat.getSellerId()).sellerNickName(sellerNick).sellerImage(sellerImage)
+                                .lastTime(chat.getModifiedTime())
+                                .build();
+            list.add(entity);
+        }
+        model.addAttribute("chatList", list);
+        
+        // 현재 대화 section에 사용될 상단 정보
+        if(list.size() > 0) {
+            Integer chatId = list.get(0).getId();
+            Integer postId = chatService.getPostId(chatId);
+            Post post = postService.readByPostId(postId);
+            PostImage pi = postService.readThumbnail(postId);
+            CurrentChatDto nowChat = CurrentChatDto.builder()
+                    .id(chatId)
+                    .sellerId(list.get(0).getSellerId()).sellerNickName(list.get(0).getSellerNickName()).sellerImage(list.get(0).getSellerImage())
+                    .postId(postId).title(post.getTitle()).prices(post.getPrices()).region(post.getRegion())
+                    .imageFileName(pi.getFileName())
+                    .build();
+            model.addAttribute("currentChat", nowChat);
+            // Graceful Degradation(우아한 저하) 원칙
+            // Thymeleaf 템플릿에서는 model.addAttribute()를 통해 전달받은 데이터를 출력할 때, 해당 데이터가 없는 경우에도 일반적으로 오류가 발생 x
+        }
         
         return "chat";
     }
