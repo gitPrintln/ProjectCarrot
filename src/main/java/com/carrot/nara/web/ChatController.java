@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.carrot.nara.domain.Chat;
 import com.carrot.nara.domain.Post;
@@ -49,9 +50,11 @@ public class ChatController {
     @Transactional(readOnly = true)
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/chat")
-    public String chat(@AuthenticationPrincipal UserSecurityDto userDto, Model model) {
+    public String chat(@AuthenticationPrincipal UserSecurityDto userDto, Integer postId, Integer sellerId, Model model) {
         log.info("chat(user={},{})", userDto.getNickName(), userDto.getUsername());
         
+        // (1) 상단 채팅 버튼으로 연결하는 경우(postid, sellerid가 널임.)
+        if(postId == null) {
         // 내가 속해 있는 모든 대화 채팅 목록
         List<ChatListDto> list = new ArrayList<>(); // chat 목록에 사용될 list
         List<Chat> chatList = chatService.myChatList(userDto.getId());
@@ -71,7 +74,7 @@ public class ChatController {
         // 현재 대화 section에 사용될 상단 정보
         if(list.size() > 0) {
             Integer chatId = list.get(0).getId();
-            Integer postId = chatService.getPostId(chatId);
+            postId = chatService.getPostId(chatId);
             Post post = postService.readByPostId(postId);
             PostImage pi = postService.readThumbnail(postId);
             CurrentChatDto nowChat = CurrentChatDto.builder()
@@ -84,6 +87,14 @@ public class ChatController {
             // Graceful Degradation(우아한 저하) 원칙
             // Thymeleaf 템플릿에서는 model.addAttribute()를 통해 전달받은 데이터를 출력할 때, 해당 데이터가 없는 경우에도 일반적으로 오류가 발생 x
         }
+            return "chat";
+        }
+        
+        // (2) post글의 detail에서 채팅창으로 연결하는 경우.
+        log.info("chat(chatInfo={},{},{})", userDto.getId(), postId, sellerId);
+        
+        
+        
         
         return "chat";
     }
