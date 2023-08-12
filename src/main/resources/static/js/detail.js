@@ -6,8 +6,10 @@
 window.addEventListener('DOMContentLoaded', () => {
     const chatBtn = document.querySelector('.chatBtn');
     chatBtn.addEventListener('click', function(event){
-        var postId = event.target.getAttribute('data-pid');
-        console.log(postId)
+        var pid = event.target.getAttribute('data-pid');
+        var sid = event.target.getAttribute('data-sid');
+        var url = "chat?postId=" + pid + "&sellerId=" + sid;
+        window.location.href = url;
     });
     
     const modifiedBtn = document.querySelector('.modifiedBtn');

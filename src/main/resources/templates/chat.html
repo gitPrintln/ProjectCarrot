@@ -69,7 +69,7 @@
                             <img src="..." alt="해당 글의 상대 프사"/>
                         </td>
                         <td style="border: 1px solid blue;" width="80%">
-                            <span th:text="${ list.modifiedTime}"></span>
+                            <span th:text="${ #temporals.format(list.lastTime, 'yyyy-MM-dd HH:mm') }"></span>
                             <span>여기에 넣을 lastchat</span>
                         </td>
                     </tr>
