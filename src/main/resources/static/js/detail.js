@@ -4,8 +4,9 @@
  
  
 window.addEventListener('DOMContentLoaded', () => {
-    const chatBtn = document.querySelector('.chatBtn');
-    chatBtn.addEventListener('click', function(event){
+    
+});
+    function connectChat(event){
         var pid = event.target.getAttribute('data-pid');
         var sid = event.target.getAttribute('data-sid');
         var url = "chat";
@@ -15,10 +16,7 @@ window.addEventListener('DOMContentLoaded', () => {
         $.post(url, data, function(responseUrl) {
             window.location.href = responseUrl;
         });
-    });
-    
-    const modifiedBtn = document.querySelector('.modifiedBtn');
-});
+    }
     // slide imgs 관련
     var slideIndex = 1;
     var mySlidesItems = document.getElementsByClassName('mySlides');
