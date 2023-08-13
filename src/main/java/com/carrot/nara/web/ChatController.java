@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.carrot.nara.domain.Chat;
@@ -51,8 +52,8 @@ public class ChatController {
     @Transactional
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/chat")
-    public String chat(@AuthenticationPrincipal UserSecurityDto userDto, Integer postId, Integer sellerId, Model model) {
-        log.info("chat(user={},{})", userDto.getNickName(), userDto.getUsername());
+    public String chat(@AuthenticationPrincipal UserSecurityDto userDto, Integer chatId, Model model) {
+        log.info("get-chat(user={},{})", userDto.getNickName(), chatId);
         Integer userId = userDto.getId();
         
         // 내가 속해 있는 모든 대화 채팅 목록(어디서 채팅방으로 들어가던지 공통)
@@ -73,13 +74,13 @@ public class ChatController {
             model.addAttribute("chatList", list);
         }
         
-        // (1) 상단 채팅 버튼으로 연결하는 경우(postid, sellerid가 널이고 그냥 채팅 페이지 연결만.)
-        if(postId == null) {
+        // (1) 상단 채팅 버튼으로 연결하는 경우(chatId가 널이고 그냥 채팅 페이지 연결만.)
+        if(chatId == null) {
             // 현재 대화 section에 사용될 상단 정보
             if(list.size() > 0) { // 최종 list에 대화 목록이 있을 경우 실행
                 log.info("상단채팅 버튼으로 연결할 경우 대화내역 하나라도 있을 경우");
-                Integer chatId = list.get(0).getId();
-                postId = chatService.getPostId(chatId);
+                chatId = list.get(0).getId();
+                Integer postId = chatService.getPostId(chatId);
                 Post post = postService.readByPostId(postId);
                 PostImage pi = postService.readThumbnail(postId);
                 
@@ -100,44 +101,65 @@ public class ChatController {
         
         
         
-        // (2) post글의 detail에서 채팅창으로 연결하는 경우(userid, postid, sellerid로 찾아서 채팅 있으면 가져옴)
-        log.info("chat(chatInfo={},{},{})", userId, postId, sellerId);
+        // (2) post글의 detail에서 채팅창으로 연결하는 경우(chatId로 찾아옴)
+        log.info("chat(chatInfo={},{})", userId, chatId);
         
-        // 채팅이 이미 존재하든 안하든 필요한 것.(공통)
+        // chatId로 chatInfo 불러옴(postId, sellerId)
+        Chat chatByDetail = chatService.loadChat(chatId);
+        Integer postId = chatByDetail.getPostId();
+        Integer sellerId = chatByDetail.getSellerId();
+        
+        // postInfo, sellerInfo 찾음
         Post post = postService.readByPostId(postId);
         PostImage pi = postService.readThumbnail(postId);
+        String nowSellerNick = userService.getNickName(sellerId);
+        String nowSellerImage = userService.getImageName(sellerId);
+        
+        CurrentChatDto nowChat = CurrentChatDto.builder()
+                .id(chatId)
+                .sellerId(sellerId).sellerNickName(nowSellerNick).sellerImage(nowSellerImage)
+                .postId(postId).title(post.getTitle()).prices(post.getPrices()).region(post.getRegion())
+                .imageFileName(pi.getFileName())
+                .build();
+
+        model.addAttribute("currentChat", nowChat);
+        return "chat";
+    }
+    
+    /**
+     * userId, postId, sellerId 를 통해 chatId를 찾아오거나, 새로 생성함
+     * @param userDto
+     * @param postId
+     * @param sellerId
+     * @return chatId로 채팅 연결
+     */
+    @PreAuthorize("hasRole('USER')")
+    @ResponseBody
+    @PostMapping("/chat")
+    public String chat(@AuthenticationPrincipal UserSecurityDto userDto, Integer postId, Integer sellerId) {
+        log.info("post-chat({},{},{})", userDto.getId(),postId,sellerId);
+        Integer userId = userDto.getId();
+        
+        Integer chatId = null; // 연결을 하게 될 chatId
         
         Optional<Chat> isPresentLoadedChat = Optional.ofNullable(chatService.loadChat(userId, postId, sellerId));
         if(isPresentLoadedChat.isPresent()) { // 불러온 채팅이 이미 존재하는 경우
             log.info("post글의 detail에서 채팅창으로 연결하는 경우 대화내역 이미 존재하는 경우");
             Chat loadedChat = isPresentLoadedChat.get();
-            String nowSellerNick = userService.getNickName(loadedChat.getSellerId());
-            String nowSellerImage = userService.getImageName(loadedChat.getSellerId());
-            
-            CurrentChatDto nowChat = CurrentChatDto.builder()
-                    .id(loadedChat.getId())
-                    .sellerId(sellerId).sellerNickName(nowSellerNick).sellerImage(nowSellerImage)
-                    .postId(postId).title(post.getTitle()).prices(post.getPrices()).region(post.getRegion())
-                    .imageFileName(pi.getFileName())
-                    .build();
-
-            model.addAttribute("currentChat", nowChat);
-        } else {
-            log.info("post글의 detail에서 채팅창으로 연결하는 경우 대화내역 없어서 생성해줄 경우");
-            Chat newChatInfo = chatService.createNewChat(userId, postId, sellerId);
-            String newSellerNick = userService.getNickName(newChatInfo.getSellerId());
-            String newSellerImage = userService.getImageName(newChatInfo.getSellerId());
-            
-            CurrentChatDto newChat = CurrentChatDto.builder()
-                    .id(newChatInfo.getId())
-                    .sellerId(sellerId).sellerNickName(newSellerNick).sellerImage(newSellerImage)
-                    .postId(postId).title(post.getTitle()).prices(post.getPrices()).region(post.getRegion())
-                    .imageFileName(pi.getFileName())
-                    .build();
-
-            model.addAttribute("currentChat", newChat);
-        }
-        return "chat";
+            chatId = loadedChat.getId();
+            return "/chat?chatId="+chatId;
+        } 
+        
+        // 새로운 채팅을 생성해주는 경우
+        log.info("post글의 detail에서 채팅창으로 연결하는 경우 대화내역 없어서 생성해줄 경우");
+        Chat newChatInfo = chatService.createNewChat(userId, postId, sellerId);
+        chatId = newChatInfo.getId();
+        // 민감한 정보나 중요한 작업에 대한 처리를 할 때, 보안적인 측면을 고려하여 POST 요청을 사용하고 결과를 리다이렉트로 전달하는 것은 좋은 선택이지만
+        // 민감한 정보가 URL에 노출되지 않도록 POST 요청을 사용하는 것은 보안 측면에서 중요.
+        // 비효율적이더라도 안전한 방법으로 처리하는 것이 항상 바람직함.(보안성 높아짐)
+        return "/chat?chatId="+chatId;
+        // return "/chat?chatId=" + chatId;을 사용하는 경우, 클라이언트는 "/chat?chatId=123"과 같은 URL로 이동하는 것으로 간주될 수 있음.
+        // 이 URL로 클라이언트에게 리다이렉트 응답을 보냄.
     }
     
     /**

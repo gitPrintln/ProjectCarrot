@@ -8,8 +8,13 @@ window.addEventListener('DOMContentLoaded', () => {
     chatBtn.addEventListener('click', function(event){
         var pid = event.target.getAttribute('data-pid');
         var sid = event.target.getAttribute('data-sid');
-        var url = "chat?postId=" + pid + "&sellerId=" + sid;
-        window.location.href = url;
+        var url = "chat";
+        var data = { postId: pid, sellerId: sid };
+
+        // postmapping으로 연결할 url을 알아온 뒤 연결함.
+        $.post(url, data, function(responseUrl) {
+            window.location.href = responseUrl;
+        });
     });
     
     const modifiedBtn = document.querySelector('.modifiedBtn');

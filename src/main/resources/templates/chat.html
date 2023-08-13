@@ -64,7 +64,8 @@
         <div id="chatHistory" style="margin-bottom: 5px;">
             <table>
                 <tbody>
-                    <tr th:if="${not #lists.isEmpty(chatList)}" th:each="list : ${ chatList }">
+                    <tr th:if="${not #lists.isEmpty(chatList)}" th:each="list : ${ chatList }" 
+                    >
                         <td style="border: 1px solid pink;" width="20%">
                             <img src="..." alt="해당 글의 상대 프사"/>
                         </td>

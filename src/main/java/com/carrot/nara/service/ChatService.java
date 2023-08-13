@@ -51,4 +51,12 @@ public class ChatService {
         Chat newChat = chatRepository.save(entity);
         return newChat;
     }
+    
+    // chatId에 해당하는 채팅방 정보를 불러오기 위해
+    @Transactional(readOnly = true)
+    public Chat loadChat(Integer chatId) {
+        log.info("loadChat()");
+        return chatRepository.findById(chatId).get();
+    }
+    
 }
