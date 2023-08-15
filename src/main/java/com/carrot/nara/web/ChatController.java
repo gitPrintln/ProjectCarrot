@@ -58,6 +58,7 @@ public class ChatController {
         
         // 내가 속해 있는 모든 대화 채팅 목록(어디서 채팅방으로 들어가던지 공통)
         List<ChatListDto> list = new ArrayList<>(); // chat 목록에 사용될 최종 list
+        
         List<Chat> chatList = chatService.myChatList(userId);
         if(chatList.size() > 0) { // 대화 목록 자료가 하나라도 있다면 최종 list에 담음
             for (Chat chat : chatList) {
@@ -75,8 +76,9 @@ public class ChatController {
         }
         
         // (1) 상단 채팅 버튼으로 연결하는 경우(chatId가 널이고 그냥 채팅 페이지 연결만.)
+        List<MessageReadDto> message = new ArrayList<>(); // 현재 포커스된 채팅 히스토리를 담을 list
         if(chatId == null) {
-            // 현재 대화 section에 사용될 상단 정보
+            // 현재 대화 section에 사용될 상단 정보/포커스된 채팅 히스토리
             if(list.size() > 0) { // 최종 list에 대화 목록이 있을 경우 실행
                 log.info("상단채팅 버튼으로 연결할 경우 대화내역 하나라도 있을 경우");
                 chatId = list.get(0).getId();
@@ -94,6 +96,9 @@ public class ChatController {
                 model.addAttribute("currentChat", topNowChat);
                 // Graceful Degradation(우아한 저하) 원칙
                 // Thymeleaf 템플릿에서는 model.addAttribute()를 통해 전달받은 데이터를 출력할 때, 해당 데이터가 없는 경우에도 일반적으로 오류가 발생 x
+                
+                message = chatService.readHistory(chatId);
+                model.addAttribute("chatHistory", message);
             }
             log.info("상단채팅 버튼으로 연결할 경우 대화내역 하나도 없을 경우.");
             return "chat";
@@ -123,6 +128,9 @@ public class ChatController {
                 .build();
 
         model.addAttribute("currentChat", nowChat);
+        
+        message = chatService.readHistory(chatId);
+        model.addAttribute("chatHistory", message);
         return "chat";
     }
     
@@ -162,14 +170,16 @@ public class ChatController {
         // 이 URL로 클라이언트에게 리다이렉트 응답을 보냄.
     }
     
+    
     /**
      * 메세지 컨트롤러
-     * @param partner 대화하고 있는 상대
+     * @param chatId 대화방의 id
      * @throws IOException
      */
-    @MessageMapping("/chat/{partner}")
-    public void send(@DestinationVariable Integer partner, MessageReadDto dto) throws IOException{
+    @MessageMapping("/chat/{chatId}")
+    public void send(@DestinationVariable Integer chatId, MessageReadDto dto) throws IOException{
         log.info("send(dto={}, {}, {})", dto.getSender(), dto.getMessage(), dto.getSendTime());
+        chatService.newMessage(chatId, dto);
         String url = "/user/queue/messages";
         simpMessagingTemplate.convertAndSend(url, new MessageReadDto(dto.getSender(), dto.getMessage(), dto.getSendTime()));
     }

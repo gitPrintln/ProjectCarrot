@@ -5,8 +5,9 @@
  window.addEventListener('DOMContentLoaded', () => {
     
     var stompClient = null;
-    var sender = $('#loginUser').val();
-    var partner = 11; // 대화하고 있는 상대방
+    var sender = $('#loginUser').val(); // 보내는 사람 senderNickName
+    console.log(sender);
+    var chatId = $('#chatId').val(); // 대화방의 id
     var partnerProfile = null;
     // invoke when DOM(Documents Object Model; HTML(<head>, <body>...etc) is ready
     $(document).ready(connect());
@@ -37,7 +38,7 @@
     // 메세지 보내는 버튼 클릭 시 
     // webSocket broker 에게 JSON 타입 메시지 데이터를 전송
     function sendChat(json){
-        stompClient.send("/app/chat/" + partner, {}, JSON.stringify(json));
+        stompClient.send("/app/chat/" + chatId, {}, JSON.stringify(json));
     }
     const btnSend = document.querySelector('#btnSend');
     const messageInput = document.querySelector('#message');

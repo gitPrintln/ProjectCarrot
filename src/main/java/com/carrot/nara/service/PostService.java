@@ -39,6 +39,7 @@ public class PostService {
     // Id로 그에 해당하는 post 정보 불러오기(상세보기)
     @Transactional(readOnly = true)
     public Post readByPostId(Integer id) {
+        log.info("readByPostId(), id={}", id);
         return postRepository.findById(id).get();
     }
     

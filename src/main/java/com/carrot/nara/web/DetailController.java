@@ -2,6 +2,7 @@ package com.carrot.nara.web;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -10,23 +11,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.carrot.nara.domain.Post;
 import com.carrot.nara.domain.PostImage;
-import com.carrot.nara.repository.PostImageRepository;
-import com.carrot.nara.repository.PostRepository;
-import com.carrot.nara.repository.UserRepository;
 import com.carrot.nara.service.PostService;
 import com.carrot.nara.service.UserService;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
 @RequestMapping("/detail")
-@RequiredArgsConstructor
 public class DetailController {
 
-    private final PostService postService;
-    private final UserService userService;
+    @Autowired
+    private PostService postService;
+    @Autowired
+    private UserService userService;
     
     @GetMapping("")
     @Transactional(readOnly = true)
@@ -46,6 +44,7 @@ public class DetailController {
          * 근데 dirty checking 에서 @LastModifiedDate, @OneToOne, @ManyToOne은 제외되는데..?
          */
         Post post = postService.readByPostId(id);
+        log.info("postDetail(post={},{})", post.toString(), post.getModifiedTime());
         model.addAttribute("post", post);
         
         List<PostImage> postImage = postService.readImgsByPostId(id);

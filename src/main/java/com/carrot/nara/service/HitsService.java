@@ -1,11 +1,13 @@
 package com.carrot.nara.service;
 
+import java.time.LocalDateTime;
+
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.carrot.nara.domain.Post;
 import com.carrot.nara.repository.PostRepository;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,7 +26,7 @@ public class HitsService {
     public void postHitsUp(Integer id) {
         log.info("postHitsUp(id={})",id);
         Post post = postRepository.findById(id).get();
-        post.hitsUp();
+        post.upHits();
     }
 
     

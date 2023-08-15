@@ -47,7 +47,7 @@ public class User {
     
     private String address;
     
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String nickName;
     
     @Setter
