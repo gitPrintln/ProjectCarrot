@@ -65,7 +65,8 @@
             <table>
                 <tbody>
                     <tr th:if="${not #lists.isEmpty(chatList)}" th:each="list : ${ chatList }" 
-                    >
+                    th:onclick="|location.href='@{/chat?chatId={chatId} (chatId = ${ list.id })}'|" 
+                    style="cursor:pointer;">
                         <td style="border: 1px solid pink;" width="20%">
                             <img src="..." alt="해당 글의 상대 프사"/>
                         </td>

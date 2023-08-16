@@ -6,6 +6,7 @@
 window.addEventListener('DOMContentLoaded', () => {
     
 });
+    // 채팅 연결하기
     function connectChat(event){
         var pid = event.target.getAttribute('data-pid');
         var sid = event.target.getAttribute('data-sid');

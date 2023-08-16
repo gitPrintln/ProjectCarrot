@@ -37,11 +37,11 @@
 <body>
         <!-- TODO: 색깔 설정/포커싱 되었을 때 색깔 설정 -->
             <div class="w3-container w3-brown" style="margin-bottom: 30px;">
-                <h2>등록하기</h2>
+                <h2>수정하기</h2>
             </div>
-            <form class="w3-container mb-5" id="formSell" method="post" action="/sell/create">
+            <form class="w3-container mb-5" id="formSell" method="post" action="/sell/modify">
                 <div class="card">
-                <div class="contents" id="imgs">
+                <div class="imgContent" id="imgs">
                     <div class="mb-2"style="width:350px;">
                     <label class="w3-text-brown" for="img"><b>이미지</b></label>
                     <!--<a href="javascript:void(0)" class="w3-bar-item" onclick="img()"><i class="fa fa-image"></i></a>-->
@@ -56,41 +56,43 @@
                     </div>
                     <!-- 선택한 파일이 보여지는 공간 -->
                     <div id="selectedImage"></div>
-                </div>
+                </div><!-- imgContent End  -->
+                <div class="postContent" th:each="p : ${ post }">
                 <div class="contents">
                     <label class="w3-text-brown" for="title"><b>글 제목</b></label>
-                    <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="title" name="title" required/></div>
+                    <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="title" name="title" th:value="${ p.title }" required/></div>
                 </div>
                 <div class="contents">
                     <label class="w3-text-brown" for="category"><b>카테고리</b></label>
-                    <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="category" name="category" required/></div>
+                    <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="category" name="category" th:value="${ p.category }"  required/></div>
                 </div>
                 <div class="contents">
                     <label class="w3-text-brown" for="prices"><span>&#8361;</span></label>
                     <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="prices" name="prices" oninput="inNumber(event)"
-                     placeholder="숫자로만 입력하세요" required/></div>
+                     placeholder="숫자로만 입력하세요" th:value="${ p.prices }" required/></div>
                 </div>
                 <div class="contents">
                     <label class="w3-text-brown" for="content"><b>내용</b></label>
                     <div><textarea rows="12" class="w3-input w3-border w3-hover-shadow w3-sand" id="content" name="content" 
-                    placeholder="구매자가 상품에 대해 자세히 알 수 있도록 설명해주세요." required></textarea></div>
+                    placeholder="구매자가 상품에 대해 자세히 알 수 있도록 설명해주세요." th:text="${ p.content }" required></textarea></div>
                 </div>
                 <div class="contents" id="location">
                     <div style="width:92%; display: inline-block;">
                         <label class="w3-text-brown"><b>지역</b></label>
-                        <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="regionMain" name="regionMain" readonly/></div>
+                        <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="regionMain" name="regionMain" th:value="${ p.region.split(',')[0] }" readonly/></div>
                     </div>
                     <div style="display: inline-block;">
                         <div class="w3-dropdown-hover w3-hide-small"><!-- 주소 api 버튼 -->
                             <a href="javascript:void(0)" class="w3-bar-item w3-button" onclick="serchRegion()"><i class="fa fa-caret-down"></i></a>
                         </div>
                     </div>
-                    <div><input style="display:none;" class="w3-input w3-border w3-hover-shadow w3-sand" id="detailRegion" name="detailRegion" placeholder="상세입력하기"/></div>
+                    <div><input th:style="${ p.region.split(',')[1].trim() != ''} ? '' : 'display: none;'" class="w3-input w3-border w3-hover-shadow w3-sand" id="detailRegion" name="detailRegion" placeholder="상세입력하기" th:value="${ p.region.split(',')[1].trim() }"/></div>
                 </div>
                 <div style="margin-top: 30px; margin-bottom: 30px;">
-                    <button type="button" class="w3-btn w3-brown" id="btnSubmit">등록 하기</button>
+                    <button type="button" class="w3-btn w3-brown" id="btnSubmit">수정 하기</button>
                 </div>
-                </div>
+                </div><!-- postContent End -->
+                </div><!-- card End -->
             </form>
 
 <th:block layout:fragment="script">

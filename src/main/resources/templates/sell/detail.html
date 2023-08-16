@@ -155,7 +155,7 @@
                             <!-- 글작성자와 로그인 유저가 다를 때는 '채팅하기', 같을 때는 '수정하기' -->
                             <div th:if="${#authentication.name != 'anonymousUser'}">
                                 <button type="button" th:if="${ p.userId != #authentication.principal.id }" th:data-pid="${p.id}" th:data-sid="${p.userId}" th:onclick="connectChat(event);" class="w3-button w3-pale-red w3-round-xlarge">채팅하기</button> 
-                                <button type="button" th:if="${ p.userId == #authentication.principal.id }" class="modifiedBtn w3-button w3-pale-red w3-round-xlarge">수정하기</button> 
+                                <button type="button" th:if="${ p.userId == #authentication.principal.id }" th:data-pid="${p.id}" th:onclick="|location.href='@{ /sell/modify?postId='+ this.getAttribute('data-pid') + '}';|" class="modifiedBtn w3-button w3-pale-red w3-round-xlarge">수정하기</button> 
                             </div>
                         </div>
                     </div>
