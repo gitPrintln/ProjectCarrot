@@ -20,9 +20,22 @@
     .w3-rest {
         padding-left: 14px;
     }
+    
+    #chatList .listElement td {
+        cursor: pointer;
+        margin-bottom: 10px;
+    }
     .sellInfo{
         text-align: left;
     }
+    .postTitle {
+        font-size: 20px;
+    }
+    .postPrices {
+        font-size: 12px;
+    }
+    
+    
     #content {
         height: 400px;
         overflow-y: scroll;
@@ -44,6 +57,13 @@
         border-radius: 8px;
         transition: background-color 0.2s;
     }
+    
+    .w3-container img {
+        width: 33.5px;
+        height: 33.5px;
+        border-radius: 100%; 
+        object-fit: cover;
+    }
     </style>
     
 </head>
@@ -61,14 +81,13 @@
             </div>
         </div><!-- 내상태 끝 -->
         <!-- chat 목록 -->
-        <div id="chatHistory" style="margin-bottom: 5px;">
+        <div id="chatList" style="margin-bottom: 5px;">
             <table>
                 <tbody>
-                    <tr th:if="${not #lists.isEmpty(chatList)}" th:each="list : ${ chatList }" 
-                    th:onclick="|location.href='@{/chat?chatId={chatId} (chatId = ${ list.id })}'|" 
-                    style="cursor:pointer;">
+                    <tr class="listElement" th:if="${not #lists.isEmpty(chatList)}" th:each="list : ${ chatList }" 
+                    th:onclick="|location.href='@{/chat?chatId={chatId} (chatId = ${ list.id })}'|" >
                         <td style="border: 1px solid pink;" width="20%">
-                            <img src="..." alt="해당 글의 상대 프사"/>
+                            <img th:src="${ '/img/user/'+ list.sellerId }" alt="해당 글의 상대 프사"/>
                         </td>
                         <td style="border: 1px solid blue;" width="80%">
                             <span th:text="${ #temporals.format(list.lastTime, 'yyyy-MM-dd HH:mm') }"></span>
@@ -94,7 +113,7 @@
                 <!-- 상대 정보 -->
                     <tr>
                         <td>
-                            <img src="..." alt="상대 프사"/>
+                            <img th:src="${ '/img/user/'+ sellInfo.sellerId }" alt="상대 프사"/>
                         </td>
                         <td>
                             <span th:text="${ sellInfo.sellerNickName }">(상대 닉네임)</span>
@@ -104,17 +123,17 @@
                 <!-- 판매 정보 -->
                     <tr>
                         <td>
-                            <img src="..." alt="판매글 이미지"/>
+                            <img th:src="${ '/img/view/'+ sellInfo.imageFileName }" alt="글의 이미지">
                         </td>
                         <td>
-                            <span th:text="${ sellInfo.title }">(판매 제목)</span>
-                            <div th:text="${ sellInfo.prices }">(판매 가격)</div><span th:text="${ sellInfo.region }">(지역)</span>
+                            <span class="postTitle" th:text="${ sellInfo.title }"></span>
+                            <div class="postPrices" th:text="${ sellInfo.prices } + '&nbsp;' + 원"></div><span th:text="${ sellInfo.region }"></span>
                         </td>
                     </tr>
                 </table>
-                <input id="loginUser" th:value="${ #authentication.principal.nickName }"/>
-                <input id="sellerUser" th:value="${ sellInfo.sellerId }"/>
-                <input id="chatId" th:value="${ sellInfo.id }"/>
+                <input type="hidden" id="loginUser" th:value="${ #authentication.principal.nickName }"/>
+                <input type="hidden" id="sellerUser" th:value="${ sellInfo.sellerId }"/>
+                <input type="hidden" id="chatId" th:value="${ sellInfo.id }"/>
             </div>
             <div class="sellInfo" th:if="${#lists.isEmpty(currentChat)}">
                 <table>

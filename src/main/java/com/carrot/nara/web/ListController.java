@@ -45,18 +45,15 @@ public class ListController {
             // 이미지가 있을 수도 있고 없을 수도 있기 때문에 optional로 조회 후 optional로 감싸서 객체를 생성
             // 주의, 전달된 값이 null이라면 Optional.empty()를 반환함.
             Optional<PostImage> pi = Optional.ofNullable(postService.readThumbnail(p.getId()));
-            if(pi.isPresent()) { // 이미지가 있을 경우
-            PostImage pig = pi.get();
-            ListReadDto listElement = ListReadDto.builder().id(p.getId()).imageFileName(pig.getFileName())
-                    .imageFilePath(pig.getFilePath()).title(p.getTitle()).region(p.getRegion())
+            String imageFileName = "image-fill.png"; // 포스트 글의 이미지가 없으면 기본 이미지를 넣음.
+            if(pi.isPresent()) { // 포스트 글의 이미지가 있으면 있는 이미지로 교체
+                PostImage pig = pi.get();
+                imageFileName = pig.getFileName();
+            }
+            ListReadDto listElement = ListReadDto.builder().id(p.getId()).imageFileName(imageFileName)
+                    .title(p.getTitle()).region(p.getRegion())
                     .prices(p.getPrices()).modifiedTime(p.getModifiedTime()).build();
             list.add(listElement);
-            } else { // 이미지 없는 경우
-                ListReadDto listElement = ListReadDto.builder().id(p.getId()).imageFileName("")
-                        .imageFilePath("").title(p.getTitle()).region(p.getRegion())
-                        .prices(p.getPrices()).modifiedTime(p.getModifiedTime()).build();
-                list.add(listElement);
-            }
         }
         
         model.addAttribute("list", list);

@@ -86,7 +86,8 @@
                             <a href="javascript:void(0)" class="w3-bar-item w3-button" onclick="serchRegion()"><i class="fa fa-caret-down"></i></a>
                         </div>
                     </div>
-                    <div><input th:style="${ p.region.split(',')[1].trim() != ''} ? '' : 'display: none;'" class="w3-input w3-border w3-hover-shadow w3-sand" id="detailRegion" name="detailRegion" placeholder="상세입력하기" th:value="${ p.region.split(',')[1].trim() }"/></div>
+                    <div><input th:style="${ p.region.split(',')[1].trim() != ''} ? '' : 'display: none;'" class="w3-input w3-border w3-hover-shadow w3-sand" id="detailRegion" 
+                    name="detailRegion" placeholder="상세입력하기" th:value="${ p.region.split(',')[1].trim() }"/></div>
                 </div>
                 <div style="margin-top: 30px; margin-bottom: 30px;">
                     <button type="button" class="w3-btn w3-brown" id="btnSubmit">수정 하기</button>

@@ -63,11 +63,11 @@ public class ChatController {
         if(chatList.size() > 0) { // 대화 목록 자료가 하나라도 있다면 최종 list에 담음
             for (Chat chat : chatList) {
                 String sellerNick = userService.getNickName(chat.getSellerId());
-                String sellerImage = userService.getImageName(chat.getSellerId());
+                
                 // TODO: seller image와 lastchat을 넣어줘야함. lastchat이나 그런건 redis로 가능하다던데
                 ChatListDto entity = ChatListDto.builder()
                                     .id(chat.getId())
-                                    .sellerId(chat.getSellerId()).sellerNickName(sellerNick).sellerImage(sellerImage)
+                                    .sellerId(chat.getSellerId()).sellerNickName(sellerNick)
                                     .lastTime(chat.getModifiedTime())
                                     .build();
                 list.add(entity);
@@ -82,15 +82,22 @@ public class ChatController {
             if(list.size() > 0) { // 최종 list에 대화 목록이 있을 경우 실행
                 log.info("상단채팅 버튼으로 연결할 경우 대화내역 하나라도 있을 경우");
                 chatId = list.get(0).getId();
+                
                 Integer postId = chatService.getPostId(chatId);
                 Post post = postService.readByPostId(postId);
-                PostImage pi = postService.readThumbnail(postId);
+                
+                Optional<PostImage> pi = Optional.ofNullable(postService.readThumbnail(postId));
+                String imageFileName = "image-fill.png"; // 포스트 글의 이미지가 없을 경우
+                if(pi.isPresent()) { // 포스트 글의 이미지가 있을 경우
+                    PostImage pig = pi.get();
+                    imageFileName = pig.getFileName();
+                }
                 
                 CurrentChatDto topNowChat = CurrentChatDto.builder()
                         .id(chatId)
-                        .sellerId(list.get(0).getSellerId()).sellerNickName(list.get(0).getSellerNickName()).sellerImage(list.get(0).getSellerImage())
+                        .sellerId(list.get(0).getSellerId()).sellerNickName(list.get(0).getSellerNickName())
                         .postId(postId).title(post.getTitle()).prices(post.getPrices()).region(post.getRegion())
-                        .imageFileName(pi.getFileName())
+                        .imageFileName(imageFileName)
                         .build();
                 
                 model.addAttribute("currentChat", topNowChat);
@@ -116,15 +123,19 @@ public class ChatController {
         
         // postInfo, sellerInfo 찾음
         Post post = postService.readByPostId(postId);
-        PostImage pi = postService.readThumbnail(postId);
+        Optional<PostImage> pi = Optional.ofNullable(postService.readThumbnail(postId));
+        String imageFileName = "image-fill.png"; // 포스트 글의 이미지가 없을 경우
+        if(pi.isPresent()) { // 포스트 글의 이미지가 있을 경우
+            PostImage pig = pi.get();
+            imageFileName = pig.getFileName();
+        }
         String nowSellerNick = userService.getNickName(sellerId);
-        String nowSellerImage = userService.getImageName(sellerId);
         
         CurrentChatDto nowChat = CurrentChatDto.builder()
                 .id(chatId)
-                .sellerId(sellerId).sellerNickName(nowSellerNick).sellerImage(nowSellerImage)
+                .sellerId(sellerId).sellerNickName(nowSellerNick)
                 .postId(postId).title(post.getTitle()).prices(post.getPrices()).region(post.getRegion())
-                .imageFileName(pi.getFileName())
+                .imageFileName(imageFileName)
                 .build();
 
         model.addAttribute("currentChat", nowChat);
