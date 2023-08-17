@@ -15,7 +15,7 @@ public class ListReadDto {
     
     private Integer id;
     private String imageFileName;
-    private String imageFilePath;
+//    private String imageFilePath; // 굳이 filepath가 필요할까?
     private String title;
     private String region;
     private String prices;

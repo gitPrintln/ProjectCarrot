@@ -5,8 +5,9 @@
  window.addEventListener('DOMContentLoaded', () => {
     
     var stompClient = null;
-    var sender = $('#loginUser').val();
-    var partner = 11; // 대화하고 있는 상대방
+    var sender = $('#loginUser').val(); // 보내는 사람 senderNickName
+    console.log(sender);
+    var chatId = $('#chatId').val(); // 대화방의 id
     var partnerProfile = null;
     // invoke when DOM(Documents Object Model; HTML(<head>, <body>...etc) is ready
     $(document).ready(connect());
@@ -20,11 +21,14 @@
             stompClient = Stomp.over(socket);
             // connect(header, connectCallback(==연결에 성공하면 실행되는 메서드))
             stompClient.connect({}, function() { 
+                autofocus();
+                
                 // url: 채팅방 참여자들에게 공유되는 경로
                 // callback(function()): 클라이언트가 서버(Controller broker)로부터 메시지를 수신했을 때(== STOMP send()가 실행되었을 때) 실행
                 stompClient.subscribe(url, function(output) { // 메세지에 관한 구독
                     // html <body>에 append할 메시지 contents
                     showBroadcastMessage(createTextNode(JSON.parse(output.body)));
+                    autofocus();
                 });
                 }, 
                     // connect() 에러 발생 시 실행
@@ -37,7 +41,7 @@
     // 메세지 보내는 버튼 클릭 시 
     // webSocket broker 에게 JSON 타입 메시지 데이터를 전송
     function sendChat(json){
-        stompClient.send("/app/chat/" + partner, {}, JSON.stringify(json));
+        stompClient.send("/app/chat/" + chatId, {}, JSON.stringify(json));
     }
     const btnSend = document.querySelector('#btnSend');
     const messageInput = document.querySelector('#message');
@@ -114,7 +118,11 @@
         }
     }
     
-    
+    // 메세지를 주고받을 때 자동으로 스크롤 위치를 맞춰줌.
+    function autofocus(){
+        $chatHistory = $('#content');
+        $chatHistory.scrollTop($chatHistory[0].scrollHeight);
+    }
     
     
     

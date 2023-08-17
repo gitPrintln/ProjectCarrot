@@ -41,7 +41,7 @@
             </div>
             <form class="w3-container mb-5" id="formSell" method="post" action="/sell/create">
                 <div class="card">
-                <div class="contents" id="imgs">
+                <div class="imageContent" id="imgs">
                     <div class="mb-2"style="width:350px;">
                     <label class="w3-text-brown" for="img"><b>이미지</b></label>
                     <!--<a href="javascript:void(0)" class="w3-bar-item" onclick="img()"><i class="fa fa-image"></i></a>-->
@@ -56,7 +56,8 @@
                     </div>
                     <!-- 선택한 파일이 보여지는 공간 -->
                     <div id="selectedImage"></div>
-                </div>
+                </div><!-- imageContent End -->
+                <div class="postContent">
                 <div class="contents">
                     <label class="w3-text-brown" for="title"><b>글 제목</b></label>
                     <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="title" name="title" required/></div>
@@ -90,7 +91,8 @@
                 <div style="margin-top: 30px; margin-bottom: 30px;">
                     <button type="button" class="w3-btn w3-brown" id="btnSubmit">등록 하기</button>
                 </div>
-                </div>
+                </div><!-- postContent End -->
+                </div><!-- Card End -->
             </form>
 
 <th:block layout:fragment="script">

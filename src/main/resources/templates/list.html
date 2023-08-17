@@ -15,12 +15,11 @@
     <div style="border: solid;"><!-- Main Div -->
         <div class="w3-container" th:each="list : ${ list }"><!-- 카드 하나 -->
             <div class="content w3-card" style="cursor:pointer; display: table; border: 1px solid;" th:id="${ list.id }" th:username="${ #authentication.name }" 
-                th:onclick="|hitUp(this.getAttribute('id'), this.getAttribute('username')); location.href='@{ /detail?id=' + this.getAttribute('id') + '}';|">
+                th:onclick="|hitUp(this.getAttribute('id'), this.getAttribute('username')); location.href='@{ /sell/detail?id=' + this.getAttribute('id') + '}';|">
                 <!-- onclick함수와 href를 둘 다 하기위해서 |~함수(); location.href='';|로 구성을 했음. -->
                 <div class="image" style="display: table-cell; vertical-align: middle; margin-right: 10px; border: 1px solid; width:200px; height:200px;">
-                    <img th:if="${not #strings.isEmpty(list.imageFileName)}" th:src="${ '/img/view/'+ list.imageFileName }" style="width:200px; height:200px;">
-                    <img th:if="${#strings.isEmpty(list.imageFileName)}" src="/images/image-fill.png" style="width:50px; height:50px;">
-                    <!-- image가 있을 수도 있고 없을 수도 있기 때문에 있으면 불러오고 없으면 기본 이미지를 부여. -->
+                    <img th:src="${ '/img/view/'+ list.imageFileName }" th:style="${list.imageFileName != 'image-fill.png'} ? 'width:200px; height:200px;' : 'width:50px; height:50px;'">
+                    <!-- image가 있을 수도 있고 없을 수도 있기 때문에 있으면 앞의 style을 없으면 뒤의 스타일을 적용 -->
                 </div>
                 <div style="border: 1px solid; display: table-cell; width:200px; height:200px;">
                     <div>

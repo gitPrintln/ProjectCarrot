@@ -6,9 +6,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.carrot.nara.domain.Post;
 import com.carrot.nara.domain.PostImage;
 import com.carrot.nara.dto.FileUploadDto;
 import com.carrot.nara.dto.PostCreateDto;
+import com.carrot.nara.dto.PostModifyDto;
 import com.carrot.nara.repository.PostImageRepository;
 import com.carrot.nara.repository.PostRepository;
 
@@ -61,5 +63,14 @@ public class SellService {
         
         return imgIds;
     }
-    
+
+    // post글 수정기능
+    @Transactional
+    public Integer modify(PostModifyDto dto) {
+        log.info("modify(dto={})", dto);
+        Integer id = dto.getId();
+        Post post = postRepository.findById(id).get();
+        post.update(dto.toEntity(id));
+        return id;
+    }
 }

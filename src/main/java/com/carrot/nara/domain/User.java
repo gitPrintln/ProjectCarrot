@@ -3,6 +3,8 @@ package com.carrot.nara.domain;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -47,7 +49,7 @@ public class User {
     
     private String address;
     
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String nickName;
     
     @Setter
