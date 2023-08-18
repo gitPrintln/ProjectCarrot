@@ -65,4 +65,14 @@ public class UserService {
         return userRepository.findById(userId).get().getNickName();
     }
 
+    /**
+     * 유저 정보 불러오기
+     * @param id 불러올 userId
+     * @return DB에 있는 유저 정보
+     */
+    public User readById(Integer id) {
+        log.info("readById(id={})", id);
+        return userRepository.findById(id).get();
+    }
+
 }
