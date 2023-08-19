@@ -21,13 +21,15 @@
         padding-left: 14px;
     }
     
-    #chatList .listElement td {
+    #chatList table tbody .listElement {
         cursor: pointer;
-        margin-bottom: 10px;
     }
+    
+    
     .sellInfo{
         text-align: left;
     }
+    
     .postTitle {
         font-size: 20px;
     }
@@ -84,21 +86,21 @@
         <div id="chatList" style="margin-bottom: 5px;">
             <table>
                 <tbody>
-                    <tr class="listElement" th:if="${not #lists.isEmpty(chatList)}" th:each="list : ${ chatList }" 
-                    th:onclick="|location.href='@{/chat?chatId={chatId} (chatId = ${ list.id })}'|" >
-                        <td style="border: 1px solid pink;" width="20%">
-                            <img th:src="${ '/img/user/'+ list.sellerId }" alt="해당 글의 상대 프사"/>
-                        </td>
-                        <td style="border: 1px solid blue;" width="80%">
-                            <span th:text="${ #temporals.format(list.lastTime, 'yyyy-MM-dd HH:mm') }"></span>
-                            <span>여기에 넣을 lastchat</span>
-                        </td>
-                    </tr>
-                    <tr th:if="${ #lists.isEmpty(chatList)}">
-                        <td colspan="10" th:each="i : ${#numbers.sequence(1, 10)}">
-                            <span th:if="${i == 5}">대화 목록이 없습니다.</span>
-                        </td>
-                    </tr>
+                <tr class="listElement" th:if="${not #lists.isEmpty(chatList)}" th:each="list : ${ chatList }" 
+                    th:onclick="|location.href='@{/chat?chatId={chatId} (chatId = ${ list.id })}'|">
+                    <td style="border: 1px solid pink;" width="20%">
+                        <img th:src="${ '/img/user/'+ list.sellerId }" alt="해당 글의 상대 프사"/>
+                    </td>
+                    <td style="border: 1px solid blue;" width="80%">
+                        <span th:text="${ #temporals.format(list.lastTime, 'yyyy-MM-dd HH:mm') }"></span>
+                        <span>여기에 넣을 lastchat</span>
+                    </td>
+                </tr>
+                <tr th:if="${ #lists.isEmpty(chatList)}">
+                    <td colspan="10" th:each="i : ${#numbers.sequence(1, 10)}">
+                        <span th:if="${i == 5}">대화 목록이 없습니다.</span>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>
