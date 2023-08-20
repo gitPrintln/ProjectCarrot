@@ -30,6 +30,11 @@
     .sourceList {
         margin-top: 200px;
     }
+    #profileForm label{
+        display: block; 
+        cursor: pointer;
+        text-align: right;
+    }
     #pwForm .formLabel {
         text-align: left;
     }
@@ -76,7 +81,9 @@
                     </div>
                     <div class="modal-body">
                         <form id="profileForm" enctype="multipart/form-data" method="post" action="">
-                           <input type="file" name="file" id="file"/>
+                           <img th:src="${ '/img/user/' + #authentication.principal.id }" style="width: 350px; height: 350px;"/>
+                           <label for="imgFile"><i class="fa-solid fa-upload" style="font-size: 24px;"></i></label>
+                           <input style="display: none;" type="file" name="file" id="imgFile"/>
                         </form>
                     </div>
                     <div class="modal-footer">

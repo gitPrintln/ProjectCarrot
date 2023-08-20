@@ -1,5 +1,6 @@
 package com.carrot.nara.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +22,7 @@ public class MyPageController {
 
     private final UserService userService;
     
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("")
     public String myPage(@AuthenticationPrincipal UserSecurityDto user, Model model) {
         log.info("myPage()");
