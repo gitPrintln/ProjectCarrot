@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.carrot.nara.domain.User;
 import com.carrot.nara.dto.UserRegisterDto;
+import com.carrot.nara.dto.UserSecurityDto;
 import com.carrot.nara.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class UserService {
      * 회원가입 정보를 DB에 저장
      * @param dto 저장할 유저 정보
      */
+    @Transactional
     public void registerUser(UserRegisterDto dto) {
         log.info("registerUser()");
         dto.setPassword(passwordEncoder.encode(dto.getPassword()));
@@ -70,9 +72,36 @@ public class UserService {
      * @param id 불러올 userId
      * @return DB에 있는 유저 정보
      */
+    @Transactional(readOnly = true)
     public User readById(Integer id) {
         log.info("readById(id={})", id);
         return userRepository.findById(id).get();
+    }
+
+    /**
+     * 사용자 본인임을 확인하기 위해 비밀번호 일치를 확인
+     * @param password DB에 저장된 비밀번호
+     * @param nowPw 사용자가 입력한 비밀번호
+     * @return 일치하면 true, 실패하면 false
+     */
+    public Boolean isMatchPassword(String inputPassword, String savedPassword) {
+        log.info("isMatchPassword(inputPassword={},savedPassword={})", inputPassword, savedPassword);
+        Boolean result = false;
+        result = passwordEncoder.matches(inputPassword, savedPassword);
+        return result;
+    }
+    
+    /**
+     * 사용자의 현재 비밀번호를 새로운 비밀번호로 업데이트함.
+     * @param userId 업데이트할 사용자의 id
+     * @param newPw 새로운 비밀번호
+     * @return 업데이트 성공하면 true, 실패하면 false
+     */
+    @Transactional
+    public void updatePassword(Integer userId, String newPw) {
+        log.info("updatePassword(userId={},newPw={})", userId, newPw);
+        User user = userRepository.findById(userId).get();
+        user.updatePassword(passwordEncoder.encode(newPw));
     }
 
 }

@@ -73,4 +73,8 @@ public class User {
         return this;
     }
     
+    public User updatePassword(String password) { // 유저의 비밀 번호 변경
+        this.password = password;
+        return this;
+    }
 }

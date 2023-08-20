@@ -30,7 +30,7 @@
     .sourceList {
         margin-top: 200px;
     }
-    .formLabel {
+    #pwForm .formLabel {
         text-align: left;
     }
     </style>
@@ -48,7 +48,7 @@
         </div>
         
         <div class="infoContent">
-        <div class="label"><i class="fa-solid fa-pencil"></i>이름<span class="labelSpan" style="font-size: 22px; color: red;">*</span></div>
+        <div class="label"><i class="fa-solid fa-pencil"></i>이름</div>
             <input class="form-control" type="text" id="name" name="name" placeholder="이름" th:value="${ u.name }" readOnly/>
         <div class="label"><i class="fa-solid fa-user-tag"></i>닉네임<span class="labelSpan" style="font-size: 22px; color: red;">*</span></div>
             <input class="form-control" type="text" id="nickName" name="nickName" placeholder="사용할 닉네임" th:value="${ u.nickName }" required/>
@@ -71,7 +71,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                      <div class="modal-header">
-                          <h5 class="modal-title">프로필 이미지</h5>
+                         <i class="fa-solid fa-id-card-clip"></i><h5 class="modal-title">&nbsp;프로필 이미지</h5>
                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -91,8 +91,8 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                      <div class="modal-header">
-                          <h5 class="modal-title">비밀번호 변경</h5>
-                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          <i class="fa-solid fa-unlock-keyhole"></i><h5 class="modal-title">&nbsp;비밀번호 변경</h5>
+                         <button type="button" class="pwCloseBtn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form id="pwForm" enctype="multipart/form-data" method="post" action="">
@@ -102,11 +102,12 @@
                            <input class="passwordInput" type="password" id="password" name="password" placeholder="새로운 비밀번호" required/>
                            <div class="formLabel">비밀번호 확인</div>
                            <input class="passwordInput" type="password" id="passwordChk" name="passwordChk" placeholder="비밀번호 확인" required/>
-                    
+                           <div id="pwAvailable" style="color: green; margin-left: 8px; display: none;">비밀 번호가 일치합니다.</div>
+                           <div id="pwUnavailable" style="color: red; margin-left: 8px; display: none;">비밀 번호가 일치하지 않습니다.</div>
                         </form>
                     </div>
                     <div class="modal-footer">
-                         <button type="button" id="" class="w3-button w3-orange w3-round-large w3-hover-blue">변경하기</button>
+                         <button type="button" id="pwChangeBtn" class="w3-button w3-orange w3-round-large w3-hover-blue" disabled>변경하기</button>
                     </div>
                  </div>
             </div>
@@ -124,18 +125,9 @@
     <!-- bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js" integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa" crossorigin="anonymous"></script>
-	<script>
-	const imageModal = document.querySelector('#imageModal');
-	const imgModal = new bootstrap.Modal(imageModal);
-	function imgUpdate(){
-		imgModal.show();
-	}
-	const passwordModal = document.querySelector('#pwModal');
-	const pwModal = new bootstrap.Modal(passwordModal);
-	function pwUpdate(){
-		pwModal.show();
-	}
-	</script>
+	<!-- Ajax -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>    
+    <script th:src="@{ /js/myPage.js }"></script>
 </th:block>
 </body>
 </div>
