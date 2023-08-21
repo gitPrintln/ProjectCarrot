@@ -50,9 +50,11 @@
                             <div style="color: maroon; font-size:12px;">
                                 * 상품의 이미지 및 상태를 설명할 수 있는 사진을 첨부해주세요. <br/>
                                 * 사진은 복수 선택 가능합니다. <br/>
-                                * 사진의 크기에 따라서 조정이 될 수도 있습니다.</div>
+                                * 사진은 JPEG, JPG, PNG, JFIF 타입만 가능합니다. <br/>
+                                * 사진의 크기에 따라서 조정이 될 수도 있습니다. <br/>
+                                &nbsp;&nbsp;&nbsp;(최대 크기 제한 : 10MB)</div>
                         </div>
-                    <div><input type="file" style="display: none;" class="w3-input w3-border w3-sand" id="images" name="images" multiple/></div>
+                    <div><input type="file" style="display: none;" class="w3-input w3-border w3-sand" id="images" name="images" multiple accept=".jpg, .jpeg, .png, .jfif"/></div>
                     </div>
                     <!-- 선택한 파일이 보여지는 공간 -->
                     <div id="selectedImage"></div>

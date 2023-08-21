@@ -77,17 +77,21 @@
                 <div class="modal-content">
                      <div class="modal-header">
                          <i class="fa-solid fa-id-card-clip"></i><h5 class="modal-title">&nbsp;프로필 이미지</h5>
-                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                         <button type="button" class="imgCloseBtn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form id="profileForm" enctype="multipart/form-data" method="post" action="">
-                           <img th:src="${ '/img/user/' + #authentication.principal.id }" style="width: 350px; height: 350px;"/>
+                           <img id="previewProfileImg" th:src="${ '/img/user/' + #authentication.principal.id }" style="width: 350px; height: 350px;"/>
+                           <div style="color: maroon; font-size:12px;">
+                                * 프로필 사진은 JPEG, JPG, PNG, JFIF 타입만 가능합니다. <br/>
+                                * 프로필 사진의 크기에 따라서 조정이 될 수도 있습니다. <br/>
+                                &nbsp;&nbsp;&nbsp;(최대 크기 제한 : 10MB)</div>
                            <label for="imgFile"><i class="fa-solid fa-upload" style="font-size: 24px;"></i></label>
                            <input style="display: none;" type="file" name="file" id="imgFile"/>
                         </form>
                     </div>
                     <div class="modal-footer">
-                         <button type="button" id="" class="w3-button w3-orange w3-round-large w3-hover-blue">변경하기</button>
+                         <button type="button" id="imgChangeBtn" class="w3-button w3-orange w3-round-large w3-hover-blue">변경하기</button>
                     </div>
                  </div>
             </div>

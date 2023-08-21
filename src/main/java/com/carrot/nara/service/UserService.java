@@ -95,13 +95,24 @@ public class UserService {
      * 사용자의 현재 비밀번호를 새로운 비밀번호로 업데이트함.
      * @param userId 업데이트할 사용자의 id
      * @param newPw 새로운 비밀번호
-     * @return 업데이트 성공하면 true, 실패하면 false
      */
     @Transactional
     public void updatePassword(Integer userId, String newPw) {
         log.info("updatePassword(userId={},newPw={})", userId, newPw);
         User user = userRepository.findById(userId).get();
         user.updatePassword(passwordEncoder.encode(newPw));
+    }
+
+    /**
+     * 사용자의 현재 프로필 이미지를 새로운 프로필 이미지로 업데이트함.
+     * @param userId 업데이트할 사용자의 id
+     * @param imageFileName 새로운 프로필 이미지
+     */
+    @Transactional
+    public void saveUserProfileImage(Integer userId, String imageFileName) {
+        log.info("saveUserProfileImage(userId={},imageFileName={})", userId, imageFileName);
+        User user = userRepository.findById(userId).get();
+        user.updateUserImage(imageFileName);
     }
 
 }

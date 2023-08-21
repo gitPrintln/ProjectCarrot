@@ -77,4 +77,9 @@ public class User {
         this.password = password;
         return this;
     }
+    
+    public User updateUserImage(String userImage) { // 유저의 이미지 변경
+        this.userImage = userImage;
+        return this;
+    }
 }
