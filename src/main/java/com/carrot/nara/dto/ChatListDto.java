@@ -14,7 +14,8 @@ import lombok.ToString;
 public class ChatListDto {
 
     private Integer id; // 채팅방의 id
-    private Integer sellerId;
+    private Integer userId; // 판매자와 대화중인 상대방의 id
+    private Integer sellerId; // 판매자의 id
     private String sellerNickName;
 //    private String sellerImage; // 바로 user정보에서 불러오기 때문에 굳이 넣을 필요 x
     private String lastChat;

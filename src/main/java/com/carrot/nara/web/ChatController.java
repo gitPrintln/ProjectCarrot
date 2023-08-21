@@ -66,7 +66,7 @@ public class ChatController {
                 
                 // TODO: seller image와 lastchat을 넣어줘야함. lastchat이나 그런건 redis로 가능하다던데
                 ChatListDto entity = ChatListDto.builder()
-                                    .id(chat.getId())
+                                    .id(chat.getId()).userId(chat.getUserId())
                                     .sellerId(chat.getSellerId()).sellerNickName(sellerNick)
                                     .lastTime(chat.getModifiedTime())
                                     .build();
@@ -82,8 +82,8 @@ public class ChatController {
             if(list.size() > 0) { // 최종 list에 대화 목록이 있을 경우 실행
                 log.info("상단채팅 버튼으로 연결할 경우 대화내역 하나라도 있을 경우");
                 chatId = list.get(0).getId();
-                
-                Integer postId = chatService.getPostId(chatId);
+                Chat chatByTop = chatService.loadChat(chatId);
+                Integer postId = chatByTop.getPostId();
                 Post post = postService.readByPostId(postId);
                 
                 Optional<PostImage> pi = Optional.ofNullable(postService.readThumbnail(postId));
@@ -94,7 +94,7 @@ public class ChatController {
                 }
                 
                 CurrentChatDto topNowChat = CurrentChatDto.builder()
-                        .id(chatId)
+                        .id(chatId).userId(chatByTop.getUserId())
                         .sellerId(list.get(0).getSellerId()).sellerNickName(list.get(0).getSellerNickName())
                         .postId(postId).title(post.getTitle()).prices(post.getPrices()).region(post.getRegion())
                         .imageFileName(imageFileName)
@@ -132,7 +132,7 @@ public class ChatController {
         String nowSellerNick = userService.getNickName(sellerId);
         
         CurrentChatDto nowChat = CurrentChatDto.builder()
-                .id(chatId)
+                .id(chatId).userId(chatByDetail.getUserId())
                 .sellerId(sellerId).sellerNickName(nowSellerNick)
                 .postId(postId).title(post.getTitle()).prices(post.getPrices()).region(post.getRegion())
                 .imageFileName(imageFileName)
