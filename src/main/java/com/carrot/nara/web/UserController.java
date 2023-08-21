@@ -1,19 +1,21 @@
 package com.carrot.nara.web;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.carrot.nara.dto.PwUpdateDto;
 import com.carrot.nara.dto.UserRegisterDto;
+import com.carrot.nara.dto.UserSecurityDto;
 import com.carrot.nara.service.UserService;
 
-import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -77,6 +79,46 @@ public class UserController {
         log.info("signup(dto={})", dto);
         userService.registerUser(dto); // 비밀번호는 encode()를 통해서 암호화한 뒤 db에 저장.
         return "redirect:/";
+    }
+    
+    /**
+     * 본인 인증 확인 이후, 인증에 성공하면 비밀 번호를 변경함
+     * @param dto user에 대한정보
+     * @param nowPw 사용자가 입력한 인증을 위한 비밀번호
+     * @param newPw 사용자가 사용할 새로운 비밀번호
+     * @return 성공하면 true, 실패하면 false
+     */
+    /* @ResponseBody는 Spring MVC 컨트롤러의 메서드가 HTTP 응답의 본문(body) 데이터를 직접 생성하도록 지정
+     *                 컨트롤러의 메서드가 반환하는 객체나 데이터가 HTTP 응답으로 변환되어 전달
+     *                 주로 JSON이나 XML과 같은 데이터 포맷으로 응답을 생성할 때 사용
+    */                 
+    // @RequestParam은 URL 파라미터를 처리하는데 사용, 객체 전체를 받아들이려면 @RequestBody를 사용
+    // 객체 전체를 받을 때 Dto를 만들어서 받는 것이 일반적임(가독성과 유지보수 측면 좋음)
+    @PostMapping("/pwUpdate")
+    @ResponseBody
+    public ResponseEntity<Boolean> pwUpdate(@AuthenticationPrincipal UserSecurityDto dto,
+                                            @RequestBody PwUpdateDto pwInfo){
+        String nowPw = pwInfo.getNowPw();
+        String newPw = pwInfo.getNewPw();
+        
+        log.info("pwUpdate(nowpw={},newpw={})", nowPw, newPw);
+        Boolean result = false; // 비밀번호 변경이 성공적으로 완료하면 true, 실패하면 false
+        
+        // 본인 인증이 확인이 완료되면 true, 실패하면 false
+        Boolean identityVerification = userService.isMatchPassword(nowPw, dto.getPassword());
+        if(!identityVerification) { // 현재 비밀번호를 통해 본인인증에 실패한 경우
+            log.info("현재 비밀번호 일치 x");
+            return ResponseEntity.ok(result);
+        }
+        Boolean samePassword = userService.isMatchPassword(newPw, dto.getPassword());
+        if(samePassword) { // 바꾸려는 비밀번호가 현재 비밀번호랑 같은 비밀번호일때
+            log.info("현재 비밀번호와 새로운 비밀번호 같음");
+            return ResponseEntity.ok(result);
+        }
+        
+        userService.updatePassword(dto.getId(), newPw);
+        result = true;
+        return ResponseEntity.ok(result);
     }
     
 }

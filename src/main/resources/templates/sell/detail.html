@@ -90,8 +90,7 @@
                 <!-- 이미지 시작 -->
                      <div class="w3-content w3-display-container imgsSlide">
                         <div class="mySlides" th:each="i : ${ postImage }">
-                            <img th:if="${ i.fileName != '' }" th:src="${ '/img/view/'+ i.fileName }">
-                            <img th:if="${ i.fileName == '' }" th:src="${ '/img/view/image-fill.png' }">
+                            <img th:src="${ '/img/view/'+ i.fileName }">
                         </div>
                         <!-- next, prev 버튼, indicator 버튼들 -->
                         <div class="slideBtnsDiv">
