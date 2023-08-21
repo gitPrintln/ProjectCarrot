@@ -54,20 +54,21 @@ public class ChatController {
     @GetMapping("/chat")
     public String chat(@AuthenticationPrincipal UserSecurityDto userDto, Integer chatId, Model model) {
         log.info("get-chat(user={},{})", userDto.getNickName(), chatId);
-        Integer userId = userDto.getId();
+        Integer userId = userDto.getId(); // 로그인한 유저
         
         // 내가 속해 있는 모든 대화 채팅 목록(어디서 채팅방으로 들어가던지 공통)
+        List<Chat> chatList = chatService.myChatList(userId);
+        
         List<ChatListDto> list = new ArrayList<>(); // chat 목록에 사용될 최종 list
         
-        List<Chat> chatList = chatService.myChatList(userId);
         if(chatList.size() > 0) { // 대화 목록 자료가 하나라도 있다면 최종 list에 담음
             for (Chat chat : chatList) {
                 String sellerNick = userService.getNickName(chat.getSellerId());
-                
+                String partnerNick = userService.getNickName(chat.getUserId());
                 // TODO: seller image와 lastchat을 넣어줘야함. lastchat이나 그런건 redis로 가능하다던데
                 ChatListDto entity = ChatListDto.builder()
-                                    .id(chat.getId()).userId(chat.getUserId())
-                                    .sellerId(chat.getSellerId()).sellerNickName(sellerNick)
+                                    .id(chat.getId()).partnerId(chat.getUserId())
+                                    .sellerId(chat.getSellerId()).sellerNickName(sellerNick).partnerNickName(partnerNick)
                                     .lastTime(chat.getModifiedTime())
                                     .build();
                 list.add(entity);
@@ -94,8 +95,8 @@ public class ChatController {
                 }
                 
                 CurrentChatDto topNowChat = CurrentChatDto.builder()
-                        .id(chatId).userId(chatByTop.getUserId())
-                        .sellerId(list.get(0).getSellerId()).sellerNickName(list.get(0).getSellerNickName())
+                        .id(chatId).partnerId(chatByTop.getUserId())
+                        .sellerId(list.get(0).getSellerId()).sellerNickName(list.get(0).getSellerNickName()).partnerNickName(list.get(0).getPartnerNickName())
                         .postId(postId).title(post.getTitle()).prices(post.getPrices()).region(post.getRegion())
                         .imageFileName(imageFileName)
                         .build();
@@ -120,6 +121,7 @@ public class ChatController {
         Chat chatByDetail = chatService.loadChat(chatId);
         Integer postId = chatByDetail.getPostId();
         Integer sellerId = chatByDetail.getSellerId();
+        Integer partnerId = chatByDetail.getUserId();
         
         // postInfo, sellerInfo 찾음
         Post post = postService.readByPostId(postId);
@@ -130,10 +132,11 @@ public class ChatController {
             imageFileName = pig.getFileName();
         }
         String nowSellerNick = userService.getNickName(sellerId);
+        String nowPartnerNick = userService.getNickName(partnerId);
         
         CurrentChatDto nowChat = CurrentChatDto.builder()
-                .id(chatId).userId(chatByDetail.getUserId())
-                .sellerId(sellerId).sellerNickName(nowSellerNick)
+                .id(chatId).partnerId(partnerId)
+                .sellerId(sellerId).sellerNickName(nowSellerNick).partnerNickName(nowPartnerNick)
                 .postId(postId).title(post.getTitle()).prices(post.getPrices()).region(post.getRegion())
                 .imageFileName(imageFileName)
                 .build();

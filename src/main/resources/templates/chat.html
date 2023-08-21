@@ -90,7 +90,7 @@
                     th:onclick="|location.href='@{/chat?chatId={chatId} (chatId = ${ list.id })}'|">
                     <td style="border: 1px solid pink;" width="20%">
                         <img th:if="${ list.sellerId != #authentication.principal.id }" th:src="${ '/img/user/'+ list.sellerId }" alt="해당 글의 상대 프사"/>
-                        <img th:if="${ list.sellerId == #authentication.principal.id }" th:src="${ '/img/user/'+ list.userId }" alt="해당 글의 상대 프사"/>
+                        <img th:if="${ list.sellerId == #authentication.principal.id }" th:src="${ '/img/user/'+ list.partnerId }" alt="해당 글의 상대 프사"/>
                     </td>
                     <td style="border: 1px solid blue;" width="80%">
                         <span th:text="${ #temporals.format(list.lastTime, 'yyyy-MM-dd HH:mm') }"></span>
@@ -117,10 +117,11 @@
                     <tr>
                         <td>
                             <img th:if="${ sellInfo.sellerId != #authentication.principal.id }" th:src="${ '/img/user/'+ sellInfo.sellerId }" alt="상대 프사"/>
-                            <img th:if="${ sellInfo.sellerId == #authentication.principal.id }" th:src="${ '/img/user/'+ sellInfo.userId }" alt="상대 프사"/>
+                            <img th:if="${ sellInfo.sellerId == #authentication.principal.id }" th:src="${ '/img/user/'+ sellInfo.partnerId }" alt="상대 프사"/>
                         </td>
                         <td>
-                            <span th:text="${ sellInfo.sellerNickName }">(상대 닉네임)</span>
+                            <span th:if="${ sellInfo.sellerId != #authentication.principal.id }" th:text="${ sellInfo.sellerNickName }">(상대 닉네임)</span>
+                            <span th:if="${ sellInfo.sellerId == #authentication.principal.id }" th:text="${ sellInfo.partnerNickName }">(상대 닉네임)</span>
                         </td>
                     </tr>
                     
