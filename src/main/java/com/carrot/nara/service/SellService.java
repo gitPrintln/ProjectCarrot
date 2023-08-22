@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.carrot.nara.domain.Post;
 import com.carrot.nara.domain.PostImage;
-import com.carrot.nara.dto.FileUploadDto;
 import com.carrot.nara.dto.PostCreateDto;
 import com.carrot.nara.dto.PostModifyDto;
 import com.carrot.nara.repository.PostImageRepository;
@@ -72,5 +71,11 @@ public class SellService {
         Post post = postRepository.findById(id).get();
         post.update(dto.toEntity(id));
         return id;
+    }
+    
+    // 파일네임에 해당하는 포스트이미지 삭제
+    @Transactional
+    public void deleteImg(String fileName) {
+        postImageRepository.deleteByFileName(fileName);
     }
 }

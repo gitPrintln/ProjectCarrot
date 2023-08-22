@@ -1,16 +1,29 @@
 /**
  * 
  */
- 
- 
+
+let initialImageData = []; // 초기 이미지 정보를 저장해두고 최종 수정하지 않거나 이탈할 경우 이용(전역 변수로 사용)
+
 window.addEventListener('DOMContentLoaded', () => {
+    const explainDiv = document.getElementById('explain'); // 이미지 업로드 부연설명창
+     // 원래 저장되어 있던 포스트 이미지들
+    if (selectedImage.childElementCount === 0) { // 이미 이미지가 불러온 이미지가 없으면 부연설명 on, 아니면 off(default가 off)
+        explainDiv.style.display = "block";
+    } else { // 불러온 이미지가 있으면, 최종 수정까지 하게 될 경우를 대비해서 이미지 정보 저장
+        const initialImgs = selectedImage.querySelectorAll('img');
+        for (let file of initialImgs) {
+              const iniImgSrc = file.getAttribute('data-src');
+              initialImageData.push(iniImgSrc);
+        }
+    }
+
     
-    const btnSubmit = document.querySelector('#btnSubmit');
-    // * 최종이미지 DB에 저장할 dataForm
+    // * 최종이미지 DB에 저장할 dataForm(initialImgs를 제외한 추가된 이미지)
     let imageData = []; //  HTML <form> 요소의 데이터를 캡슐화하고, Ajax를 통해 서버로 전송하기 위해 사용
-        
-    // 등록하기 버튼 눌렀을 때
-    btnSubmit.addEventListener('click', function() {
+    
+    // 수정 버튼 이벤트
+    const btnUpdate = document.getElementById('btnUpdate');
+    btnUpdate.addEventListener('click', function(){
         const title = document.querySelector('#title').value;
         const category = document.querySelector('#category').value;
         const prices = document.querySelector('#prices').value;
@@ -22,12 +35,12 @@ window.addEventListener('DOMContentLoaded', () => {
             alert('빠진 부분을 채워넣어주세요!');
             return;
         }
-
-        const result = confirm('정말 등록하시겠습니까?');
+        
+        const result = confirm('정말 수정하시겠습니까?');
 
         if (result) {
-            // 제출했음을 변수에 저장
-            submitted = true;
+            // 수정했음을 변수에 저장
+            updated = true;
             content = content.replaceAll(/(\n|\r\n)/g, "<br>");
             alert("줄바꿈 체크중" +   content);
             // (1) 전달해줄 완성된 전체 주소 input창 만들어주기
@@ -53,18 +66,38 @@ window.addEventListener('DOMContentLoaded', () => {
                 // Array.from(iterable, mapFn, thisArg) 이런 형태
                 // iterable: 배열로 변환할 유사 배열 객체 또는 이터러블 객체
                 // mapFn (선택적): 배열의 각 요소에 대해 호출될 맵핑 함수
-                // thisArg (선택적): mapFn에서 사용할 this 값을 지정        
+                // thisArg (선택적): mapFn에서 사용할 this 값을 지정 
+                // 로직 : 최종 저장하려는 이미지를 초기 저장되어있는 이미지와 비교를 하여
+                // 초기 이미지에 포함되지 않은 이미지면 최종 저장 이미지에 올려서 저장을 하고
+                // 초기 이미지에 포함된 이미지라면 초기 이미지에서 해당 이미지를 빼주고 남은 이미지를 추려냄
+                // 반복하면 결과는,
+                // 최종 저장하려는 이미지는 추가 저장과 초기 이미지는 삭제해야할 이미지만 남게 된다.
                 for (let file of finalImgs) {
                     const imgSrc = file.getAttribute('data-src');
                     console.log(file);
-                    imageData.push(imgSrc);
+                    if(!initialImageData.includes(imgSrc)){ // ㄱ-초기 이미지 데이터에 저장되어 있지 않은 추가하려고 하는 추가 이미지만 DB에 저장
+                        imageData.push(imgSrc);
+                    } else{ // ㄴ-초기 이미지 중 삭제된 이미지 가려내서 로컬저장소와 DB에 삭제
+                        const indexToRemove = array.indexOf(imgSrc); // 해당 요소의 인덱스 값을 찾은 후
+                        initialImageData.splice(indexToRemove, 1); // 인덱스부터 시작해서 1개의 값을 제거
+                    }
                 }
+                
+                // Promise 체이닝은 비동기 작업을 순차적으로 연결하여 처리하는 방식
+                // 비동기 작업을 처리하기 위해 Promise를 사용하며, 이러한 Promise 객체들을 연속적으로 연결하여 작업을 수행하는 것을 Promise 체이닝
                 axios.post('/img/upload/db', imageData)
                     .then(response => {
                         const imgIds = response.data.join(', ');
                         const imgs = document.getElementById('imgs');
                         const imgIdsForDbSave = `<div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="imgIds" name="imgIds" value="${imgIds}" readonly/></div>`;
                         imgs.innerHTML += imgIdsForDbSave;
+                        
+                        if(initialImageData.length > 0) { // 삭제되어야할 데이터가 있으면 실행
+                            axios.delete('/img/delete/db/' + initialImageData)
+                                .then(response => {console.log('이미지 삭제 완료');
+                                })
+                                .catch(err=>{console.log(err)});
+                        }
                     })
                     .catch(err => {alert(err+"!!!!");
                     });
@@ -77,40 +110,53 @@ window.addEventListener('DOMContentLoaded', () => {
             setTimeout(function(){
                 // (3) 그 외 나머지 정보 DB에 저장.
                     document.querySelector('#formSell').submit();
-                    formSell.action = '/sell/create';
+                    formSell.action = '/sell/modify';
                     formSell.method = 'post';
                     formSell.submit();
             }, 75);
             
         }
+        
     });
-
-
-// region-input 창 클릭해도 열리게
-const regionMainInput = document.getElementById('regionMain');
-regionMainInput.addEventListener('click', serchRegion);
-
+    
+    
+    // 삭제 버튼 이벤트
+    const btnDelete = document.getElementById('btnDelete');
+    btnDelete.addEventListener('click', function(){
+        const result = confirm('글을 삭제하게 되면 현재 판매와 관련된 채팅방은 삭제됩니다. 정말 삭제하시겠습니까?');
+        if(result){
+            console.log('삭제 메서드를 만들어주시오')
+        }
+    });
+    
+    
+    // region-input 창 클릭해도 열리게
+    const regionMainInput = document.getElementById('regionMain');
+    regionMainInput.addEventListener('click', serchRegion);
+    
 });
 
-let submitted = false; // 제출 여부 확인
+const updated = false; // 수정 버튼 안누르고 다른 행위를 할 경우 이미지 정보를 원상복구시키기 위해
 
-// 제출하지 않고 페이지를 벗어날 시 발생하는 이벤트 리스너(실제 등록되지 않은 로컬저장소 이미지 삭제)
+// 수정하지 않고 페이지를 벗어날 시 발생하는 이벤트 리스너(실제 등록되지 않은 로컬저장소 이미지 삭제 - 원래이미지는 그냥 둠)
 window.addEventListener('beforeunload', function(event) {
     const selectedImage = document.querySelector('#selectedImage');
-    if(!submitted && selectedImage.children.length > 0){ // 제출하지 않았을 때, 등록하려던 이미지가 있을 때만 실행
+    if(!updated && selectedImage.children.length > 0){ // 수정하지 않았을 때, 등록하려던 이미지가 있을 때만 실행
     deleteTemporaryFile();
     }
 });
 
-// 로컬저장소에 저장되어있지만 최종 등록 되지 않은 이미지 삭제
+// 이미지를 추가하려고 시도했지만 최종 등록 되지 않은 이미지 삭제(이미 있는 이미지는 건드리지 않음)
 function deleteTemporaryFile(){
     let temporaryData = [];
     const selectedImage = document.querySelector('#selectedImage');
-    const finalImgs = selectedImage.querySelectorAll('img');
-        for (let file of finalImgs) {
-                const imgSrc = file.getAttribute('data-src');
+    const addedImgs = selectedImage.querySelectorAll('img');
+        addedImgs.forEach(file => {
+            const imgSrc = file.getAttribute('data-src');
+            if (!initialImageData.includes(imgSrc)) { // 초기 이미지 데이터에 저장되어 있지않은 추가하려고 시도했던 이미지만 삭제행
                 temporaryData.push(imgSrc);
-           }
+            }
+        });
         axios.delete('/img/delete/' + temporaryData)
             .then(response => {console.log('이미지 삭제 완료');
             })

@@ -46,16 +46,28 @@
                     <label class="w3-text-brown" for="img"><b>이미지</b></label>
                     <!--<a href="javascript:void(0)" class="w3-bar-item" onclick="img()"><i class="fa fa-image"></i></a>-->
                     <label class="custom-file-upload" style="cursor: pointer;" for="images"><i class="fa fa-image"></i></label>
-                        <div id="explain">
+                        <div id="explain" style="display: none;">
                             <div style="color: maroon; font-size:12px;">
                                 * 상품의 이미지 및 상태를 설명할 수 있는 사진을 첨부해주세요. <br/>
                                 * 사진은 복수 선택 가능합니다. <br/>
-                                * 사진의 크기에 따라서 조정이 될 수도 있습니다.</div>
+                                * 사진은 JPEG, JPG, PNG, JFIF 타입만 가능합니다. <br/>
+                                * 사진의 크기에 따라서 조정이 될 수도 있습니다. <br/>
+                                &nbsp;&nbsp;&nbsp;(최대 크기 제한 : 10MB)</div>
                         </div>
                     <div><input type="file" style="display: none;" class="w3-input w3-border w3-sand" id="images" name="images" multiple/></div>
                     </div>
                     <!-- 선택한 파일이 보여지는 공간 -->
-                    <div id="selectedImage"></div>
+                    <div id="selectedImage">
+                          <div class="card" style="display:inline-block;" th:each="i : ${ postImage }">
+                              <div class="card-header">
+                                    <button type="button" th:data-imgSrc="${ i.fileName }" class="btnDelete btn-close" aria-label="Close"></button>
+                                    <div style="display:inline-block;" th:text="${i.originFileName}"></div>
+                              </div>
+                              <div class="card-body">
+                                    <img th:src="${ '/img/view/' + i.fileName}" th:data-src="${i.fileName}" width="150" height="150"/>
+                              </div>
+                          </div>
+                    </div>
                 </div><!-- imgContent End  -->
                 <div class="postContent" th:each="p : ${ post }">
                 <div class="contents">
@@ -79,18 +91,19 @@
                 <div class="contents" id="location">
                     <div style="width:92%; display: inline-block;">
                         <label class="w3-text-brown"><b>지역</b></label>
-                        <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="regionMain" name="regionMain" th:value="${ p.region.split(',')[0] }" readonly/></div>
+                        <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="regionMain" name="regionMain" th:value="${ regionMain }" readonly/></div>
                     </div>
                     <div style="display: inline-block;">
                         <div class="w3-dropdown-hover w3-hide-small"><!-- 주소 api 버튼 -->
                             <a href="javascript:void(0)" class="w3-bar-item w3-button" onclick="serchRegion()"><i class="fa fa-caret-down"></i></a>
                         </div>
                     </div>
-                    <div><input th:style="${ p.region.split(',')[1].trim() != ''} ? '' : 'display: none;'" class="w3-input w3-border w3-hover-shadow w3-sand" id="detailRegion" 
-                    name="detailRegion" placeholder="상세입력하기" th:value="${ p.region.split(',')[1].trim() }"/></div>
+                    <div><input th:style="${ detailRegion != null } ? '' : 'display: none;'" class="w3-input w3-border w3-hover-shadow w3-sand" id="detailRegion" 
+                    name="detailRegion" placeholder="상세입력하기" th:value="${ detailRegion }"/></div>
                 </div>
                 <div style="margin-top: 30px; margin-bottom: 30px;">
-                    <button type="button" class="w3-btn w3-brown" id="btnSubmit">수정 하기</button>
+                    <button type="button" class="w3-btn w3-brown" id="btnUpdate">수정 하기</button>
+                    <button type="button" class="w3-btn w3-brown" id="btnDelete">삭제 하기</button>
                 </div>
                 </div><!-- postContent End -->
                 </div><!-- card End -->
@@ -99,9 +112,9 @@
 <th:block layout:fragment="script">
     <!-- Ajax -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script th:src="@{ /js/img.js }" ></script>
-    <script th:src="@{ /js/sell.js }" ></script>
-
+    <script th:src="@{ /js/imgModify.js }" ></script>
+    <script th:src="@{ /js/modify.js }" ></script>
+    
     
     <!-- 카카오 주소 API -->
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>

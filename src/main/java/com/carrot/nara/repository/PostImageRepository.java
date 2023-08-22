@@ -13,5 +13,8 @@ public interface PostImageRepository extends JpaRepository<PostImage, Integer>  
     PostImage findFirstByPostId(Integer postId);
 
     List<PostImage> findByPostId(Integer postId);
+
+    // 해당 파일네임의 데이터를 삭제
+    void deleteByFileName(String fileName);
     
 }

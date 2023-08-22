@@ -89,6 +89,23 @@ public class SellController {
         log.info("sellModify(postId={})", postId);
         Post post = postService.readByPostId(postId);
         model.addAttribute("post", post);
+        List<PostImage> postImages = postService.readImgsByPostId(postId);
+        model.addAttribute("postImage", postImages);
+        
+        // 주소 분리 작업
+        if(post.getRegion() != null) { // 주소가 있을 때만 실행
+            String[] splitRegion = post.getRegion().split(",");
+            String regionMain = "";
+            String detailRegion = "";
+            if(splitRegion.length>1) { // 세부 주소가 있으면 세부주소까지 담아주고 없으면 그냥 메인 주소만 담아서 보냄
+                regionMain = splitRegion[0];
+                detailRegion = splitRegion[1];
+            } else {
+                regionMain = splitRegion[0];
+            }
+            model.addAttribute("regionMain", regionMain);
+            model.addAttribute("detailRegion", detailRegion);
+        }
         return "sell/modify";
     }
     

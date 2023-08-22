@@ -46,6 +46,7 @@
     <div class="mainContent" th:each="u : ${ user }">
         <div class="profileContent">
             <img th:src="${ '/img/user/'+ u.id }" style="width: 150px; height: 150px; display: block;">
+            <input id="userImage" type="hidden" th:value="${u.userImage}"/>
             <img class="imgUpdateBtn" src="/images/imageEditing.png" onclick="imgUpdate()"
              alt="프로필 수정하기 버튼" title="프로필 수정하기"/>
             <img class="pwUpdateBtn" src="/images/pwChange.png" onclick="pwUpdate()"
