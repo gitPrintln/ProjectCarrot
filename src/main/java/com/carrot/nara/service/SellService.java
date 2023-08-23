@@ -7,10 +7,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.carrot.nara.domain.Chat;
 import com.carrot.nara.domain.Post;
 import com.carrot.nara.domain.PostImage;
 import com.carrot.nara.dto.PostCreateDto;
 import com.carrot.nara.dto.PostModifyDto;
+import com.carrot.nara.repository.ChatRepository;
+import com.carrot.nara.repository.MessageRespository;
 import com.carrot.nara.repository.PostImageRepository;
 import com.carrot.nara.repository.PostRepository;
 
@@ -25,6 +28,9 @@ public class SellService {
 
     private final PostRepository postRepository;
     private final PostImageRepository postImageRepository;
+    private final ChatRepository chatRepository;
+    private final MessageRespository messageRespository;
+    
     
     @Value("${com.carrot.nara.upload.path}")
     private String uploadPath;
@@ -88,7 +94,7 @@ public class SellService {
         postImageRepository.deleteByFileName(fileName);
     }
 
-    // 해당 ID의 포스트 글 삭제
+    // 해당 ID의 포스트 글 관련 이미지, 채팅 삭제
     public void deletePost(Integer id) {
         log.info("deletePost(id={})", id);
         postRepository.deleteById(id); // 포스트 글 삭제
@@ -100,5 +106,11 @@ public class SellService {
         }
         
         postImageRepository.deleteByPostId(id); // 포스트 글에 딸린 이미지 삭제
+        
+        List<Chat> chatListForDelete = chatRepository.findByPostId(id); // postId에 해당하는 삭제할 채팅방 찾아오기
+        for (Chat c : chatListForDelete) {
+            messageRespository.deleteByChatId(c.getId()); // 해당 chatID의 메세지 모두 삭제
+        }
+        chatRepository.deleteByPostId(id); // 해당 postID의 채팅방 모두 삭제
     }
 }

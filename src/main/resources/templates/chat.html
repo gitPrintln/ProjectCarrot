@@ -29,6 +29,13 @@
         overflow-y: auto; /* 수직 스크롤을 추가 */
     }
     
+    #myInfo img {
+        width: 25.5px;
+        height: 25.5px;
+        border-radius: 100%; 
+        object-fit: cover;
+    }
+    
     .sellInfo{
         text-align: left;
     }
@@ -80,8 +87,7 @@
         <!-- 내 상태 -->
         <div id="myInfo" style="margin-top: 5px; margin-bottom: 5px;">
             <div class="myImage" style="border: 1px solid;">
-                <span sec:authentication="principal.id"></span>
-                <img th:src="..." alt="내 프사"/>
+                <img th:src="${ '/img/user/'+ #authentication.principal.id }" alt="내 프사"/>
                 <span sec:authentication="principal.nickName"></span>
             </div>
         </div><!-- 내상태 끝 -->
