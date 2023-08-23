@@ -16,5 +16,8 @@ public interface PostImageRepository extends JpaRepository<PostImage, Integer>  
 
     // 해당 파일네임의 데이터를 삭제
     void deleteByFileName(String fileName);
+
+    // 해당 포스트 ID의 데이터를 삭제
+    void deleteByPostId(Integer id);
     
 }

@@ -30,7 +30,7 @@ window.addEventListener('DOMContentLoaded', () => {
         let content = document.querySelector('#content').value;
         const regionMain = document.querySelector('#regionMain').value;
         const detailRegion = document.querySelector('#detailRegion').value;
-
+        
         if (title == '' || category == '' || prices == '' || content == '') {
             alert('빠진 부분을 채워넣어주세요!');
             return;
@@ -78,7 +78,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     if(!initialImageData.includes(imgSrc)){ // ㄱ-초기 이미지 데이터에 저장되어 있지 않은 추가하려고 하는 추가 이미지만 DB에 저장
                         imageData.push(imgSrc);
                     } else{ // ㄴ-초기 이미지 중 삭제된 이미지 가려내서 로컬저장소와 DB에 삭제
-                        const indexToRemove = array.indexOf(imgSrc); // 해당 요소의 인덱스 값을 찾은 후
+                        const indexToRemove = initialImageData.indexOf(imgSrc); // 해당 요소의 인덱스 값을 찾은 후
                         initialImageData.splice(indexToRemove, 1); // 인덱스부터 시작해서 1개의 값을 제거
                     }
                 }
@@ -102,6 +102,11 @@ window.addEventListener('DOMContentLoaded', () => {
                     .catch(err => {alert(err+"!!!!");
                     });
                 
+           } else if(selectedImage.children.length === 0 && initialImageData.length > 0){ // 이미지가 있었지만 없앤 경우(원래 이미지를 모두 없애줌.)
+                axios.delete('/img/delete/db/' + initialImageData)
+                                .then(response => {console.log('이미지 삭제 완료');
+                                })
+                                .catch(err=>{console.log(err)});
            }
                 
                 
@@ -109,11 +114,11 @@ window.addEventListener('DOMContentLoaded', () => {
             // axios 작업 기다려 준 후 최종 제출.
             setTimeout(function(){
                 // (3) 그 외 나머지 정보 DB에 저장.
-                    document.querySelector('#formSell').submit();
-                    formSell.action = '/sell/modify';
-                    formSell.method = 'post';
-                    formSell.submit();
-            }, 75);
+                    document.querySelector('#formModify').submit();
+                    formModify.action = '/sell/modify';
+                    formModify.method = 'post';
+                    formModify.submit();
+            }, 100);
             
         }
         
@@ -125,7 +130,11 @@ window.addEventListener('DOMContentLoaded', () => {
     btnDelete.addEventListener('click', function(){
         const result = confirm('글을 삭제하게 되면 현재 판매와 관련된 채팅방은 삭제됩니다. 정말 삭제하시겠습니까?');
         if(result){
-            console.log('삭제 메서드를 만들어주시오')
+            alert('글을 삭제했습니다.')
+            document.querySelector('#formModify').submit();
+            formModify.action = '/sell/delete';
+            formModify.method = 'post';
+            formModify.submit();
         }
     });
     
@@ -136,7 +145,7 @@ window.addEventListener('DOMContentLoaded', () => {
     
 });
 
-const updated = false; // 수정 버튼 안누르고 다른 행위를 할 경우 이미지 정보를 원상복구시키기 위해
+let updated = false; // 수정 버튼 안누르고 다른 행위를 할 경우 이미지 정보를 원상복구시키기 위해
 
 // 수정하지 않고 페이지를 벗어날 시 발생하는 이벤트 리스너(실제 등록되지 않은 로컬저장소 이미지 삭제 - 원래이미지는 그냥 둠)
 window.addEventListener('beforeunload', function(event) {

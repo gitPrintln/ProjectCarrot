@@ -31,6 +31,31 @@
         background-color: w3-brown;
         opacity: 0.2;
     }
+    .pricesAndStatus {
+        position: relative;
+    }
+    .pricesInput {
+        display: inline-block;
+        width: 85%;
+    }
+    .statusInput {
+        text-align: center; 
+        width: 14%; 
+        cursor: pointer;
+        transition: transform 0.5s;
+    }
+    .statusInput:hover {
+        transform: scale(1.1);
+    }
+    .statusInput:focus {
+        opacity: 0.8;
+    }
+    .statusIcon {
+        position: absolute;
+        right: 0;
+        top: 50%; /* 수직 중앙 정렬 */
+        transform: translateY(-50%); /* 수직 중앙 조정 */
+    }
     
     </style>
 </head>
@@ -39,7 +64,7 @@
             <div class="w3-container w3-brown" style="margin-bottom: 30px;">
                 <h2>수정하기</h2>
             </div>
-            <form class="w3-container mb-5" id="formSell" method="post" action="/sell/modify">
+            <form class="w3-container mb-5" id="formModify" method="post" action="">
                 <div class="card">
                 <div class="imgContent" id="imgs">
                     <div class="mb-2"style="width:350px;">
@@ -80,8 +105,11 @@
                 </div>
                 <div class="contents">
                     <label class="w3-text-brown" for="prices"><span>&#8361;</span></label>
-                    <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="prices" name="prices" oninput="inNumber(event)"
-                     placeholder="숫자로만 입력하세요" th:value="${ p.prices }" required/></div>
+                    <div class="pricesAndStatus"><input class="pricesInput w3-input w3-border w3-hover-shadow w3-sand" id="prices" name="prices" oninput="inNumber(event)"
+                     placeholder="숫자로만 입력하세요" th:value="${ p.prices }" required/>
+                        <input class="statusInput w3-input w3-border w3-hover-shadow w3-sand w3-right" th:value="${ p.status }" id="status" name="status" readOnly/>
+                        <i class="statusIcon fa fa-caret-down"></i>
+                    </div>
                 </div>
                 <div class="contents">
                     <label class="w3-text-brown" for="content"><b>내용</b></label>
@@ -104,6 +132,7 @@
                 <div style="margin-top: 30px; margin-bottom: 30px;">
                     <button type="button" class="w3-btn w3-brown" id="btnUpdate">수정 하기</button>
                     <button type="button" class="w3-btn w3-brown" id="btnDelete">삭제 하기</button>
+                    <input type="hidden" id="id" name="id" th:value="${ p.id }"/>
                 </div>
                 </div><!-- postContent End -->
                 </div><!-- card End -->

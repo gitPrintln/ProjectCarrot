@@ -118,4 +118,14 @@ public class SellController {
         Integer postId = sellService.modify(dto);
         return "redirect:/sell/detail?id=" + postId;
     }
+    
+    // 포스트 글과 그 글의 이미지, 로컬저장소의 이미지 모두 삭제
+    @Transactional
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/delete")
+    public String delete(@AuthenticationPrincipal UserSecurityDto userDto, Integer id) {
+        log.info("sellUpdate(postID={})", id);
+        sellService.deletePost(id);
+        return "redirect:/list";
+    }
 }
