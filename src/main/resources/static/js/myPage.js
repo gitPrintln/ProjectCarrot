@@ -9,6 +9,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const imgInput = document.querySelector('#imgFile'); // 이미지 미리보기에 사용
     const previewProfileImg = document.querySelector('#previewProfileImg'); // 현재 이미지 태그
     const initialProfileImgSrc = previewProfileImg.src; // 원래 내 이미지 src를 저장(변경 취소했을 경우)
+    const userImage = document.querySelector('#userImage').value; // 저장되어 있는 유저 이미지
     
     // 변경할 프로필 이미지 미리보기
     imgInput.addEventListener('change', (event) => {
@@ -33,7 +34,13 @@ window.addEventListener('DOMContentLoaded', () => {
         */
         const file = new FormData();
         file.append('file', imgFile.files[0]);
-        
+        axios.delete('/img/upload/' + userImage)
+            .then(response => {
+                console.log("원래 이미지는 로컬에서 삭제됨.");
+            })
+            .catch(error => {
+                console.log(error);
+            });
         axios.post('/img/upload/profile', file)
             .then(response => { 
                 alert('프로필 이미지 변경 완료했습니다.');
@@ -43,7 +50,7 @@ window.addEventListener('DOMContentLoaded', () => {
             .catch(error => {
                 alert('파일 확장자는 jpeg, jpg, png, jfif 타입만 가능하며 최대 10MB을 넘지 않는지 확인해 주세요.')
                 console.log(error)
-                })
+                });
     });
     
     // 이미지 모달창 닫을 때 데이터 초기화 해주기

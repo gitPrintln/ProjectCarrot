@@ -47,7 +47,7 @@ window.addEventListener('DOMContentLoaded', () => {
             // (2) 이미지 파일들 확인
             const selectedImage = document.querySelector('#selectedImage');
             if(selectedImage.children.length > 0){ // 이미지가 있는 경우
-                const finalImgs = selectedImage.querySelectorAll('img')
+                const finalImgs = selectedImage.querySelectorAll('img');
                 
                 // Array.from()은 유사 배열 객체나 이터러블(iterable) 객체를 배열로 변환하는 메서드
                 // Array.from(iterable, mapFn, thisArg) 이런 형태

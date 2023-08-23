@@ -238,7 +238,7 @@ public class ImageUploadController {
     }
     
     /**
-     * 등록하려다가 안하는 경우에 로컬에 저장된 이미지를 삭제.
+     * 등록하려다가 안하는 경우에 로컬에 저장된 이미지들을 삭제.
      * @param temporaryData 최종 등록이 되지 않은 이미지 파일들의 이름들의 집합.
      * @return 성공 문자열
      */
@@ -250,6 +250,22 @@ public class ImageUploadController {
             file.delete();
         }
         
+        return ResponseEntity.ok("success");
+    }
+    
+    /**
+     * 저장되어 있는 이미지를 삭제하는 경우(로컬저장소와 DB에서 삭제)
+     * @param initialImageData 유저가 포스트글 업데이트를 통해 로컬저장소와 DB에 삭제하려는 이미지 파일들의 이름들의 집합.
+     * @return 성공 문자열
+     */
+    @DeleteMapping("/delete/db/{initialImageData}")
+    public ResponseEntity<String> deleteUpdatedImageFile(@PathVariable String[] initialImageData) {
+        log.info("deleteUpdatedImageFile()");
+        for (String f : initialImageData) {
+            File file = new File(uploadPath, f);
+            file.delete(); // 로컬에서 파일 삭제
+            sellService.deleteImg(f); // DB에서 파일 삭제
+        }
         return ResponseEntity.ok("success");
     }
     
