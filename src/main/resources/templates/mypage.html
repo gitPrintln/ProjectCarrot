@@ -54,18 +54,24 @@
         </div>
         
         <div class="infoContent">
-        <div class="label"><i class="fa-solid fa-pencil"></i>이름</div>
-            <input class="form-control" type="text" id="name" name="name" placeholder="이름" th:value="${ u.name }" readOnly/>
-        <div class="label"><i class="fa-solid fa-user-tag"></i>닉네임<span class="labelSpan" style="font-size: 22px; color: red;">*</span></div>
-            <input class="form-control" type="text" id="nickName" name="nickName" placeholder="사용할 닉네임" th:value="${ u.nickName }" required/>
-            <button type="button" class="nickCheckBtn w3-button w3-orange w3-round-large w3-hover-blue">중복 확인</button>
-        <div class="label"><i class="fa-solid fa-phone"></i>휴대폰 번호<span class="labelSpan" style="font-size: 22px; color: red;">*</span></div>
-            <input class="form-control" type="tel" id="phone" name="phone" placeholder="010-1234-5678" required maxlength="13" th:value="${ u.phone }"/>
-        <div class="label" style="margin-right: 18px;"><i class="fa-solid fa-envelope-o"></i>이메일</div>
-            <input class="form-control" type="email" id="email" name="email" placeholder="[선택] 비밀번호 분실 시 확인에 이용됩니다." th:value="${ u.email }" />
-        <div class="label" style="margin-right: 18px;"><i class="fa-solid fa-location-dot"></i>지역</div>
-            <input class="form-control" type="text" id="region" name="region" placeholder="[선택] 자주 이용할 지역"/>
-        </div>                  
+            <form id="formUpdate" method="post" action="/user/update">
+                <div class="label"><i class="fa-solid fa-pencil"></i>이름</div>
+                    <input class="form-control" type="text" id="name" name="name" placeholder="이름" th:value="${ u.name }" readOnly/>
+                <div class="label"><i class="fa-solid fa-user-tag"></i>닉네임<span class="labelSpan" style="font-size: 22px; color: red;">*</span></div>
+                    <input class="form-control" type="text" id="nickName" name="nickName" placeholder="사용할 닉네임" th:value="${ u.nickName }" required/>
+                    <div>
+                        <div id="nickAva" style="color: green; font-size: 8px; margin-left: 15px; display: none;">가능한 닉네임입니다.</div>
+                        <div id="nickUnava" style="color: red; font-size: 8px; margin-left: 15px; display: none;">불가능한 닉네임입니다.</div>
+                    </div>
+                    <button type="button" class="nickCheckBtn w3-button w3-orange w3-round-large w3-hover-blue">중복 확인</button>
+                <div class="label"><i class="fa-solid fa-phone"></i>휴대폰 번호<span class="labelSpan" style="font-size: 22px; color: red;">*</span></div>
+                    <input class="form-control" type="tel" id="phone" name="phone" placeholder="010-1234-5678" required maxlength="13" th:value="${ u.phone }"/>
+                <div class="label" style="margin-right: 18px;"><i class="fa-solid fa-envelope-o"></i>이메일</div>
+                    <input class="form-control" type="email" id="email" name="email" placeholder="[선택] 비밀번호 분실 시 확인에 이용됩니다." th:value="${ u.email }" />
+                <div class="label" style="margin-right: 18px;"><i class="fa-solid fa-location-dot"></i>지역</div>
+                    <input class="form-control" type="text" id="address" name="address" placeholder="[선택] 자주 이용할 지역" th:value="${ u.address }" />
+            </form>
+        </div><!-- infoContent End --> 
                     
         
                     
@@ -96,7 +102,7 @@
                     </div>
                  </div>
             </div>
-        </div>
+        </div><!-- 프로필 수정 모달 END -->
         
         <!-- 비밀번호 변경 모달 -->
         <div class="modal" id ="pwModal" tabindex="-1">
@@ -123,7 +129,7 @@
                     </div>
                  </div>
             </div>
-        </div>
+        </div><!-- 비밀번호 변경 모달 END -->
         
     <div class="sourceList">
         <div class="copyrightLink">

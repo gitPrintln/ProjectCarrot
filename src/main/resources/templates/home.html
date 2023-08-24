@@ -11,6 +11,7 @@
     <style>
         .mySlides img {
             margin-bottom: 50px;
+            cursor: pointer;
         }
     
     </style>
@@ -21,7 +22,7 @@
     <div class="w3-content" style="max-width:1000px;margin-top:16px">
             <!-- Automatic Slideshow Images -->
             <div class="slideContent" th:each="list : ${ mainImages }">
-                <div class="mySlides w3-display-container w3-center">
+                <div class="mySlides w3-display-container w3-center" th:id="${ list.postId }" th:onclick="|location.href='@{ /sell/detail?id=' + this.getAttribute('id') + '}'|">
                     <img th:src="${ '/img/view/'+ list.fileName }" style="width: 75%">
                     <div class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small">
                         <h3 th:text="${ list.originFileName }"></h3>

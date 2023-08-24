@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.carrot.nara.domain.User;
 import com.carrot.nara.dto.UserRegisterDto;
 import com.carrot.nara.dto.UserSecurityDto;
+import com.carrot.nara.dto.UserUpdateDto;
 import com.carrot.nara.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -113,6 +114,18 @@ public class UserService {
         log.info("saveUserProfileImage(userId={},imageFileName={})", userId, imageFileName);
         User user = userRepository.findById(userId).get();
         user.updateUserImage(imageFileName);
+    }
+
+    /**
+     * 사용자의 닉네임, 폰번호, 이메일, 지역을 수정함.
+     * @param id 업데이트할 사용자의 id
+     * @param dto 닉네임, 폰번호, 이메일, 지역
+     */
+    @Transactional
+    public void updateUserInfo(Integer id, UserUpdateDto dto) {
+        log.info("updateUserInfo()");
+        User user = userRepository.findById(id).get();
+        user.updateUserInfo(dto);
     }
 
 }

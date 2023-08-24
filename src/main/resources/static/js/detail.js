@@ -81,5 +81,8 @@ window.addEventListener('DOMContentLoaded', () => {
       x[slideIndex-1].style.display = "block";  
       dots[slideIndex-1].className += " w3-white";
     }
-    
+    function anonymousLogin(){
+        alert("로그인 후 이용 부탁드립니다.");
+        return;
+    }
     

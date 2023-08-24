@@ -14,5 +14,11 @@ public interface ChatRepository extends JpaRepository<Chat, Integer>   {
     // userId, postId, sellerId로 채팅방 불러오기
     Chat findByUserIdAndPostIdAndSellerId(Integer userId, Integer postId, Integer sellerId);
 
+    // postId로 삭제할 채팅방을 모두 찾기
+    List<Chat> findByPostId(Integer id);
+
+    // postID로 찾은 채팅방 모두 삭제
+    void deleteByPostId(Integer id);
+
 
 }

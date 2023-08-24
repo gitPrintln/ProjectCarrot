@@ -20,4 +20,8 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Modifying
     void upHits(@Param(value = "postId") Integer postId);
     
+    @Query(value = "UPDATE POST p SET p.chats = p.chats +1 WHERE p.id = :postId")
+    @Modifying
+    void upChats(@Param(value = "postId") Integer postId);
+    
 }

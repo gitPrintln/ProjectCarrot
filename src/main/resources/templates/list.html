@@ -18,18 +18,29 @@
                 th:onclick="|hitUp(this.getAttribute('id'), this.getAttribute('username')); location.href='@{ /sell/detail?id=' + this.getAttribute('id') + '}';|">
                 <!-- onclick함수와 href를 둘 다 하기위해서 |~함수(); location.href='';|로 구성을 했음. -->
                 <div class="image" style="display: table-cell; vertical-align: middle; margin-right: 10px; border: 1px solid; width:200px; height:200px;">
-                    <img th:src="${ '/img/view/'+ list.imageFileName }" th:style="${list.imageFileName != 'image-fill.png'} ? 'width:200px; height:200px;' : 'width:50px; height:50px;'">
+                    <img th:src="${ '/img/view/'+ list.imageFileName }" th:style="${list.imageFileName != 'image-fill.png'} ? 'width:200px; height:200px;' : 'width:90px; height:90px;'">
                     <!-- image가 있을 수도 있고 없을 수도 있기 때문에 있으면 앞의 style을 없으면 뒤의 스타일을 적용 -->
                 </div>
-                <div style="border: 1px solid; display: table-cell; width:200px; height:200px;">
+                <div style="border: 1px solid; display: table-cell; width:300px; height:200px;">
                     <div>
                         <span th:text="${ list.title }"></span>
                     </div>
                     <div>
-                        <span th:text="${ list.region }"></span>
+                        <span th:if="${ list.region != null }" style="font-size: 10px;" th:text="${ list.region.split(' ')[1] + ' ' + list.region.split(' ')[2] }"></span>
                     </div>
                     <div>
-                        <span th:text="${ list.prices }"></span>
+                        <span th:text="${ list.prices }"></span><span>&nbsp;원</span>
+                    </div>
+                    <div class="countInfo" style="font-size: 8px; color: gray;">
+                            <div style="margin: 2px; display: inline-block;">
+                                <span th:text ="${ '채팅 ' + list.chats }"></span>
+                            </div>
+                            <div style="margin: 2px; display: inline-block;">
+                                <span th:text ="${ '관심 ' + list.wishCount }"></span>
+                            </div>
+                            <div style="margin: 2px; display: inline-block;">
+                                <span th:text ="${ '조회 ' + list.hits }"></span>
+                            </div>
                     </div>
                     <div>
                         <span th:text="${ #temporals.format(list.modifiedTime, 'MM-dd HH:mm') }"></span>

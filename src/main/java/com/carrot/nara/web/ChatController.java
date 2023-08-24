@@ -176,6 +176,9 @@ public class ChatController {
         log.info("post글의 detail에서 채팅창으로 연결하는 경우 대화내역 없어서 생성해줄 경우");
         Chat newChatInfo = chatService.createNewChat(userId, postId, sellerId);
         chatId = newChatInfo.getId();
+        // post 도메인의 chat count 1 올려줌
+        postService.postChatPlus(postId);
+        
         // 민감한 정보나 중요한 작업에 대한 처리를 할 때, 보안적인 측면을 고려하여 POST 요청을 사용하고 결과를 리다이렉트로 전달하는 것은 좋은 선택이지만
         // 민감한 정보가 URL에 노출되지 않도록 POST 요청을 사용하는 것은 보안 측면에서 중요.
         // 비효율적이더라도 안전한 방법으로 처리하는 것이 항상 바람직함.(보안성 높아짐)

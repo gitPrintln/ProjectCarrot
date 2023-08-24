@@ -119,7 +119,7 @@ public class SellController {
         return "redirect:/sell/detail?id=" + postId;
     }
     
-    // 포스트 글과 그 글의 이미지, 로컬저장소의 이미지 모두 삭제
+    // 포스트 글과 그 글의 이미지, 로컬저장소의 이미지, 관련 채팅방 모두 삭제
     @Transactional
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/delete")
