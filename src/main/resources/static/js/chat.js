@@ -108,8 +108,7 @@
         } else { // 상대 채팅을 받을 경우(왼쪽)
             return '<div id="newResponseHistory" class="alert alert-info">'
                     + '<div style="width: 40px; margin-right: 15px; display: inline-block; float: left;">'
-                        + '<img class="rounded-circle" width="40" height="40" src="' + partnerProfile + '" style="margin-right:10px;">'
-                    + '</div>'
+                        + '<img class="rounded-circle" width="40" height="40" src=" ' + partnerProfile + ' }" style="margin-right:10px;">'
                     + '<div style="width: 320px; text-align: left; display: inline-block;">'
                         + '<div>' + messageObj.message.replace(/ /g, "&nbsp;") + '</div>'
                         + '<div style="width: 320px; text-align: left; style="font-size:10px; color:grey;">' + messageObj.sendTime + '</div><br/><br/>'
