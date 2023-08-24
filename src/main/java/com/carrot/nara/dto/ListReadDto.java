@@ -19,5 +19,8 @@ public class ListReadDto {
     private String title;
     private String region;
     private String prices;
+    private Integer chats;
+    private Integer wishCount;
+    private Integer hits;    
     private LocalDateTime modifiedTime;
 }

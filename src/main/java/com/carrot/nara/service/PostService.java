@@ -49,5 +49,12 @@ public class PostService {
         log.info("readImgsByPostId(), id={}", id);
         return postImageRepository.findByPostId(id);
     }
+
+    // 해당 포스트 글의 chat 카운트를 1올려줌.
+    @Transactional
+    public void postChatPlus(Integer postId) {
+        log.info("postChatPlus()");
+        postRepository.upChats(postId);
+    }
     
 }

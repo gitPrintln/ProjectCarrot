@@ -52,7 +52,8 @@ public class ListController {
             }
             ListReadDto listElement = ListReadDto.builder().id(p.getId()).imageFileName(imageFileName)
                     .title(p.getTitle()).region(p.getRegion())
-                    .prices(p.getPrices()).modifiedTime(p.getModifiedTime()).build();
+                    .prices(p.getPrices()).chats(p.getChats()).hits(p.getHits()).wishCount(p.getWishCount())
+                    .modifiedTime(p.getModifiedTime()).build();
             list.add(listElement);
         }
         

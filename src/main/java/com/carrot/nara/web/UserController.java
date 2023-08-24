@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.carrot.nara.dto.PwUpdateDto;
 import com.carrot.nara.dto.UserRegisterDto;
 import com.carrot.nara.dto.UserSecurityDto;
+import com.carrot.nara.dto.UserUpdateDto;
 import com.carrot.nara.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -119,6 +120,18 @@ public class UserController {
         userService.updatePassword(dto.getId(), newPw);
         result = true;
         return ResponseEntity.ok(result);
+    }
+    
+    /**
+     * 수정 완료버튼을 클릭했을 때 유저 정보를 수정하고, 다시 로그인시킴.
+     * @param dto 수정할 유저 정보
+     * @return
+     */
+    @PostMapping("/update")
+    public String userUpdate(@AuthenticationPrincipal UserSecurityDto user, UserUpdateDto dto) {
+        log.info("userUpdate(user={}, dto={})",user, dto);
+        userService.updateUserInfo(user.getId(), dto);
+        return "redirect:/logout";
     }
     
 }

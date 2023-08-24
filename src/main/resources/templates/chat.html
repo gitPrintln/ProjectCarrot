@@ -137,9 +137,11 @@
                 <!-- 판매 정보 -->
                     <tr>
                         <td>
-                            <img th:src="${ '/img/view/'+ sellInfo.imageFileName }" alt="글의 이미지">
+                            <a th:href="@{ '/sell/detail?id=' + ${ sellInfo.postId } }">
+                                <img th:src="${ '/img/view/'+ sellInfo.imageFileName }" alt="글의 이미지">
+                            </a>
                         </td>
-                        <td>
+                        <td style="cursor: pointer;" th:id="${ sellInfo.postId }" th:onclick="|location.href='@{ /sell/detail?id=' + this.getAttribute('id') + '}'|">
                             <span class="postTitle" th:text="${ sellInfo.title }"></span>
                             <div class="postPrices" th:text="${ sellInfo.prices } + '&nbsp;' + 원"></div><span th:text="${ sellInfo.region }"></span>
                         </td>

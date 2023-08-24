@@ -5,6 +5,8 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Value;
 
+import com.carrot.nara.dto.UserUpdateDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -80,6 +82,14 @@ public class User {
     
     public User updateUserImage(String userImage) { // 유저의 이미지 변경
         this.userImage = userImage;
+        return this;
+    }
+    
+    public User updateUserInfo(UserUpdateDto dto) { // 유저 닉네임, 휴대폰 번호, 이메일, 주소 변경
+        this.nickName = dto.getNickName();
+        this.phone = dto.getPhone();
+        this.email = dto.getEmail();
+        this.address = dto.getAddress();
         return this;
     }
 }
