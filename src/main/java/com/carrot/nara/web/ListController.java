@@ -8,7 +8,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.carrot.nara.domain.Post;
 import com.carrot.nara.domain.PostImage;
@@ -58,6 +60,13 @@ public class ListController {
         }
         
         model.addAttribute("list", list);
+        return "list";
+    }
+    
+    @Transactional(readOnly = true)
+    @GetMapping("/search/{keyword}")
+    public String listSearch(@PathVariable String keyword) {
+        log.info("list()");
         return "list";
     }
 }
