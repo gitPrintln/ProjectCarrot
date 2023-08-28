@@ -81,7 +81,7 @@ body {
         </th:block>
             <button type="button" th:onclick="searching(event);" class="w3-padding-large w3-button w3-hover-red w3-hide-small w3-right"><i class="fa fa-search"></i></button>
             <form class="searchForm" method="get" action="">
-            <input class="mainSearchInput w3-right" onkeydown="searchInputKeyDown(event)" type="text" style="background-color: black; border:0; border-bottom: 1px solid white; position: relative; top: 12px; margin-right: 5px; color:white;" width="20px;"/>
+            <input class="mainSearchInput w3-right" name="keyword" onkeydown="searchInputKeyDown(event)" type="text" style="background-color: black; border:0; border-bottom: 1px solid white; position: relative; top: 12px; margin-right: 5px; color:white;" width="20px;"/>
             </form>
             <input type="hidden" id="isSignInChk" th:value="${ #authentication.name }"/>
         </div>
@@ -146,6 +146,7 @@ body {
  
  
  // 검색 기능
+ const searchForm = document.querySelector('.searchForm');
  const mainSearchInput = document.querySelector('.mainSearchInput');
  function searching(event){
 	 event.preventDefault();
@@ -154,6 +155,10 @@ body {
 		 alert("검색어를 입력해 주세요!!");
 		 return;
 	 }
+	 searchForm.method = "get";
+	 searchForm.action = "/list/search"
+	 searchForm.submit();
+	 
  }
  // 검색창 폼 제출 Enter 방지
  function searchInputKeyDown(event){
