@@ -5,10 +5,9 @@
  window.addEventListener('DOMContentLoaded', () => {
     
     var stompClient = null;
-    var sender = $('#loginUser').val(); // 보내는 사람 senderNickName
-    console.log(sender);
+    var sender = $('#loginUser').val(); // 보내는 사람 senderNickName(현재 로그인 유저)
     var chatId = $('#chatId').val(); // 대화방의 id
-    var partnerProfile = null;
+    
     // invoke when DOM(Documents Object Model; HTML(<head>, <body>...etc) is ready
     $(document).ready(connect());
     
@@ -97,6 +96,7 @@
     }
     // 받은 메시지인지 내가 보낸 메시지인지 구별하여 출력하기 위함, message.replace(/ /g, "&nbsp;"): 공백도 그대로 표현
     function createTextNode(messageObj) {
+        console.log(partnerProfile)
         if(messageObj.sender == sender){ // 내가 채팅을 보낼 경우(오른쪽)
             return '<div style="width: 500px;">'
                     + '<div style="text-align: right; float: right; width:320px;" id="newHistory">'
@@ -106,14 +106,15 @@
                     + '</div>'
                  + '</div>';
         } else { // 상대 채팅을 받을 경우(왼쪽)
-            return '<div id="newResponseHistory" class="alert alert-info">'
-                    + '<div style="width: 40px; margin-right: 15px; display: inline-block; float: left;">'
-                        + '<img class="rounded-circle" width="40" height="40" src=" ' + partnerProfile + ' }" style="margin-right:10px;">'
-                    + '<div style="width: 320px; text-align: left; display: inline-block;">'
-                        + '<div>' + messageObj.message.replace(/ /g, "&nbsp;") + '</div>'
-                        + '<div style="width: 320px; text-align: left; style="font-size:10px; color:grey;">' + messageObj.sendTime + '</div><br/><br/>'
+            return '<div id="newResponseHistory">'
+                    + '<div style="width: 40px; margin-right: 15px; display: inline-block; float: left;">' 
+                        + '<img class="rounded-circle" width="25" height="25" src="' + partnerProfile + '" style="margin-right:10px;">'
                     + '</div>'
-                 + '</div>';
+                    + '<div style="text-align: left; float: left; width:320px;" >'
+                        + '<div style="text-align: left; width:320px; float: left;">' + messageObj.message.replace(/ /g, "&nbsp;") + '</div>'
+                        + '<div style="width: 320px; text-align: left; font-size:10px; color:grey;">' + messageObj.sendTime +'</div><br/><br/>'
+                    + '</div>'
+                + '</div>';
         }
     }
     
@@ -122,10 +123,6 @@
         $chatHistory = $('#content');
         $chatHistory.scrollTop($chatHistory[0].scrollHeight);
     }
-    
-    
-    
-    
     
     
     

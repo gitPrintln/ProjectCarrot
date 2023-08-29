@@ -201,6 +201,12 @@
     
     
 <th:block layout:fragment="script">
+    <script th:inline="javascript">
+    /*<![CDATA[*/
+    var partnerProfile = [[${ chatPartnerId }]];
+    /*]]>*/
+    console.log(partnerProfile)
+    </script>
     <script th:src="@{ /js/chat.js }"></script>
 </th:block>
 </body>
