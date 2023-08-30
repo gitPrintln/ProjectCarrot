@@ -129,12 +129,10 @@
                 <!-- 상대 정보 -->
                     <tr>
                         <td>
-                            <img th:if="${ sellInfo.sellerId != #authentication.principal.id }" th:src="${ '/img/user/'+ sellInfo.sellerId }" alt="상대 프사"/>
-                            <img th:if="${ sellInfo.sellerId == #authentication.principal.id }" th:src="${ '/img/user/'+ sellInfo.partnerId }" alt="상대 프사"/>
+                            <img id="chatPartnerProfileId" th:src="${ sellInfo.sellerId != #authentication.principal.id ? '/img/user/'+ sellInfo.sellerId : '/img/user/'+ sellInfo.partnerId }" alt="상대 프사"/>
                         </td>
                         <td>
-                            <span th:if="${ sellInfo.sellerId != #authentication.principal.id }" th:text="${ sellInfo.sellerNickName }">(상대 닉네임)</span>
-                            <span th:if="${ sellInfo.sellerId == #authentication.principal.id }" th:text="${ sellInfo.partnerNickName }">(상대 닉네임)</span>
+                            <span th:text="${ sellInfo.sellerId != #authentication.principal.id ? sellInfo.sellerNickName : sellInfo.partnerNickName}">(상대 닉네임)</span>
                         </td>
                     </tr>
                     
@@ -207,11 +205,6 @@
     
     
 <th:block layout:fragment="script">
-    <script th:inline="javascript">
-    /*<![CDATA[*/
-    var partnerProfile = [[${ chatPartnerId }]];
-    /*]]>*/
-    </script>
     <script th:src="@{ /js/chat.js }"></script>
 </th:block>
 </body>

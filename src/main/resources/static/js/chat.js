@@ -7,6 +7,7 @@
     var stompClient = null;
     var sender = $('#loginUser').val(); // 보내는 사람 senderNickName(현재 로그인 유저)
     var chatId = $('#chatId').val(); // 대화방의 id
+    var chatPartner = $('#chatPartnerProfileId').attr('src') // 상대방 채팅 이미지 src를 가져오기 위함. 채팅 상단바 채팅정보에 있는 정보(/img/user/chatProfileId)
     
     // invoke when DOM(Documents Object Model; HTML(<head>, <body>...etc) is ready
     $(document).ready(connect());
@@ -96,7 +97,6 @@
     }
     // 받은 메시지인지 내가 보낸 메시지인지 구별하여 출력하기 위함, message.replace(/ /g, "&nbsp;"): 공백도 그대로 표현
     function createTextNode(messageObj) {
-        console.log(partnerProfile)
         if(messageObj.sender == sender){ // 내가 채팅을 보낼 경우(오른쪽)
             return '<div style="display: flex; flex-direction: row;">'
                     + '<div id="messageContent">'
@@ -110,7 +110,7 @@
         } else { // 상대 채팅을 받을 경우(왼쪽)
             return '<div style="display: flex; flex-direction: row;" id="newResponseHistory">'
                     + '<div style="width: 40px; text-align: left; align-self: flex-start;" id="messageProfile">' 
-                        + `<img class="rounded-circle" width="40" height="40" src="/img/user/${ partnerProfile }">`
+                        + `<img class="rounded-circle" width="40" height="40" src="${ chatPartner }">`
                     + '</div>'
                     + '<div id="messageContent">'
                         + '<div style="text-align: left; align-self: flex-start; width:380px;" id="newHistory">'
