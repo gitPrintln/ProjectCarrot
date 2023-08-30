@@ -29,6 +29,13 @@ public class PostService {
         return postRepository.findAllByOrderByModifiedTimeDesc();
     }
     
+    // 검색 키워드에 해당하는 포스트글들을 최신순으로 불러와서 리스트를 전달.
+    @Transactional(readOnly = true)
+    public List<Post> readByKeywordByUpdateTime(String keyword) {
+        log.info("readByKeywordByUpdateTime()");
+        return postRepository.findByTitleContainingOrContentContainingOrderByModifiedTimeDesc(keyword, keyword);
+    }
+    
     // 모든 포스트글들을 최신순으로 불러와서 리스트를 전달.
     @Transactional(readOnly = true)
     public PostImage readThumbnail(Integer postId){
@@ -56,5 +63,7 @@ public class PostService {
         log.info("postChatPlus()");
         postRepository.upChats(postId);
     }
+
+    
     
 }

@@ -5,10 +5,10 @@
  window.addEventListener('DOMContentLoaded', () => {
     
     var stompClient = null;
-    var sender = $('#loginUser').val(); // 보내는 사람 senderNickName
-    console.log(sender);
+    var sender = $('#loginUser').val(); // 보내는 사람 senderNickName(현재 로그인 유저)
     var chatId = $('#chatId').val(); // 대화방의 id
-    var partnerProfile = null;
+    var chatPartner = $('#chatPartnerProfileId').attr('src') // 상대방 채팅 이미지 src를 가져오기 위함. 채팅 상단바 채팅정보에 있는 정보(/img/user/chatProfileId)
+    
     // invoke when DOM(Documents Object Model; HTML(<head>, <body>...etc) is ready
     $(document).ready(connect());
     
@@ -98,23 +98,27 @@
     // 받은 메시지인지 내가 보낸 메시지인지 구별하여 출력하기 위함, message.replace(/ /g, "&nbsp;"): 공백도 그대로 표현
     function createTextNode(messageObj) {
         if(messageObj.sender == sender){ // 내가 채팅을 보낼 경우(오른쪽)
-            return '<div style="width: 500px;">'
-                    + '<div style="text-align: right; float: right; width:320px;" id="newHistory">'
-                        + '<div style="text-align: right; width:320px;">' + messageObj.message.replace(/ /g, "&nbsp;") + '</div>'
-                        + '<div style="width: 320px; text-align: right; font-size:10px; color:grey;">' + messageObj.sendTime + '</div>'
-                        + '<div id="reads" style="color:dodgerblue;">1</div>'
+            return '<div style="display: flex; flex-direction: row;">'
+                    + '<div id="messageContent">'
+                        + '<div style="text-align: right; align-self: flex-end; width: 380px;">'
+                            + '<div>' + messageObj.message.replace(/ /g, "&nbsp;") + '</div>'
+                            + '<div style="font-size:10px; color:grey;">' + messageObj.sendTime + '</div>'
+                            + '<div id="reads" style="color:dodgerblue;">1</div>'
+                        + '</div>'
                     + '</div>'
                  + '</div>';
         } else { // 상대 채팅을 받을 경우(왼쪽)
-            return '<div id="newResponseHistory" class="alert alert-info">'
-                    + '<div style="width: 40px; margin-right: 15px; display: inline-block; float: left;">'
-                        + '<img class="rounded-circle" width="40" height="40" src="' + partnerProfile + '" style="margin-right:10px;">'
+            return '<div style="display: flex; flex-direction: row;" id="newResponseHistory">'
+                    + '<div style="width: 40px; text-align: left; align-self: flex-start;" id="messageProfile">' 
+                        + `<img class="rounded-circle" width="40" height="40" src="${ chatPartner }">`
                     + '</div>'
-                    + '<div style="width: 320px; text-align: left; display: inline-block;">'
-                        + '<div>' + messageObj.message.replace(/ /g, "&nbsp;") + '</div>'
-                        + '<div style="width: 320px; text-align: left; style="font-size:10px; color:grey;">' + messageObj.sendTime + '</div><br/><br/>'
+                    + '<div id="messageContent">'
+                        + '<div style="text-align: left; align-self: flex-start; width:380px;" id="newHistory">'
+                            + '<div>' + messageObj.message.replace(/ /g, "&nbsp;") + '</div>'
+                            + '<div style="font-size:10px; color:grey;">' + messageObj.sendTime + '</div><br/>'
+                        + '</div>'
                     + '</div>'
-                 + '</div>';
+                + '</div>';
         }
     }
     
@@ -123,10 +127,6 @@
         $chatHistory = $('#content');
         $chatHistory.scrollTop($chatHistory[0].scrollHeight);
     }
-    
-    
-    
-    
     
     
     

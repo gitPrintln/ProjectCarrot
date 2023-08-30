@@ -105,6 +105,10 @@ public class ChatController {
                 // Graceful Degradation(우아한 저하) 원칙
                 // Thymeleaf 템플릿에서는 model.addAttribute()를 통해 전달받은 데이터를 출력할 때, 해당 데이터가 없는 경우에도 일반적으로 오류가 발생 x
                 
+                // 채팅 중인 상대방의 id(상대방 id를 전달해야하기 때문에 상대의 id를 보냄)
+                model.addAttribute("chatPartnerId", userId.equals(chatByTop.getUserId()) ? list.get(0).getSellerId() : chatByTop.getUserId());
+                
+                // 채팅에서 주고받은 메세지 내역
                 message = chatService.readHistory(chatId);
                 model.addAttribute("chatHistory", message);
             }
@@ -143,6 +147,10 @@ public class ChatController {
 
         model.addAttribute("currentChat", nowChat);
         
+        // 채팅 중인 상대방의 id(상대방 id를 전달해야하기 때문에 상대의 id를 보냄)
+        model.addAttribute("chatPartnerId", userId.equals(sellerId) ? partnerId : sellerId);
+        
+        // 채팅에서 주고받은 메세지 내역
         message = chatService.readHistory(chatId);
         model.addAttribute("chatHistory", message);
         return "chat";
