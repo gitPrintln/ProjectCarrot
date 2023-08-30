@@ -98,21 +98,25 @@
     function createTextNode(messageObj) {
         console.log(partnerProfile)
         if(messageObj.sender == sender){ // 내가 채팅을 보낼 경우(오른쪽)
-            return '<div style="width: 500px;">'
-                    + '<div style="text-align: right; float: right; width:320px;" id="newHistory">'
-                        + '<div style="text-align: right; width:320px;">' + messageObj.message.replace(/ /g, "&nbsp;") + '</div>'
-                        + '<div style="width: 320px; text-align: right; font-size:10px; color:grey;">' + messageObj.sendTime + '</div>'
-                        + '<div id="reads" style="color:dodgerblue;">1</div>'
+            return '<div style="display: flex; flex-direction: row;">'
+                    + '<div id="messageContent">'
+                        + '<div style="text-align: right; align-self: flex-end; width: 380px;">'
+                            + '<div>' + messageObj.message.replace(/ /g, "&nbsp;") + '</div>'
+                            + '<div style="font-size:10px; color:grey;">' + messageObj.sendTime + '</div>'
+                            + '<div id="reads" style="color:dodgerblue;">1</div>'
+                        + '</div>'
                     + '</div>'
                  + '</div>';
         } else { // 상대 채팅을 받을 경우(왼쪽)
-            return '<div id="newResponseHistory">'
-                    + '<div style="width: 40px; margin-right: 15px; display: inline-block; float: left;">' 
-                        + '<img class="rounded-circle" width="25" height="25" src="' + partnerProfile + '" style="margin-right:10px;">'
+            return '<div style="display: flex; flex-direction: row;" id="newResponseHistory">'
+                    + '<div style="width: 40px; text-align: left; align-self: flex-start;" id="messageProfile">' 
+                        + `<img class="rounded-circle" width="40" height="40" src="/img/user/${ partnerProfile }">`
                     + '</div>'
-                    + '<div style="text-align: left; float: left; width:320px;" >'
-                        + '<div style="text-align: left; width:320px; float: left;">' + messageObj.message.replace(/ /g, "&nbsp;") + '</div>'
-                        + '<div style="width: 320px; text-align: left; font-size:10px; color:grey;">' + messageObj.sendTime +'</div><br/><br/>'
+                    + '<div id="messageContent">'
+                        + '<div style="text-align: left; align-self: flex-start; width:380px;" id="newHistory">'
+                            + '<div>' + messageObj.message.replace(/ /g, "&nbsp;") + '</div>'
+                            + '<div style="font-size:10px; color:grey;">' + messageObj.sendTime + '</div><br/>'
+                        + '</div>'
                     + '</div>'
                 + '</div>';
         }

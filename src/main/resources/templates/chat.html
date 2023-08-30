@@ -54,7 +54,11 @@
         border-top: 1px solid;
         border-bottom: 1px solid;
     }
-    
+    #messageContent{
+        width: 98%; 
+        display: flex; 
+        flex-direction: column;
+    }
     #sendChatGroup {
         position: relative;
         text-align: right;
@@ -178,14 +182,16 @@
             </div>
             <!-- 내용 -->
             <div id="content">
-                    <div th:each="chat : ${ chatHistory }" style="width: 500px;">
-                        <div th:if="${ chat.sender != #authentication.principal.nickName }" style="width: 40px; float: left;" id="newResponseHistory" >
-                            <img class="rounded-circle" width="40" height="40" src="..." style="margin-right:10px;">
+                    <div th:each="chat : ${ chatHistory }" style="display: flex; flex-direction: row;">
+                        <div th:if="${ chat.sender != #authentication.principal.nickName }" style="width: 40px; text-align: left; align-self: flex-start;" id="messageProfile">
+                            <img class="rounded-circle" width="40" height="40" th:src="${ '/img/user/' + chatPartnerId }">
                         </div>
-                        <div th:style="${ chat.sender == #authentication.principal.nickName } ? 'text-align: right; width:320px; float:right;' : 'text-align: left; width:320px; float:left;'" id="history">
+                        <div id="messageContent">
+                            <div th:style="${ chat.sender == #authentication.principal.nickName } ? 'text-align: right; align-self: flex-end; width: 380px;' : 'text-align: left; align-self: flex-start; width:380px;'" >
                                 <div th:text="${ chat.message }"></div>
                                 <div style="font-size:10px; color:grey;" th:text="${ chat.sendTime }"></div>
-                            <div id="reads" style="color: dodgerblue;">1</div>
+                                <div id="reads" style="color: dodgerblue;">1</div><br/>
+                            </div>
                         </div>
                     </div>
             </div>
@@ -205,7 +211,6 @@
     /*<![CDATA[*/
     var partnerProfile = [[${ chatPartnerId }]];
     /*]]>*/
-    console.log(partnerProfile)
     </script>
     <script th:src="@{ /js/chat.js }"></script>
 </th:block>
