@@ -47,9 +47,16 @@ public class RedisService {
         log.info("getLastChat(id={})", chatId);
         String lastChat = getLastChatFromCache(chatId);
         if(lastChat == null) { // 캐시 데이터가 없으면 oracle sql에서 조회후 찾아와서 캐시에 저장.
-            lastChat = messageRespository.findFirstByChatId(chatId).getMessage();
+            lastChat = messageRespository.findFirstByChatIdOrderByModifiedTimeDesc(chatId).getMessage();
             setCacheLastChat(chatId, lastChat);
         }
         return lastChat;
+    }
+
+    // lastChat이 바뀌었을 경우. redis 캐시도 수정해줌.
+    public void modifiedLastChat(Integer chatId, String message) {
+        log.info("modifiedLastChat()");
+        String id = "chatId: " + chatId;
+        redisTemplate.opsForValue().set(id, message);
     }
 }

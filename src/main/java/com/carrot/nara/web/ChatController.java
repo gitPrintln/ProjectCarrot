@@ -54,7 +54,9 @@ public class ChatController {
     @GetMapping("/chat")
     public String chat(@AuthenticationPrincipal UserSecurityDto userDto, Integer chatId, Model model) {
         log.info("get-chat(user={},{})", userDto.getNickName(), chatId);
-        Integer userId = userDto.getId(); // 로그인한 유저
+        Integer userId = userDto.getId(); // 로그인한 유저의 Id
+        String userNick = userDto.getNickName(); // 로그인한 유저의 닉네임
+        
         
         // 내가 속해 있는 모든 대화 채팅 목록(어디서 채팅방으로 들어가던지 공통)
         List<Chat> chatList = chatService.myChatList(userId);
@@ -108,6 +110,9 @@ public class ChatController {
                 // 채팅 중인 상대방의 id(상대방 id를 전달해야하기 때문에 상대의 id를 보냄)
                 model.addAttribute("chatPartnerId", userId.equals(chatByTop.getUserId()) ? list.get(0).getSellerId() : chatByTop.getUserId());
                 
+                // 대화방에 들어왔기 때문에 상대방의 안읽은 메세지를 읽음으로 처리.(해당채팅방의 ID, 보내는 사람의 닉네임(보내는 사람이기 때문에 DB에는 보내는 사람이 아닌 상대편의 안읽은 메세지를 읽음으로 바꿔야함.))
+                readProcess(chatId, userNick);
+                
                 // 채팅에서 주고받은 메세지 내역
                 message = chatService.readHistory(chatId);
                 model.addAttribute("chatHistory", message);
@@ -149,6 +154,9 @@ public class ChatController {
         
         // 채팅 중인 상대방의 id(상대방 id를 전달해야하기 때문에 상대의 id를 보냄)
         model.addAttribute("chatPartnerId", userId.equals(sellerId) ? partnerId : sellerId);
+        
+        // 대화방에 들어왔기 때문에 상대방의 안읽은 메세지를 읽음으로 처리.(해당채팅방의 ID, 보내는 사람의 닉네임(보내는 사람이기 때문에 DB에는 보내는 사람이 아닌 상대편의 안읽은 메세지를 읽음으로 바꿔야함.))
+        readProcess(chatId, userNick);
         
         // 채팅에서 주고받은 메세지 내역
         message = chatService.readHistory(chatId);
@@ -209,5 +217,14 @@ public class ChatController {
         simpMessagingTemplate.convertAndSend(url, new MessageReadDto(dto.getSender(), dto.getMessage(), dto.getSendTime()));
     }
     
+    /**
+     * chatId에 해당하는 안읽은 메세지를 읽었다고 바꿈.(내 채팅 list에서 사용함)
+     * @param ChatId 해당 채팅방의 ID
+     * @param userNick 로그인한 유저 닉네임이므로 DB에는 이 userNick을 제외한 nick에 해당하는 메세지를 읽음 처리.
+     */
+    private void readProcess(Integer chatId, String userNick) {
+        log.info("readProcess()");
+        chatService.unreadToRead(chatId, userNick);
+    }
     
 }

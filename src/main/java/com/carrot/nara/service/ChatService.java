@@ -23,6 +23,7 @@ public class ChatService {
 
     private final ChatRepository chatRepository;
     private final MessageRespository messageRespository;
+    private final RedisService redisService;
     
     @Transactional(readOnly = true)
     public List<Chat> myChatList(Integer userId){
@@ -66,18 +67,22 @@ public class ChatService {
         return chatRepository.findById(chatId).get();
     }
     
-    // 메세지를 SQL에 저장(채팅방 id, 보낸이, 메세지 내용 순으로)
+    // 메세지를 SQL에 저장(채팅방 id, 보낸이, 메세지 내용 순으로), lastChat의 redis 캐시를 수정해줌.
     @Transactional
     public void newMessage(Integer chatId, MessageReadDto dto) {
         log.info("newMessage()");
+        // 메세지를 oracle sql DB에 저장.
         MessageCreateDto entity = MessageCreateDto.builder().chatId(chatId).senderNickName(dto.getSender())
                 .message(dto.getMessage()).sendTime(dto.getSendTime()).build();
         messageRespository.save(entity.toEntity(chatId));
+        // redis 캐시에 저장.
+        redisService.modifiedLastChat(chatId, entity.getMessage());
     }
 
     // chatId에 해당하는 채팅 리스트를 불러옴.
     @Transactional(readOnly = true)
     public List<MessageReadDto> readHistory(Integer chatId) {
+        log.info("readHistory()");
         List<Message> message = messageRespository.findAllByChatId(chatId);
         List<MessageReadDto> list = new ArrayList<>();
         for (Message m : message) {
@@ -86,6 +91,12 @@ public class ChatService {
             list.add(entity);
         }
         return list;
+    }
+
+    // 안읽은 메세지를 읽음으로 처리 하기 위해서(message table에서 read 1->0)
+    public void unreadToRead(Integer chatId, String userNick) {
+        log.info("unreadToRead()");
+        messageRespository.unreadToReadMessage(chatId, userNick);
     }
     
 }
