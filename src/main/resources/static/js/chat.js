@@ -8,7 +8,7 @@
     var sender = $('#loginUser').val(); // 보내는 사람 senderNickName(현재 로그인 유저)
     var chatId = $('#chatId').val(); // 대화방의 id
     var chatPartner = $('#chatPartnerProfileId').attr('src') // 상대방 채팅 이미지 src를 가져오기 위함. 채팅 상단바 채팅정보에 있는 정보(/img/user/chatProfileId)
-    
+    var chatPartnerId = chatPartner.split("/")[3];
     // invoke when DOM(Documents Object Model; HTML(<head>, <body>...etc) is ready
     $(document).ready(connect());
     
@@ -16,19 +16,26 @@
     function connect() {
             // map URL using SockJS 
             var socket = new SockJS('/chat');
-            var url = '/user/queue/messages';
+            var url = '/user/queue/messages/' + chatId;
+            var notificationUrl = '/user/notification/' + chatId + "/" + chatPartnerId;
             // webSocket 대신 SockJS을 사용하므로 Stomp.client()가 아닌 Stomp.over()를 사용함
             stompClient = Stomp.over(socket);
             // connect(header, connectCallback(==연결에 성공하면 실행되는 메서드))
             stompClient.connect({}, function() { 
                 autofocus();
                 
-                // url: 채팅방 참여자들에게 공유되는 경로
+                // url: 채팅방 참여자들에게 공유되는 경로(message용)
                 // callback(function()): 클라이언트가 서버(Controller broker)로부터 메시지를 수신했을 때(== STOMP send()가 실행되었을 때) 실행
                 stompClient.subscribe(url, function(output) { // 메세지에 관한 구독
                     // html <body>에 append할 메시지 contents
                     showBroadcastMessage(createTextNode(JSON.parse(output.body)));
                     autofocus();
+                });
+                
+                // notificationUrl: 채팅방 참여자들에게 공유되는 경로(알림용) 읽음/안읽음 등
+                stompClient.subscribe(notificationUrl, function(){
+                    // TODO: 상대방이 채팅방에 왔음을 알리는 경우, 1을 지워준다든지
+                    
                 });
                 }, 
                     // connect() 에러 발생 시 실행
@@ -130,5 +137,9 @@
     
     
     
+});
+
+// 페이지를 이탈하는 순간, 상대에게 알리기 위해 => redis loginUser 제외, 궁극적으로 안읽음 상태로 남기위해
+window.addEventListener('beforeunload', function(event) {
     
 });

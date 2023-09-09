@@ -81,8 +81,4 @@ public class RedisService {
         redisTemplate.delete(ids);
     }
     
-    // 메세지를 안읽음
-    public void readMessage() {
-        
-    }
 }
