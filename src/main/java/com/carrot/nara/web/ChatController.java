@@ -211,5 +211,12 @@ public class ChatController {
         simpMessagingTemplate.convertAndSend(url, new MessageReadDto(dto.getSender(), dto.getMessage(), dto.getSendTime()));
     }
     
-    
+    @MessageMapping("/entrance/{chatId}")
+    public void loginAlarm(@DestinationVariable Integer chatId, String alarmInfo) throws IOException{
+        log.info("loginAlarm(chatId={}, alarmInfo={})", chatId, alarmInfo);
+        
+        // TODO: 로그인했을 경우 신호를 받았으니 redis에 저장하고, url을 채팅 상대방에게 설정해서 convertAndSend해야지 상대방 화면에서 안읽음 메세지를 읽음으로바꾸지
+        // 그리고 더불어서 redis에서 로그인 유저 관리하는 로직 짜고 그 설정이 계속 설정되어있는 한 계속해서 읽음으로 보내도록 해야겠지(위의 메세지 메핑에서)
+        // simpMessagingTemplate.convertAndSend(url, new MessageReadDto(dto.getSender(), dto.getMessage(), dto.getSendTime()));
+    }
 }

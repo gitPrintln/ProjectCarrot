@@ -23,6 +23,7 @@
             // connect(header, connectCallback(==연결에 성공하면 실행되는 메서드))
             stompClient.connect({}, function() { 
                 autofocus();
+                loginAlarm(); // redis에 채팅방에 접속했음을 저장하고 상대에게는 채팅방에 들어왔음을 알림(안읽은 메세지를 읽음으로)
                 
                 // url: 채팅방 참여자들에게 공유되는 경로(message용)
                 // callback(function()): 클라이언트가 서버(Controller broker)로부터 메시지를 수신했을 때(== STOMP send()가 실행되었을 때) 실행
@@ -135,7 +136,11 @@
         $chatHistory.scrollTop($chatHistory[0].scrollHeight);
     }
     
-    
+    // Redis에 채팅방에 접속중인 유저로 저장하고 채팅방에 들어왔음을 알림(안읽은 메세지를 읽음으로)
+    function loginAlarm(){
+        const json = {'chatId': chatId, 'loginUser': sender};
+        stompClient.send("/app/entrance/" + chatId, {}, JSON.stringify(json));
+    }
     
 });
 
