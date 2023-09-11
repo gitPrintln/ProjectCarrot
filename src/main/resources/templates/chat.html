@@ -93,7 +93,7 @@
         <!-- 내 상태 -->
         <div id="myInfo" style="margin-top: 5px; margin-bottom: 5px;">
             <div class="myImage" style="border: 1px solid;">
-                <img th:src="${ '/img/user/'+ #authentication.principal.id }" alt="내 프사"/>
+                <img id="loginUserId" th:src="${ '/img/user/'+ #authentication.principal.id }" alt="내 프사"/>
                 <span sec:authentication="principal.nickName"></span>
             </div>
         </div><!-- 내상태 끝 -->

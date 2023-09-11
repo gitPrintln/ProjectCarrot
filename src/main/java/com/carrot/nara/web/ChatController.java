@@ -21,12 +21,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.carrot.nara.domain.Chat;
 import com.carrot.nara.domain.Post;
 import com.carrot.nara.domain.PostImage;
+import com.carrot.nara.dto.ChatAlarmDto;
 import com.carrot.nara.dto.ChatListDto;
 import com.carrot.nara.dto.CurrentChatDto;
 import com.carrot.nara.dto.MessageReadDto;
 import com.carrot.nara.dto.UserSecurityDto;
 import com.carrot.nara.service.ChatService;
 import com.carrot.nara.service.PostService;
+import com.carrot.nara.service.RedisService;
 import com.carrot.nara.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +48,8 @@ public class ChatController {
     private UserService userService;
     @Autowired
     private PostService postService;
-    
+    @Autowired
+    private RedisService redisService;
     
     // 주의: @GetMapping, @PostMapping 에서 @RequestMapping이 공유 되지만 @MessageMapping에서는 공유 안됨.
     @Transactional
@@ -211,12 +214,15 @@ public class ChatController {
         simpMessagingTemplate.convertAndSend(url, new MessageReadDto(dto.getSender(), dto.getMessage(), dto.getSendTime()));
     }
     
-    @MessageMapping("/entrance/{chatId}")
-    public void loginAlarm(@DestinationVariable Integer chatId, String alarmInfo) throws IOException{
-        log.info("loginAlarm(chatId={}, alarmInfo={})", chatId, alarmInfo);
+    @MessageMapping("/chatEntry/{chatId}")
+    public void loginAlarm(@DestinationVariable Integer chatId, ChatAlarmDto dto) throws IOException{
+        log.info("loginAlarm(chatId={}, loginUser={}, loginUserId={})", chatId, dto.getUserNick(), dto.getUserId());
         
-        // TODO: 로그인했을 경우 신호를 받았으니 redis에 저장하고, url을 채팅 상대방에게 설정해서 convertAndSend해야지 상대방 화면에서 안읽음 메세지를 읽음으로바꾸지
-        // 그리고 더불어서 redis에서 로그인 유저 관리하는 로직 짜고 그 설정이 계속 설정되어있는 한 계속해서 읽음으로 보내도록 해야겠지(위의 메세지 메핑에서)
-        // simpMessagingTemplate.convertAndSend(url, new MessageReadDto(dto.getSender(), dto.getMessage(), dto.getSendTime()));
+        // 이제 로그인하는 경우 redis에 저장
+        redisService.registerLogInChatRoom(chatId, dto.getUserNick());
+        
+        // url을 채팅 상대방에게 설정해서 convertAndSend해야지 상대방 화면에서 안읽음 메세지를 읽음으로바꾸지
+        String url = "/user/notification/" + chatId + "/" + dto.getUserId();
+        simpMessagingTemplate.convertAndSend(url, "ChatPartner's Entrance");
     }
 }

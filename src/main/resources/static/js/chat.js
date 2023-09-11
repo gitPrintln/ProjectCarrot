@@ -6,9 +6,11 @@
     
     var stompClient = null;
     var sender = $('#loginUser').val(); // 보내는 사람 senderNickName(현재 로그인 유저)
+    var senderId = $('#loginUserId').attr('src').split("/")[3]; // 보내는 사람(로그인 유저의 Id를 따옴)
     var chatId = $('#chatId').val(); // 대화방의 id
     var chatPartner = $('#chatPartnerProfileId').attr('src') // 상대방 채팅 이미지 src를 가져오기 위함. 채팅 상단바 채팅정보에 있는 정보(/img/user/chatProfileId)
     var chatPartnerId = chatPartner.split("/")[3];
+    
     // invoke when DOM(Documents Object Model; HTML(<head>, <body>...etc) is ready
     $(document).ready(connect());
     
@@ -34,9 +36,8 @@
                 });
                 
                 // notificationUrl: 채팅방 참여자들에게 공유되는 경로(알림용) 읽음/안읽음 등
-                stompClient.subscribe(notificationUrl, function(){
-                    // TODO: 상대방이 채팅방에 왔음을 알리는 경우, 1을 지워준다든지
-                    
+                stompClient.subscribe(notificationUrl, function(output){
+                    chatPartnerLogIn(output.body);
                 });
                 }, 
                     // connect() 에러 발생 시 실행
@@ -138,10 +139,16 @@
     
     // Redis에 채팅방에 접속중인 유저로 저장하고 채팅방에 들어왔음을 알림(안읽은 메세지를 읽음으로)
     function loginAlarm(){
-        const json = {'chatId': chatId, 'loginUser': sender};
-        stompClient.send("/app/entrance/" + chatId, {}, JSON.stringify(json));
+        const json = {'userNick': sender, 'userId': senderId};
+        stompClient.send("/app/chatEntry/" + chatId, {}, JSON.stringify(json));
     }
     
+    function chatPartnerLogIn(str){
+        if(str === "ChatPartner's Entrance"){
+             console.log("상대방로그인입니다.")
+            // TODO: 안읽음으로 읽음 바꿔줌전부.
+        } 
+    }
 });
 
 // 페이지를 이탈하는 순간, 상대에게 알리기 위해 => redis loginUser 제외, 궁극적으로 안읽음 상태로 남기위해
