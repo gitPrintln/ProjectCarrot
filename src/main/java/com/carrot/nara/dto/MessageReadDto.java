@@ -16,6 +16,7 @@ public class MessageReadDto {
     private String sender;
     private String message;
     private String sendTime;
+    private Integer read;
     
     public MessageReadDto() {}
 }

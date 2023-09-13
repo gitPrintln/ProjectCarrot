@@ -112,7 +112,7 @@
                         + '<div style="text-align: right; align-self: flex-end; width: 380px;">'
                             + '<div>' + messageObj.message.replace(/ /g, "&nbsp;") + '</div>'
                             + '<div style="font-size:10px; color:grey;">' + messageObj.sendTime + '</div>'
-                            + '<div id="reads" style="color:dodgerblue;">1</div>'
+                            + '<div id="reads" style="color:dodgerblue;">' + messageObj.read + '</div>'
                         + '</div>'
                     + '</div>'
                  + '</div>';
@@ -149,6 +149,7 @@
             // TODO: 안읽음으로 읽음 바꿔줌전부.
         } 
     }
+    
 });
 
 // 페이지를 이탈하는 순간, 상대에게 알리기 위해 => redis loginUser 제외, 궁극적으로 안읽음 상태로 남기위해

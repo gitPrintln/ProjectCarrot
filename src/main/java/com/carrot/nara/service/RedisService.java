@@ -1,10 +1,14 @@
 package com.carrot.nara.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.carrot.nara.domain.Message;
+import com.carrot.nara.domain.PostImage;
 import com.carrot.nara.repository.MessageRespository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +51,13 @@ public class RedisService {
         log.info("getLastChat(id={})", chatId);
         String lastChat = getLastChatFromCache(chatId);
         if(lastChat == null) { // 캐시 데이터가 없으면 oracle sql에서 조회후 찾아와서 캐시에 저장.
-            lastChat = messageRespository.findFirstByChatIdOrderByModifiedTimeDesc(chatId).getMessage();
+            // 방만 만들어져있고 채팅 내용이 없을 경우가 있을 수 있으므로
+            Optional<Message> message = Optional.ofNullable(messageRespository.findFirstByChatIdOrderByModifiedTimeDesc(chatId));
+            if(message.isPresent()) {
+                lastChat = message.get().getMessage();
+            } else {
+                lastChat = "";
+            }
             setCacheLastChat(chatId, lastChat);
         }
         return lastChat;
@@ -61,23 +71,23 @@ public class RedisService {
     }
     
     // 채팅방에 로그인 되어 있는 지 조회(있으면 true, 없으면 false)
-    public boolean isLogInChatRoom(Integer chatId, String userNick) {
+    public boolean isLogInChatRoom(Integer chatId, Integer userId) {
         log.info("loginChatRoom()");
-        String ids = "loginuser. chatId: " + chatId + ", userNick: " + userNick;
+        String ids = "loginuser. chatId: " + chatId + ", userId: " + userId;
         return redisTemplate.hasKey(ids);
     }
     
     // 채팅방에 로그인 중인 유저로 등록. loginuser key값 등록
-    public void registerLogInChatRoom(Integer chatId, String userNick) {
+    public void registerLogInChatRoom(Integer chatId, Integer userId) {
         log.info("registerLoginChatRoom()");
-        String ids = "loginuser. chatId: " + chatId + ", userNick: " + userNick;
+        String ids = "loginuser. chatId: " + chatId + ", userId: " + userId;
         redisTemplate.opsForValue().set(ids, "Log In");
     }
     
     // 채팅방에서 로그아웃 했으므로 loginuser key값 삭제
-    public void logOutChatRoom(Integer chatId, String userNick) {
+    public void logOutChatRoom(Integer chatId, Integer userId) {
         log.info("logOutChatRoom()");
-        String ids = "loginuser. chatId: " + chatId + ", userNick: " + userNick;
+        String ids = "loginuser. chatId: " + chatId + ", userId: " + userId;
         redisTemplate.delete(ids);
     }
     

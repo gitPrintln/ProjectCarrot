@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.carrot.nara.domain.Chat;
 import com.carrot.nara.domain.Post;
 import com.carrot.nara.domain.PostImage;
+import com.carrot.nara.domain.TimeFormatting;
 import com.carrot.nara.dto.ChatAlarmDto;
 import com.carrot.nara.dto.ChatListDto;
 import com.carrot.nara.dto.CurrentChatDto;
@@ -70,11 +71,12 @@ public class ChatController {
             for (Chat chat : chatList) {
                 String sellerNick = userService.getNickName(chat.getSellerId());
                 String partnerNick = userService.getNickName(chat.getUserId());
-                // TODO: seller image와 lastchat을 넣어줘야함. lastchat이나 그런건 redis로 가능하다던데
+                String lastChat = redisService.getLastChat(chat.getId());
+                String lastTime = TimeFormatting.formatting(chat.getModifiedTime());
                 ChatListDto entity = ChatListDto.builder()
                                     .id(chat.getId()).partnerId(chat.getUserId())
                                     .sellerId(chat.getSellerId()).sellerNickName(sellerNick).partnerNickName(partnerNick)
-                                    .lastTime(chat.getModifiedTime())
+                                    .lastChat(lastChat).lastTime(lastTime)
                                     .build();
                 list.add(entity);
             }
@@ -211,7 +213,7 @@ public class ChatController {
         log.info("send(dto={}, {}, {})", dto.getSender(), dto.getMessage(), dto.getSendTime());
         chatService.newMessage(chatId, dto);
         String url = "/user/queue/messages/" + chatId;
-        simpMessagingTemplate.convertAndSend(url, new MessageReadDto(dto.getSender(), dto.getMessage(), dto.getSendTime()));
+        simpMessagingTemplate.convertAndSend(url, new MessageReadDto(dto.getSender(), dto.getMessage(), dto.getSendTime(), 1));
     }
     
     @MessageMapping("/chatEntry/{chatId}")
@@ -219,7 +221,7 @@ public class ChatController {
         log.info("loginAlarm(chatId={}, loginUser={}, loginUserId={})", chatId, dto.getUserNick(), dto.getUserId());
         
         // 이제 로그인하는 경우 redis에 저장
-        redisService.registerLogInChatRoom(chatId, dto.getUserNick());
+        redisService.registerLogInChatRoom(chatId, dto.getUserId());
         
         // url을 채팅 상대방에게 설정해서 convertAndSend해야지 상대방 화면에서 안읽음 메세지를 읽음으로바꾸지
         String url = "/user/notification/" + chatId + "/" + dto.getUserId();

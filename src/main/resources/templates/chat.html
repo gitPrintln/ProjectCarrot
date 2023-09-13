@@ -33,9 +33,14 @@
     #chatList table tbody .listElement {
         cursor: pointer;
     }
+    #chatList table tbody .listElement tr {
+        text-align: left;
+    }
     #chatList {
         height: 400px; /* 스크롤 영역의 높이를 설정 */
         overflow-y: auto; /* 수직 스크롤을 추가 */
+        text-align: left;
+        margin-left: 5px;
     }
     
     /* 판매자 및 판매글 정보 */
@@ -47,6 +52,9 @@
     }
     .postPrices {
         font-size: 12px;
+    }
+    #noCurrentChatText{
+        height: 108px;
     }
     
     /* chat content */
@@ -108,8 +116,8 @@
                         <img th:if="${ list.sellerId == #authentication.principal.id }" th:src="${ '/img/user/'+ list.partnerId }" alt="해당 글의 상대 프사"/>
                     </td>
                     <td style="border: 1px solid blue;" width="80%">
-                        <span th:text="${ #temporals.format(list.lastTime, 'yyyy-MM-dd HH:mm') }"></span>
-                        <span>여기에 넣을 lastchat</span>
+                        <span style="font-size: 10px; color: gray;" th:text="${ list.lastTime }"></span>
+                        <span th:text="${ list.lastChat}"></span>
                     </td>
                 </tr>
                 <tr th:if="${ #lists.isEmpty(chatList)}">
@@ -156,29 +164,7 @@
                 <input type="hidden" id="chatId" th:value="${ sellInfo.id }"/>
             </div>
             <div class="sellInfo" th:if="${#lists.isEmpty(currentChat)}">
-                <table>
-                <!-- 상대 정보 -->
-                    <tr>
-                        <td>
-                            <img src="..." alt="상대 프사"/>
-                        </td>
-                        <td>
-                            <span>(상대 닉네임)</span>
-                        </td>
-                    </tr>
-                    
-                <!-- 판매 정보 -->
-                    <tr>
-                        <td>
-                            <img src="..." alt="판매글 이미지"/>
-                        </td>
-                        <td>
-                            <span>(판매 제목)</span>
-                            <div>(판매 가격)</div><span>(지역)</span>
-                        </td>
-                    </tr>
-                </table>
-                <input id="loginUser" th:value="${ #authentication.principal.nickName }"/>
+                <div id="noCurrentChatText">새로운 대화에 참여해보세요!</div>
             </div>
             <!-- 내용 -->
             <div id="content">
@@ -190,7 +176,7 @@
                             <div th:style="${ chat.sender == #authentication.principal.nickName } ? 'text-align: right; align-self: flex-end; width: 380px;' : 'text-align: left; align-self: flex-start; width:380px;'" >
                                 <div th:text="${ chat.message }"></div>
                                 <div style="font-size:10px; color:grey;" th:text="${ chat.sendTime }"></div>
-                                <div id="reads" style="color: dodgerblue;">1</div><br/>
+                                <div id="reads" th:style="${ chat.read != 0 } ? 'color: dodgerblue;' : 'display:none;'">1</div><br/>
                             </div>
                         </div>
                     </div>

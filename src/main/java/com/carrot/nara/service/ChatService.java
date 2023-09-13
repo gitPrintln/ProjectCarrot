@@ -87,7 +87,7 @@ public class ChatService {
         List<MessageReadDto> list = new ArrayList<>();
         for (Message m : message) {
             MessageReadDto entity = MessageReadDto.builder().sender(m.getSenderNickName()).message(m.getMessage())
-                    .sendTime(m.getModifiedTime().toString()).build();
+                    .sendTime(m.getModifiedTime().toString()).read(m.getReadChk()).build();
             list.add(entity);
         }
         return list;
