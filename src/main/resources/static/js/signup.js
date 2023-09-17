@@ -153,3 +153,10 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+// enter로 다음 입력창으로 포커싱
+function enterFocus(next){
+    if (event.keyCode == 13) {
+        document.getElementById(next).focus(); // 포커스 다음으로 이동
+    }
+}
