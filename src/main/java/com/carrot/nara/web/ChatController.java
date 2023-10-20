@@ -216,15 +216,31 @@ public class ChatController {
         simpMessagingTemplate.convertAndSend(url, new MessageReadDto(dto.getSender(), dto.getMessage(), dto.getSendTime(), 1));
     }
     
-    @MessageMapping("/chatEntry/{chatId}")
-    public void loginAlarm(@DestinationVariable Integer chatId, ChatAlarmDto dto) throws IOException{
-        log.info("loginAlarm(chatId={}, loginUser={}, loginUserId={})", chatId, dto.getUserNick(), dto.getUserId());
+    /**
+     * 채팅방 알림용(로그인, 읽음 처리)
+     * @param chatId
+     * @param dto
+     * @throws IOException
+     */
+    @MessageMapping("/chatNotification/{chatId}")
+    public void chatAlarm(@DestinationVariable Integer chatId, ChatAlarmDto dto) throws IOException{
+        log.info("chatAlarm(chatId={}, loginUser={}, loginUserId={})", chatId, dto.getUserNick(), dto.getUserId());
         
-        // 이제 로그인하는 경우 redis에 저장
-        redisService.registerLogInChatRoom(chatId, dto.getUserId());
+        // 처음 채팅방에 들어왔을 경우
+        boolean checkLoginUser = redisService.isLogInChatRoom(chatId, dto.getUserId());
+        if(!checkLoginUser) {
+            // 이제 로그인하는 경우 redis에 저장
+            redisService.registerLogInChatRoom(chatId, dto.getUserId());
+        } 
+        
+        // 서로 로그인 상태에서 대화중일 경우(따로 해줄 것은 없음)
+       
+        // DB에 로그인한 유저의 안읽은 메세지를 읽음으로 바꿔줌
+        String partnerNick = userService.getNickName(dto.getPartnerId());
+        chatService.unreadToRead(chatId, partnerNick);
         
         // url을 채팅 상대방에게 설정해서 convertAndSend해야지 상대방 화면에서 안읽음 메세지를 읽음으로바꾸지
         String url = "/user/notification/" + chatId + "/" + dto.getUserId();
-        simpMessagingTemplate.convertAndSend(url, "ChatPartner's Entrance");
+        simpMessagingTemplate.convertAndSend(url, "ChatPartner's Notification");
     }
 }

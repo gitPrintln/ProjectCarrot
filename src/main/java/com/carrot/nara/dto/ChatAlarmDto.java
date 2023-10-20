@@ -13,6 +13,7 @@ public class ChatAlarmDto {
 
     private String userNick;
     private Integer userId;
+    private Integer partnerId;
     
     public ChatAlarmDto() {} // cannot deserialize from Object value (no delegate- or property-based Creator)
                              // json 타입으로 받아올 때 모델을 알아서 생성하지 못함.ㄴ

@@ -139,14 +139,18 @@
     
     // Redis에 채팅방에 접속중인 유저로 저장하고 채팅방에 들어왔음을 알림(안읽은 메세지를 읽음으로)
     function loginAlarm(){
-        const json = {'userNick': sender, 'userId': senderId};
-        stompClient.send("/app/chatEntry/" + chatId, {}, JSON.stringify(json));
+        const json = {'userNick': sender, 'userId': senderId, 'partnerId': chatPartnerId};
+        stompClient.send("/app/chatNotification/" + chatId, {}, JSON.stringify(json));
     }
     
     function chatPartnerLogIn(str){
-        if(str === "ChatPartner's Entrance"){
-             console.log("상대방로그인입니다.")
-            // TODO: 안읽음으로 읽음 바꿔줌전부.
+        if(str === "ChatPartner's Notification"){
+             console.log("상대방로그인입니다.");
+             const read = document.querySelectorAll('#reads');
+             for (var i = 0; i < read.length; ++i) {
+                read[i].style.visibility = 'hidden';
+                read[i].removeAttribute('id');
+             }
         } 
     }
     
