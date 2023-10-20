@@ -94,6 +94,7 @@ public class ChatService {
     }
 
     // 안읽은 메세지를 읽음으로 처리 하기 위해서(message table에서 read 1->0)
+    @Transactional
     public void unreadToRead(Integer chatId, String userNick) {
         log.info("unreadToRead()");
         messageRespository.unreadToReadMessage(chatId, userNick);

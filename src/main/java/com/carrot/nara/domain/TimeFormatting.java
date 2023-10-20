@@ -38,7 +38,7 @@ public class TimeFormatting {
             msg = diff + TimeFormattingType.getValue(3);
         } else if((diff /= TIME_STANDARD.HOUR) < TIME_STANDARD.DAY) {
             msg = diff + TimeFormattingType.getValue(4);
-        } else if((diff /= TIME_STANDARD.MONTH) < TIME_STANDARD.MONTH) {
+        } else if((diff /= TIME_STANDARD.DAY) < TIME_STANDARD.MONTH) {
             msg = diff + TimeFormattingType.getValue(5);
         } else {
             msg = writtenTime.format(DateTimeFormatter.ofPattern("yy.MM.dd"));

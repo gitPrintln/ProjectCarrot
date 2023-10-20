@@ -25,7 +25,7 @@
             // connect(header, connectCallback(==연결에 성공하면 실행되는 메서드))
             stompClient.connect({}, function() { 
                 autofocus();
-                loginAlarm(); // redis에 채팅방에 접속했음을 저장하고 상대에게는 채팅방에 들어왔음을 알림(안읽은 메세지를 읽음으로)
+                alarm(); // redis에 채팅방에 접속했음을 저장하고 상대에게는 채팅방에 들어왔음을 알림(안읽은 메세지를 읽음으로)
                 
                 // url: 채팅방 참여자들에게 공유되는 경로(message용)
                 // callback(function()): 클라이언트가 서버(Controller broker)로부터 메시지를 수신했을 때(== STOMP send()가 실행되었을 때) 실행
@@ -98,6 +98,8 @@
         }
     }
     
+    // 채팅 입력창에 포커싱을 맞출때 상대방에게 읽음 알림 보내기
+    messageInput.addEventListener('focus', alarm);
     
     // HTML 형태의 메시지를 화면에 출력해줌
     // 해당되는 id 태그의 모든 하위 내용들을 message가 추가된 내용으로 갱신해줌
@@ -137,11 +139,13 @@
         $chatHistory.scrollTop($chatHistory[0].scrollHeight);
     }
     
-    // Redis에 채팅방에 접속중인 유저로 저장하고 채팅방에 들어왔음을 알림(안읽은 메세지를 읽음으로)
-    function loginAlarm(){
+    // Redis에 채팅방에 접속중인 유저로 저장하고 채팅방에 들어왔음을 알릴 때
+    // 채팅창에 포커싱 맞춰졌을 때 읽음으로 간주하고 상대에게 읽음을 알릴 때
+    function alarm(){
         const json = {'userNick': sender, 'userId': senderId, 'partnerId': chatPartnerId};
         stompClient.send("/app/chatNotification/" + chatId, {}, JSON.stringify(json));
     }
+    
     
     function chatPartnerLogIn(str){
         if(str === "ChatPartner's Notification"){

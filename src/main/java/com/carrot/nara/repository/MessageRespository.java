@@ -21,7 +21,7 @@ public interface MessageRespository extends JpaRepository<Message, Integer> {
     Message findFirstByChatIdOrderByModifiedTimeDesc(Integer chatId);
 
     // 해당 chatId의 userNick을 제외한 메세지의 읽음으로 처리.(usernick != 이라고 표현해도 되지만, 표준으로는 <>을 같지않음으로 표시)
-    @Query(value = "UPDATE MESSAGE m SET m.readChk = 0 WHERE m.chatId = :chatId and m.senderNickName <> :senderNick")
+    @Query(value = "UPDATE MESSAGE m SET m.readChk = 0 WHERE m.chatId = :chatId and m.senderNickName = :senderNick")
     @Modifying
     void unreadToReadMessage(@Param(value = "chatId") Integer chatId, @Param(value = "senderNick") String senderNick);
 
