@@ -1,5 +1,7 @@
 package com.carrot.nara.service;
 
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,7 +89,7 @@ public class ChatService {
         List<MessageReadDto> list = new ArrayList<>();
         for (Message m : message) {
             MessageReadDto entity = MessageReadDto.builder().sender(m.getSenderNickName()).message(m.getMessage())
-                    .sendTime(m.getModifiedTime().toString()).read(m.getReadChk()).build();
+                    .sendTime(m.getModifiedTime().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM))).read(m.getReadChk()).build();
             list.add(entity);
         }
         return list;
@@ -96,7 +98,7 @@ public class ChatService {
     // 안읽은 메세지를 읽음으로 처리 하기 위해서(message table에서 read 1->0)
     @Transactional
     public void unreadToRead(Integer chatId, String userNick) {
-        log.info("unreadToRead()");
+        log.info("unreadToRead(chatId={}, userNick={})", chatId, userNick);
         messageRespository.unreadToReadMessage(chatId, userNick);
     }
     

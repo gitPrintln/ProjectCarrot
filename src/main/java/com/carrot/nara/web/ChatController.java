@@ -72,7 +72,6 @@ public class ChatController {
                 String sellerNick = userService.getNickName(chat.getSellerId());
                 String partnerNick = userService.getNickName(chat.getUserId());
                 String lastChat = redisService.getLastChat(chat.getId());
-                
                 String lastTime = TimeFormatting.formatting(chat.getModifiedTime());
                 ChatListDto entity = ChatListDto.builder()
                                     .id(chat.getId()).partnerId(chat.getUserId())
@@ -117,7 +116,7 @@ public class ChatController {
                 model.addAttribute("chatPartnerId", userId.equals(chatByTop.getUserId()) ? list.get(0).getSellerId() : chatByTop.getUserId());
                 
                 // 채팅에서 주고받은 메세지 내역
-                chatService.unreadToRead(chatId, list.get(0).getPartnerNickName()); // 안읽은 메세지를 읽음으로 바꿔주고 불러옴
+                chatService.unreadToRead(chatId, userId.equals(chatByTop.getUserId()) ? list.get(0).getSellerNickName() : list.get(0).getPartnerNickName()); // 안읽은 메세지를 읽음으로 바꿔주고 불러옴
                 message = chatService.readHistory(chatId);
                 model.addAttribute("chatHistory", message);
             }
@@ -160,7 +159,7 @@ public class ChatController {
         model.addAttribute("chatPartnerId", userId.equals(sellerId) ? partnerId : sellerId);
         
         // 채팅에서 주고받은 메세지 내역
-        chatService.unreadToRead(chatId, nowPartnerNick); // 안읽은 메세지를 읽음으로 바꿔주고 불러옴 
+        chatService.unreadToRead(chatId, userId.equals(sellerId) ? nowPartnerNick : nowSellerNick); // 안읽은 메세지를 읽음으로 바꿔주고 불러옴 
         message = chatService.readHistory(chatId);
         model.addAttribute("chatHistory", message);
         return "chat";

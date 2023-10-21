@@ -114,7 +114,7 @@
                         + '<div style="text-align: right; align-self: flex-end; width: 380px;">'
                             + '<div>' + messageObj.message.replace(/ /g, "&nbsp;") + '</div>'
                             + '<div style="font-size:10px; color:grey;">' + messageObj.sendTime + '</div>'
-                            + '<div id="reads" style="color:dodgerblue;">' + messageObj.read + '</div>'
+                            + '<div id="reads" style="color:dodgerblue;">' + messageObj.read + '</div><br/>'
                         + '</div>'
                     + '</div>'
                  + '</div>';
