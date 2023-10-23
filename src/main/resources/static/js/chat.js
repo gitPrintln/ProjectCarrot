@@ -33,11 +33,12 @@
                     // html <body>에 append할 메시지 contents
                     showBroadcastMessage(createTextNode(JSON.parse(output.body)));
                     autofocus();
+                    updateList();
                 });
                 
                 // notificationUrl: 채팅방 참여자들에게 공유되는 경로(알림용) 읽음/안읽음 등
                 stompClient.subscribe(notificationUrl, function(output){
-                    chatPartnerLogIn(output.body);
+                    responseAlarmCheck(output.body); // 어떤 종류의 알람인지 확인 후 그에 맞는 처리
                 });
                 }, 
                     // connect() 에러 발생 시 실행
@@ -146,18 +147,59 @@
         stompClient.send("/app/chatNotification/" + chatId, {}, JSON.stringify(json));
     }
     
-    
-    function chatPartnerLogIn(str){
+    // 어떤 종류의 알람인지(읽음/안읽음을 위한 처리, 로그인 알람, 채팅방 리스트 변경)
+    function responseAlarmCheck(str){
         if(str === "ChatPartner's Notification"){
-             console.log("상대방로그인입니다.");
-             const read = document.querySelectorAll('#reads');
-             for (var i = 0; i < read.length; ++i) {
-                read[i].style.visibility = 'hidden';
-                read[i].removeAttribute('id');
-             }
+               chatPartnerAlarm();
         } 
+    };
+    
+    // ChatList 새로운 채팅이 갱신될 때마다 AJAX로 갱신
+    function updateList(){
+        axios
+        .get('/api/chatList/'+senderId)
+        .then(response => { 
+            updateChatList(response.data);
+        })
+        .catch(err => { console.log(err) });
+    }
+
+    // 읽음/안읽음을 위한 처리(읽었으면 1->0으로 지워줌)
+    function chatPartnerAlarm(){
+       console.log("상대방로그인입니다.");
+       const read = document.querySelectorAll('#reads');
+       for (var i = 0; i < read.length; ++i) {
+             read[i].style.visibility = 'hidden';
+             read[i].removeAttribute('id');
+       }
     }
     
+    // 채팅 리스트 갱신
+    function updateChatList(data){
+        const chatList = document.querySelector('#chatList');
+        let str = '';
+           str += '<table>'
+                +    '<tbody>';
+        for(let c of data){
+            str +=    `<tr class="listElement" onclick="location.href='/chat?chatId=${ c.id }'">`    
+                +         '<td style="border: 1px solid pink;" width="20%">';
+            if(c.sellerId != senderId){
+            str +=             `<img src="${ '/img/user/'+ c.sellerId }" alt="해당 글의 상대 프사"/>`;
+            } else{
+            str +=             `<img src="${ '/img/user/'+ c.partnerId }" alt="해당 글의 상대 프사"/>`;
+            }
+            str +=         '</td>'
+                +         '<td style="border: 1px solid blue;" width="80%">'
+                +             `<span style="font-size: 10px; color: gray;">${c.lastTime}</span>`
+                +             `<span>${c.lastChat}</span>`
+                +         '</td>'
+                +     '</tr>'
+        }
+           str +=     '</tbody>'
+                +  '</table>';
+        
+        chatList.innerHTML = str;
+    }
 });
 
 // 페이지를 이탈하는 순간, 상대에게 알리기 위해 => redis loginUser 제외, 궁극적으로 안읽음 상태로 남기위해

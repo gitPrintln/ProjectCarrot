@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -68,18 +70,9 @@ public class ChatController {
         List<ChatListDto> list = new ArrayList<>(); // chat 목록에 사용될 최종 list
         
         if(chatList.size() > 0) { // 대화 목록 자료가 하나라도 있다면 최종 list에 담음
-            for (Chat chat : chatList) {
-                String sellerNick = userService.getNickName(chat.getSellerId());
-                String partnerNick = userService.getNickName(chat.getUserId());
-                String lastChat = redisService.getLastChat(chat.getId());
-                String lastTime = TimeFormatting.formatting(chat.getModifiedTime());
-                ChatListDto entity = ChatListDto.builder()
-                                    .id(chat.getId()).partnerId(chat.getUserId())
-                                    .sellerId(chat.getSellerId()).sellerNickName(sellerNick).partnerNickName(partnerNick)
-                                    .lastChat(lastChat).lastTime(lastTime)
-                                    .build();
-                list.add(entity);
-            }
+            // userId를 통해서 채팅 목록을 불러오는 함수
+            list = loadChatList(userId);
+            
             model.addAttribute("chatList", list);
         }
         
@@ -244,5 +237,47 @@ public class ChatController {
         // url을 채팅 상대방에게 설정해서 convertAndSend해야지 상대방 화면에서 안읽음 메세지를 읽음으로바꾸지
         String url = "/user/notification/" + chatId + "/" + dto.getUserId();
         simpMessagingTemplate.convertAndSend(url, "ChatPartner's Notification");
+    }
+    
+    /**
+     * 새로운 채팅을 받을 때마다 목록 리스트만 갱신해주기 위함.
+     * @param userId
+     * @return ChatListDto 타입의 리스트
+     */
+    @GetMapping("/api/chatList/{userId}")
+    public ResponseEntity<List<ChatListDto>> reloadChatListAJAX(@PathVariable Integer userId){
+        log.info("reloadChatListAJAX(userId={})", userId);
+        
+        List<ChatListDto> list = loadChatList(userId);
+        
+        return ResponseEntity.ok(list);
+    }
+    
+    /**
+     * 채팅 목록을 불러옴
+     * @param userId 불러오고자 하는 user의 id
+     * @return ChatListDto 타입의 리스트
+     */
+    public List<ChatListDto> loadChatList(Integer userId){
+        log.info("loadChatList(userId={})", userId);
+        
+        // 내가 속해 있는 모든 대화 채팅 목록(어디서 채팅방으로 들어가던지 공통)
+        List<Chat> chatList = chatService.myChatList(userId);
+        
+        List<ChatListDto> list = new ArrayList<>(); // chat 목록에 사용될 최종 list
+        
+        for (Chat chat : chatList) {
+            String sellerNick = userService.getNickName(chat.getSellerId());
+            String partnerNick = userService.getNickName(chat.getUserId());
+            String lastChat = redisService.getLastChat(chat.getId());
+            String lastTime = TimeFormatting.formatting(chat.getModifiedTime());
+            ChatListDto entity = ChatListDto.builder()
+                                .id(chat.getId()).partnerId(chat.getUserId())
+                                .sellerId(chat.getSellerId()).sellerNickName(sellerNick).partnerNickName(partnerNick)
+                                .lastChat(lastChat).lastTime(lastTime)
+                                .build();
+            list.add(entity);
+        }
+        return list;
     }
 }
