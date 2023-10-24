@@ -18,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.carrot.nara.domain.Chat;
@@ -244,6 +245,7 @@ public class ChatController {
      * @param userId
      * @return ChatListDto 타입의 리스트
      */
+    @Transactional(readOnly = true)
     @GetMapping("/api/chatList/{userId}")
     public ResponseEntity<List<ChatListDto>> reloadChatListAJAX(@PathVariable Integer userId){
         log.info("reloadChatListAJAX(userId={})", userId);
@@ -258,6 +260,7 @@ public class ChatController {
      * @param userId 불러오고자 하는 user의 id
      * @return ChatListDto 타입의 리스트
      */
+    @Transactional(readOnly = true)
     public List<ChatListDto> loadChatList(Integer userId){
         log.info("loadChatList(userId={})", userId);
         
@@ -279,5 +282,18 @@ public class ChatController {
             list.add(entity);
         }
         return list;
+    }
+    
+    /**
+     * Redis에서 로그아웃 해줌.
+     * websocket은 페이지 이탈시 자동으로 소켓에서 로그아웃되는데 redis는 하나하나해줘야함. 
+     * @param chatId
+     * @param userId
+     */
+    @GetMapping("/chat/redis/logOut")
+    @ResponseBody
+    public void reidsLogOut(@RequestParam Integer chatId, @RequestParam Integer userId) {
+        log.info("reidsLogOut(userId={})", userId);
+        redisService.logOutChatRoom(chatId, userId);
     }
 }

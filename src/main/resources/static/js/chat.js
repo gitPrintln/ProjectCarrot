@@ -8,7 +8,7 @@
     var sender = $('#loginUser').val(); // 보내는 사람 senderNickName(현재 로그인 유저)
     var senderId = $('#loginUserId').attr('src').split("/")[3]; // 보내는 사람(로그인 유저의 Id를 따옴)
     var chatId = $('#chatId').val(); // 대화방의 id
-    var chatPartner = $('#chatPartnerProfileId').attr('src') // 상대방 채팅 이미지 src를 가져오기 위함. 채팅 상단바 채팅정보에 있는 정보(/img/user/chatProfileId)
+    var chatPartner = $('#chatPartnerProfileId').attr('src'); // 상대방 채팅 이미지 src를 가져오기 위함. 채팅 상단바 채팅정보에 있는 정보(/img/user/chatProfileId)
     var chatPartnerId = chatPartner.split("/")[3];
     
     // invoke when DOM(Documents Object Model; HTML(<head>, <body>...etc) is ready
@@ -178,20 +178,20 @@
     function updateChatList(data){
         const chatList = document.querySelector('#chatList');
         let str = '';
-           str += '<table>'
+           str += '<table style="width: 100%;">'
                 +    '<tbody>';
         for(let c of data){
-            str +=    `<tr class="listElement" onclick="location.href='/chat?chatId=${ c.id }'">`    
-                +         '<td style="border: 1px solid pink;" width="20%">';
+            str +=    `<tr class="listElement" style="border: 1px solid pink; height: 50px;" onclick="location.href='/chat?chatId=${ c.id }'">`    
+                +         '<td width="15%">';
             if(c.sellerId != senderId){
             str +=             `<img src="${ '/img/user/'+ c.sellerId }" alt="해당 글의 상대 프사"/>`;
             } else{
             str +=             `<img src="${ '/img/user/'+ c.partnerId }" alt="해당 글의 상대 프사"/>`;
             }
             str +=         '</td>'
-                +         '<td style="border: 1px solid blue;" width="80%">'
-                +             `<span style="font-size: 10px; color: gray;">${c.lastTime}</span>`
-                +             `<span>${c.lastChat}</span>`
+                +         '<td width="80%">'
+                +             `<span style="font-size: 8px; color: gray;">${c.lastTime}</span>`
+                +             `<span> ${c.lastChat}</span>`
                 +         '</td>'
                 +     '</tr>'
         }
@@ -202,7 +202,18 @@
     }
 });
 
-// 페이지를 이탈하는 순간, 상대에게 알리기 위해 => redis loginUser 제외, 궁극적으로 안읽음 상태로 남기위해
+// 페이지를 이탈하는 순간, 상대에게 알리기 위해 => redis loginUser 제외, 궁극적으로 안읽음 상태로 남기위해(X)
 window.addEventListener('beforeunload', function(event) {
-    
+    var chid = $('#chatId').val(); // 대화방의 id
+    var useid = $('#loginUserId').attr('src').split("/")[3];
+    axios.get('/chat/redis/logOut', {
+        params: {
+            'chatId': chid, 
+            'userId': useid
+            }
+        })
+        .then(response => {
+            console.log('redis logout 완료');
+        })
+        .catch(err=>{console.log(err)});
 });

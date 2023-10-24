@@ -22,6 +22,9 @@
     }
     
     /* 내 정보 */
+    #myInfo {
+        height: 30px;
+    }
     #myInfo img {
         width: 25.5px;
         height: 25.5px;
@@ -95,29 +98,29 @@
 </head>
 <body>
     <!-- content 시작 -->
-    <div class="w3-container" style="border: 1px solid gold;">
+    <div class="w3-container">
         <!-- 내 대화 목록 section -->
         <div class="w3-quarter" style="border: 1px solid green;">
         <!-- 내 상태 -->
         <div id="myInfo" style="margin-top: 5px; margin-bottom: 5px;">
-            <div class="myImage" style="border: 1px solid;">
+            <div class="myImage">
                 <img id="loginUserId" th:src="${ '/img/user/'+ #authentication.principal.id }" alt="내 프사"/>
                 <span sec:authentication="principal.nickName"></span>
             </div>
         </div><!-- 내상태 끝 -->
         <!-- chat 목록 -->
         <div id="chatList" style="margin-bottom: 5px;">
-            <table>
+            <table style="width: 100%;">
                 <tbody>
-                <tr class="listElement" th:if="${not #lists.isEmpty(chatList)}" th:each="list : ${ chatList }" 
+                <tr class="listElement" style="border: 1px solid pink; height: 50px;" th:if="${not #lists.isEmpty(chatList)}" th:each="list : ${ chatList }" 
                     th:onclick="|location.href='@{/chat?chatId={chatId} (chatId = ${ list.id })}'|">
-                    <td style="border: 1px solid pink;" width="20%">
+                    <td width="15%">
                         <img th:if="${ list.sellerId != #authentication.principal.id }" th:src="${ '/img/user/'+ list.sellerId }" alt="해당 글의 상대 프사"/>
                         <img th:if="${ list.sellerId == #authentication.principal.id }" th:src="${ '/img/user/'+ list.partnerId }" alt="해당 글의 상대 프사"/>
                     </td>
-                    <td style="border: 1px solid blue;" width="80%">
-                        <span style="font-size: 10px; color: gray;" th:text="${ list.lastTime }"></span>
-                        <span th:text="${ list.lastChat}"></span>
+                    <td width="80%">
+                        <span style="font-size: 8px; color: gray;" th:text="${ list.lastTime }"></span>
+                        <span th:text="${ list.lastChat }"></span>
                     </td>
                 </tr>
                 <tr th:if="${ #lists.isEmpty(chatList)}">
