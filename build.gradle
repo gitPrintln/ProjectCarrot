@@ -50,6 +50,13 @@ dependencies {
     
     // image thumbnail generator
     implementation 'net.coobird:thumbnailator:0.4.18'
+    
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    
+    // redis Test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 tasks.named('test') {

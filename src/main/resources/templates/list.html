@@ -8,6 +8,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Carrot Nara</title>
+    <style>
+        /* 글제목 */
+        .title {
+            font-size: 20px;
+        }
+        .region {
+            text-align: right;
+            margin-right: 5px;
+        }
+    </style>
 </head>
 <body>
 
@@ -22,16 +32,16 @@
                     <!-- image가 있을 수도 있고 없을 수도 있기 때문에 있으면 앞의 style을 없으면 뒤의 스타일을 적용 -->
                 </div>
                 <div style="border: 1px solid; display: table-cell; width:300px; height:200px;">
-                    <div>
+                    <div class="title">
                         <span th:text="${ list.title }"></span>
                     </div>
-                    <div>
+                    <div class="region">
                         <span th:if="${ list.region != null }" style="font-size: 10px;" th:text="${ list.region.split(' ')[1] + ' ' + list.region.split(' ')[2] }"></span>
                     </div>
-                    <div>
-                        <span th:text="${ list.prices }"></span><span>&nbsp;원</span>
+                    <div class="prices">
+                        <span th:text="${ list.prices }"></span><span>&nbsp;원</span><br/><br/>
                     </div>
-                    <div class="countInfo" style="font-size: 8px; color: gray;">
+                    <div class="countInfo" style="font-size: 10px; color: gray;">
                             <div style="margin: 2px; display: inline-block;">
                                 <span th:text ="${ '채팅 ' + list.chats }"></span>
                             </div>
@@ -43,7 +53,7 @@
                             </div>
                     </div>
                     <div>
-                        <span th:text="${ #temporals.format(list.modifiedTime, 'MM-dd HH:mm') }"></span>
+                        <span style="font-size: 10px; color: gray;" th:text="${ list.modifiedTime }"></span>
                     </div>
                 </div>
             </div>

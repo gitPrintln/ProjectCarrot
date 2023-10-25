@@ -1,11 +1,13 @@
 package com.carrot.nara.web;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -15,18 +17,23 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.carrot.nara.domain.Chat;
 import com.carrot.nara.domain.Post;
 import com.carrot.nara.domain.PostImage;
+import com.carrot.nara.domain.TimeFormatting;
+import com.carrot.nara.dto.ChatAlarmDto;
 import com.carrot.nara.dto.ChatListDto;
 import com.carrot.nara.dto.CurrentChatDto;
 import com.carrot.nara.dto.MessageReadDto;
 import com.carrot.nara.dto.UserSecurityDto;
 import com.carrot.nara.service.ChatService;
 import com.carrot.nara.service.PostService;
+import com.carrot.nara.service.RedisService;
 import com.carrot.nara.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +53,8 @@ public class ChatController {
     private UserService userService;
     @Autowired
     private PostService postService;
-    
+    @Autowired
+    private RedisService redisService;
     
     // 주의: @GetMapping, @PostMapping 에서 @RequestMapping이 공유 되지만 @MessageMapping에서는 공유 안됨.
     @Transactional
@@ -54,7 +62,9 @@ public class ChatController {
     @GetMapping("/chat")
     public String chat(@AuthenticationPrincipal UserSecurityDto userDto, Integer chatId, Model model) {
         log.info("get-chat(user={},{})", userDto.getNickName(), chatId);
-        Integer userId = userDto.getId(); // 로그인한 유저
+        Integer userId = userDto.getId(); // 로그인한 유저의 Id
+        String userNick = userDto.getNickName(); // 로그인한 유저의 닉네임
+        
         
         // 내가 속해 있는 모든 대화 채팅 목록(어디서 채팅방으로 들어가던지 공통)
         List<Chat> chatList = chatService.myChatList(userId);
@@ -62,17 +72,9 @@ public class ChatController {
         List<ChatListDto> list = new ArrayList<>(); // chat 목록에 사용될 최종 list
         
         if(chatList.size() > 0) { // 대화 목록 자료가 하나라도 있다면 최종 list에 담음
-            for (Chat chat : chatList) {
-                String sellerNick = userService.getNickName(chat.getSellerId());
-                String partnerNick = userService.getNickName(chat.getUserId());
-                // TODO: seller image와 lastchat을 넣어줘야함. lastchat이나 그런건 redis로 가능하다던데
-                ChatListDto entity = ChatListDto.builder()
-                                    .id(chat.getId()).partnerId(chat.getUserId())
-                                    .sellerId(chat.getSellerId()).sellerNickName(sellerNick).partnerNickName(partnerNick)
-                                    .lastTime(chat.getModifiedTime())
-                                    .build();
-                list.add(entity);
-            }
+            // userId를 통해서 채팅 목록을 불러오는 함수
+            list = loadChatList(userId);
+            
             model.addAttribute("chatList", list);
         }
         
@@ -109,6 +111,7 @@ public class ChatController {
                 model.addAttribute("chatPartnerId", userId.equals(chatByTop.getUserId()) ? list.get(0).getSellerId() : chatByTop.getUserId());
                 
                 // 채팅에서 주고받은 메세지 내역
+                chatService.unreadToRead(chatId, userId.equals(chatByTop.getUserId()) ? list.get(0).getSellerNickName() : list.get(0).getPartnerNickName()); // 안읽은 메세지를 읽음으로 바꿔주고 불러옴
                 message = chatService.readHistory(chatId);
                 model.addAttribute("chatHistory", message);
             }
@@ -151,6 +154,7 @@ public class ChatController {
         model.addAttribute("chatPartnerId", userId.equals(sellerId) ? partnerId : sellerId);
         
         // 채팅에서 주고받은 메세지 내역
+        chatService.unreadToRead(chatId, userId.equals(sellerId) ? nowPartnerNick : nowSellerNick); // 안읽은 메세지를 읽음으로 바꿔주고 불러옴 
         message = chatService.readHistory(chatId);
         model.addAttribute("chatHistory", message);
         return "chat";
@@ -205,9 +209,98 @@ public class ChatController {
     public void send(@DestinationVariable Integer chatId, MessageReadDto dto) throws IOException{
         log.info("send(dto={}, {}, {})", dto.getSender(), dto.getMessage(), dto.getSendTime());
         chatService.newMessage(chatId, dto);
-        String url = "/user/queue/messages";
-        simpMessagingTemplate.convertAndSend(url, new MessageReadDto(dto.getSender(), dto.getMessage(), dto.getSendTime()));
+        String url = "/user/queue/messages/" + chatId;
+        simpMessagingTemplate.convertAndSend(url, new MessageReadDto(dto.getSender(), dto.getMessage(), dto.getSendTime(), 1));
     }
     
+    /**
+     * 채팅방 알림용(로그인, 읽음 처리)
+     * @param chatId
+     * @param dto
+     * @throws IOException
+     */
+    @MessageMapping("/chatNotification/{chatId}")
+    public void chatAlarm(@DestinationVariable Integer chatId, ChatAlarmDto dto) throws IOException{
+        log.info("chatAlarm(chatId={}, loginUser={}, loginUserId={})", chatId, dto.getUserNick(), dto.getUserId());
+        
+        // 처음 채팅방에 들어왔을 경우
+        boolean checkLoginUser = redisService.isLogInChatRoom(chatId, dto.getUserId());
+        if(!checkLoginUser) {
+            // 이제 로그인하는 경우 redis에 저장
+            redisService.registerLogInChatRoom(chatId, dto.getUserId());
+        } 
+        
+        // 서로 로그인 상태에서 대화중일 경우(따로 해줄 것은 없음)
+       
+        // DB에 로그인한 유저의 안읽은 메세지를 읽음으로 바꿔줌
+        String partnerNick = userService.getNickName(dto.getPartnerId());
+        chatService.unreadToRead(chatId, partnerNick);
+        
+        // url을 채팅 상대방에게 설정해서 convertAndSend해야지 상대방 화면에서 안읽음 메세지를 읽음으로바꾸지
+        String url = "/user/notification/" + chatId + "/" + dto.getUserId();
+        simpMessagingTemplate.convertAndSend(url, "ChatPartner's Notification");
+    }
     
+    /**
+     * 새로운 채팅을 받을 때마다 목록 리스트만 갱신해주기 위함.
+     * @param userId
+     * @return ChatListDto 타입의 리스트
+     */
+    @Transactional(readOnly = true)
+    @GetMapping("/api/chatList/{userId}")
+    public ResponseEntity<List<ChatListDto>> reloadChatListAJAX(@PathVariable Integer userId){
+        log.info("reloadChatListAJAX(userId={})", userId);
+        
+        List<ChatListDto> list = loadChatList(userId);
+        
+        return ResponseEntity.ok(list);
+    }
+    
+    /**
+     * 채팅 목록을 불러옴
+     * @param userId 불러오고자 하는 user의 id
+     * @return ChatListDto 타입의 리스트
+     */
+    @Transactional(readOnly = true)
+    public List<ChatListDto> loadChatList(Integer userId){
+        log.info("loadChatList(userId={})", userId);
+        
+        // 내가 속해 있는 모든 대화 채팅 목록(어디서 채팅방으로 들어가던지 공통)
+        List<Chat> chatList = chatService.myChatList(userId);
+        
+        List<ChatListDto> list = new ArrayList<>(); // chat 목록에 사용될 최종 list
+        
+        // lastTime 값이 있는지 없는지 비교해보기위한 기준 time
+        LocalDateTime benchmarkTime = LocalDateTime.of(1111, 11, 11, 11, 11);
+        for (Chat chat : chatList) {
+            String sellerNick = userService.getNickName(chat.getSellerId());
+            String partnerNick = userService.getNickName(chat.getUserId());
+            String lastChat = redisService.getLastChat(chat.getId());
+            LocalDateTime lastTimeBeforeFormat = redisService.getLastTime(chat.getId());
+            String lastTime = "";
+            if(!lastTimeBeforeFormat.isEqual(benchmarkTime)) { // 값이 없다면 formatting하면 안되기 때문에
+                lastTime = TimeFormatting.formatting(lastTimeBeforeFormat);
+            } 
+            ChatListDto entity = ChatListDto.builder()
+                                .id(chat.getId()).partnerId(chat.getUserId())
+                                .sellerId(chat.getSellerId()).sellerNickName(sellerNick).partnerNickName(partnerNick)
+                                .lastChat(lastChat).lastTime(lastTime)
+                                .build();
+            list.add(entity);
+        }
+        return list;
+    }
+    
+    /**
+     * Redis에서 로그아웃 해줌.
+     * websocket은 페이지 이탈시 자동으로 소켓에서 로그아웃되는데 redis는 하나하나해줘야함. 
+     * @param chatId
+     * @param userId
+     */
+    @GetMapping("/chat/redis/logOut")
+    @ResponseBody
+    public void reidsLogOut(@RequestParam Integer chatId, @RequestParam Integer userId) {
+        log.info("reidsLogOut(userId={})", userId);
+        redisService.logOutChatRoom(chatId, userId);
+    }
 }

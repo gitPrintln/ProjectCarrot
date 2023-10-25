@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.carrot.nara.domain.Post;
 import com.carrot.nara.domain.PostImage;
+import com.carrot.nara.domain.TimeFormatting;
 import com.carrot.nara.dto.ListReadDto;
 import com.carrot.nara.repository.PostImageRepository;
 import com.carrot.nara.repository.PostRepository;
@@ -84,6 +85,8 @@ public class ListController {
             // 주의, 전달된 값이 null이라면 Optional.empty()를 반환함.
             Optional<PostImage> pi = Optional.ofNullable(postService.readThumbnail(p.getId()));
             String imageFileName = "image-fill.png"; // 포스트 글의 이미지가 없으면 기본 이미지를 넣음.
+            String lastModifiedTime = TimeFormatting.formatting(p.getModifiedTime());
+            
             if(pi.isPresent()) { // 포스트 글의 이미지가 있으면 있는 이미지로 교체
                 PostImage pig = pi.get();
                 imageFileName = pig.getFileName();
@@ -91,7 +94,7 @@ public class ListController {
             ListReadDto listElement = ListReadDto.builder().id(p.getId()).imageFileName(imageFileName)
                     .title(p.getTitle()).region(p.getRegion())
                     .prices(p.getPrices()).chats(p.getChats()).hits(p.getHits()).wishCount(p.getWishCount())
-                    .modifiedTime(p.getModifiedTime()).build();
+                    .modifiedTime(lastModifiedTime).build();
             list.add(listElement);
         }
         

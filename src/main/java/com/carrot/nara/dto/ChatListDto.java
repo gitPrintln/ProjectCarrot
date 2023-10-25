@@ -1,7 +1,5 @@
 package com.carrot.nara.dto;
 
-import java.time.LocalDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +18,6 @@ public class ChatListDto {
     private String partnerNickName; // 대화중인 상대방의 닉네임
 //    private String sellerImage; // 바로 user정보에서 불러오기 때문에 굳이 넣을 필요 x
     private String lastChat;
-    private LocalDateTime lastTime;
+    private String lastTime;
     
 }

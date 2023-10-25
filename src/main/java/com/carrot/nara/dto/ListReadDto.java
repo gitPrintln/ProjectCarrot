@@ -1,7 +1,5 @@
 package com.carrot.nara.dto;
 
-import java.time.LocalDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,5 +20,5 @@ public class ListReadDto {
     private Integer chats;
     private Integer wishCount;
     private Integer hits;    
-    private LocalDateTime modifiedTime;
+    private String modifiedTime;
 }

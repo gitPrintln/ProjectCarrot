@@ -89,42 +89,49 @@
                     <div style="display: inline-block;">
                     <div class="label" style="display: inline-block;"><i class="fa-solid fa-user"></i>아이디</div><span style="font-size: 22px; color: red;">*</span>
                     </div>
-                    <input class="form-control requiredInput" style="display: inline-block;" type="text" id="username" name="username" placeholder="사용할 아이디" required autofocus/>
+                    <input class="form-control requiredInput" style="display: inline-block;" type="text" id="username" name="username" 
+                           onkeydown="enterFocus('password');" placeholder="사용할 아이디" required autofocus/>
                     <div id="idAvailable" style="color: green; margin-left: 15px; display: none;">사용 가능한 아이디입니다.</div>
                     <div id="idUnavailable" style="color: red; margin-left: 15px; display: none;">이미 사용중인 아이디입니다.</div>
                 </li>
                 <li class="pwLi">
                     <div class="pwDiv">
                     <div class="label" style="display: inline-block;"><i class="fa-solid fa-lock"></i>비밀번호</div><span style="font-size: 22px; color: red;">*</span>
-                    <input class="form-control requiredInput" type="password" id="password" name="password" placeholder="사용할 비밀번호" required/>
+                    <input class="form-control requiredInput" type="password" id="password" name="password" 
+                           onkeydown="enterFocus('passwordChk');" placeholder="사용할 비밀번호" required/>
                     </div>
                     <div class="pwChkDiv">
                     <div class="label" style="display: inline-block;">비밀번호 확인</div><span style="font-size: 22px; color: red;">*</span>
-                    <input class="form-control requiredInput" type="password" id="passwordChk" name="passwordChk" placeholder="비밀번호 확인" required/>
+                    <input class="form-control requiredInput" type="password" id="passwordChk" name="passwordChk" 
+                           onkeydown="enterFocus('name');" placeholder="비밀번호 확인" required/>
                     <div id="pwAvailable" style="color: green; margin-left: 15px; display: none;">비밀 번호가 일치합니다.</div>
                     <div id="pwUnavailable" style="color: red; margin-left: 15px; display: none;">비밀 번호가 일치하지 않습니다.</div>
                     </div>
                 </li>
                 <li>
                     <div class="label" style="display: inline-block;"><i class="fa-solid fa-pencil"></i>이름</div><span style="font-size: 22px; color: red;">*</span>
-                    <input class="form-control requiredInput" type="text" id="name" name="name" placeholder="이름" required/>
+                    <input class="form-control requiredInput" type="text" id="name" name="name" 
+                           onkeydown="enterFocus('nickName');" placeholder="이름" required/>
                 </li>
                 <li>
                     <div class="label" style="display: inline-block;"><i class="fa-solid fa-user-tag"></i>닉네임</div><span style="font-size: 22px; color: red;">*</span>
-                    <input class="form-control requiredInput" type="text" id="nickName" name="nickName" placeholder="사용할 닉네임" required/>
+                    <input class="form-control requiredInput" type="text" id="nickName" name="nickName" 
+                           onkeydown="enterFocus('phone');" placeholder="사용할 닉네임" required/>
                     <div id="nickAvailable" style="color: green; margin-left: 15px; display: none;">사용 가능한 닉네임입니다.</div>
                     <div id="nickUnavailable" style="color: red; margin-left: 15px; display: none;">이미 사용중인 닉네임입니다.</div>
                 </li>
                 <li>
                     <div class="label" style="display: inline-block;"><i class="fa-solid fa-phone"></i>휴대폰 번호</div><span style="font-size: 22px; color: red;">*</span>
                     <div class="pnDiv">
-                    <input class="form-control mb-2 requiredInput" type="tel" id="phone" name="phone" placeholder="010-1234-5678" required maxlength="13"/>
+                    <input class="form-control mb-2 requiredInput" type="tel" id="phone" name="phone" 
+                           onkeydown="enterFocus('email');" placeholder="010-1234-5678" required maxlength="13"/>
                     <div class="pnExplain" style="font-size: 1px; color: gray;">숫자를 입력하면 자동으로 ('-')이 입력됩니다.</div>
                     </div>
                 </li>
                 <li>
                     <div class="label" style="margin-right: 18px;"><i class="fa-solid fa-envelope-o"></i>이메일</div>
-                    <input class="form-control" type="email" id="email" name="email" placeholder="[선택] 비밀번호 분실 시 확인에 이용됩니다."/>
+                    <input class="form-control" type="email" id="email" name="email" 
+                           onkeydown="enterFocus('address');" placeholder="[선택] 비밀번호 분실 시 확인에 이용됩니다."/>
                 </li>
                 <li>
                     <div class="label" style="margin-right: 18px;"><i class="fa-solid fa-location-dot"></i>지역</div>
