@@ -76,9 +76,9 @@ public class ChatService {
         // 메세지를 oracle sql DB에 저장.
         MessageCreateDto entity = MessageCreateDto.builder().chatId(chatId).senderNickName(dto.getSender())
                 .message(dto.getMessage()).sendTime(dto.getSendTime()).build();
-        messageRespository.save(entity.toEntity(chatId));
+        Message m = messageRespository.save(entity.toEntity(chatId));
         // redis 캐시에 저장.
-        redisService.modifiedLastChat(chatId, entity.getMessage());
+        redisService.modifiedLastChat(chatId, m.getMessage(), m.getModifiedTime());
     }
 
     // chatId에 해당하는 채팅 리스트를 불러옴.

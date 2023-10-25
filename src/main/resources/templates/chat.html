@@ -119,8 +119,8 @@
                         <img th:if="${ list.sellerId == #authentication.principal.id }" th:src="${ '/img/user/'+ list.partnerId }" alt="해당 글의 상대 프사"/>
                     </td>
                     <td width="80%">
-                        <span style="font-size: 8px; color: gray;" th:text="${ list.lastTime }"></span>
                         <span th:text="${ list.lastChat }"></span>
+                        <span style="float: right; font-size: 8px; color: gray;" th:text="${ list.lastTime }"></span>
                     </td>
                 </tr>
                 <tr th:if="${ #lists.isEmpty(chatList)}">

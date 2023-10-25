@@ -190,8 +190,8 @@
             }
             str +=         '</td>'
                 +         '<td width="80%">'
-                +             `<span style="font-size: 8px; color: gray;">${c.lastTime}</span>`
                 +             `<span> ${c.lastChat}</span>`
+                +             `<span style="float: right; font-size: 8px; color: gray;">${c.lastTime}</span>`
                 +         '</td>'
                 +     '</tr>'
         }

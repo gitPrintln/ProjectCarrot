@@ -1,6 +1,7 @@
 package com.carrot.nara.web;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -269,11 +270,17 @@ public class ChatController {
         
         List<ChatListDto> list = new ArrayList<>(); // chat 목록에 사용될 최종 list
         
+        // lastTime 값이 있는지 없는지 비교해보기위한 기준 time
+        LocalDateTime benchmarkTime = LocalDateTime.of(1111, 11, 11, 11, 11);
         for (Chat chat : chatList) {
             String sellerNick = userService.getNickName(chat.getSellerId());
             String partnerNick = userService.getNickName(chat.getUserId());
             String lastChat = redisService.getLastChat(chat.getId());
-            String lastTime = TimeFormatting.formatting(chat.getModifiedTime());
+            LocalDateTime lastTimeBeforeFormat = redisService.getLastTime(chat.getId());
+            String lastTime = "";
+            if(!lastTimeBeforeFormat.isEqual(benchmarkTime)) { // 값이 없다면 formatting하면 안되기 때문에
+                lastTime = TimeFormatting.formatting(lastTimeBeforeFormat);
+            } 
             ChatListDto entity = ChatListDto.builder()
                                 .id(chat.getId()).partnerId(chat.getUserId())
                                 .sellerId(chat.getSellerId()).sellerNickName(sellerNick).partnerNickName(partnerNick)
