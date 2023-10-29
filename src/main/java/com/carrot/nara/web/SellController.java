@@ -2,6 +2,7 @@ package com.carrot.nara.web;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -9,12 +10,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.carrot.nara.domain.Post;
 import com.carrot.nara.domain.PostImage;
 import com.carrot.nara.dto.PostCreateDto;
 import com.carrot.nara.dto.PostModifyDto;
+import com.carrot.nara.dto.PostStatusUpdateDto;
 import com.carrot.nara.dto.UserSecurityDto;
 import com.carrot.nara.service.PostService;
 import com.carrot.nara.service.SellService;
@@ -127,5 +132,15 @@ public class SellController {
         log.info("sellUpdate(postID={})", id);
         sellService.deletePost(id);
         return "redirect:/list";
+    }
+    
+    // Detail 페이지에서 post글 status 즉시 수정
+    @Transactional
+    @PostMapping("/modify/status")
+    @ResponseBody
+    public ResponseEntity<String> changeStatusByDetail(@RequestBody PostStatusUpdateDto dto){
+        log.info("changeStatusByDetail(postId={}, status={})", dto.getId(), dto.getStatus());
+        sellService.modifyStatus(dto.getId(), dto.getStatus());
+        return ResponseEntity.ok(dto.getStatus());
     }
 }

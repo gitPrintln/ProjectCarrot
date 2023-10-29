@@ -31,4 +31,8 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     // title, content에서 keyword를 포함하는 % + keyword + %를 업데이트 순으로 정렬한 리스트
     List<Post> findByTitleContainingOrContentContainingOrderByModifiedTimeDesc(String keyword, String keyword2);
     
+    // 해당 id의 status를 수정
+    @Query(value = "UPDATE POST p SET p.status = :status WHERE p.id = :postId")
+    @Modifying
+    void updateStatus(@Param(value = "postId") Integer postId, @Param(value = "status") String status);
 }

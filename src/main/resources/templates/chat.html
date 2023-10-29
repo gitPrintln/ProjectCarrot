@@ -65,7 +65,7 @@
         height: 400px;
         overflow-y: scroll;
         border-top: 1px solid;
-        border-bottom: 1px solid;
+        border-bottom: 1px solid #ccc;
     }
     #messageContent{
         width: 98%; 
@@ -109,10 +109,10 @@
             </div>
         </div><!-- 내상태 끝 -->
         <!-- chat 목록 -->
-        <div id="chatList" style="margin-bottom: 5px;">
+        <div id="chatList" style="margin-bottom: 5px; border-top: 1px solid sand; ">
             <table style="width: 100%;">
                 <tbody>
-                <tr class="listElement" style="border: 1px solid pink; height: 50px;" th:if="${not #lists.isEmpty(chatList)}" th:each="list : ${ chatList }" 
+                <tr class="listElement" style="border-bottom: 1px solid pink; height: 50px;" th:if="${not #lists.isEmpty(chatList)}" th:each="list : ${ chatList }" 
                     th:onclick="|location.href='@{/chat?chatId={chatId} (chatId = ${ list.id })}'|">
                     <td width="15%">
                         <img th:if="${ list.sellerId != #authentication.principal.id }" th:src="${ '/img/user/'+ list.sellerId }" alt="해당 글의 상대 프사"/>
@@ -123,13 +123,11 @@
                         <span style="float: right; font-size: 8px; color: gray;" th:text="${ list.lastTime }"></span>
                     </td>
                 </tr>
-                <tr th:if="${ #lists.isEmpty(chatList)}">
-                    <td colspan="10" th:each="i : ${#numbers.sequence(1, 10)}">
-                        <span th:if="${i == 5}">대화 목록이 없습니다.</span>
-                    </td>
-                </tr>
                 </tbody>
             </table>
+            <div class="sellInfo" th:if="${ #lists.isEmpty(chatList)}">
+                <div id="noCurrentChatText" style="text-align: center; display: flex; justify-content: center; align-items: center;">내 대화 목록이 없습니다.</div>
+            </div>
         </div>
         </div><!-- 내 대화 목록 section End -->
         
@@ -167,7 +165,7 @@
                 <input type="hidden" id="chatId" th:value="${ sellInfo.id }"/>
             </div>
             <div class="sellInfo" th:if="${#lists.isEmpty(currentChat)}">
-                <div id="noCurrentChatText">새로운 대화에 참여해보세요!</div>
+                <div id="noCurrentChatText" style="text-align: center; display: flex; justify-content: center; align-items: center;">새로운 대화에 참여해보세요!</div>
             </div>
             <!-- 내용 -->
             <div id="content">

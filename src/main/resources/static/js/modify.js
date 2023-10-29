@@ -200,3 +200,10 @@ function inNumber(event){
     inputValue = event.target.value.replace(/[^\d]/g, ""); // 값을 콤마를 제거하고 숫자로만 이루어지도록 설정
     return event.target.value = inputValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); // 세 자리 수마다 콤마를 넣어서 내보내줌.
 }
+
+// 상태 바꿔주는 함수
+function changeSts(event){
+    const status = document.querySelector('#status');
+    const selectOption = event.target.text;
+    status.value = selectOption;
+}

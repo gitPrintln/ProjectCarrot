@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.carrot.nara.domain.Message;
-import com.carrot.nara.domain.PostImage;
 import com.carrot.nara.repository.MessageRespository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -100,12 +99,10 @@ public class RedisService {
             }
         }
         LocalDateTime lastTime = LocalDateTime.of(1111, 11, 11, 11, 11);
-        log.info("lllstet{},{}",lastTimeToString,lastTime.toString());
         if(!lastTimeToString.equals("")) {
             DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
             lastTime = LocalDateTime.parse(lastTimeToString, format);
         } 
-        log.info("lllst{},{}",lastTimeToString,lastTime.toString());
         return lastTime;
     }
     // lastChat이 바뀌었을 경우. redis lastChat 캐시도 수정해줌.(+ 시간도 추가)
@@ -115,7 +112,6 @@ public class RedisService {
         log.info("modifiedLastChat()");
         String messageId = "lastChat. chatId: " + chatId;
         String timeId = "lastTime. chatId: " + chatId;
-        log.info("lllst{},{},{}", chatId, message, sendTime);
         redisTemplate.opsForValue().set(messageId, message);
         redisTemplate.opsForValue().set(timeId, sendTime.toString().substring(0, 26)); // 2023-10-25T21:20:20.181231 형식의 마지막 나노초 단위에서 6자리로 맞춰야지 나중에 불러올 때도 formatting할 때
                                                                                         // DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS"); 형식에 맞춰서 불러올 수 있음.

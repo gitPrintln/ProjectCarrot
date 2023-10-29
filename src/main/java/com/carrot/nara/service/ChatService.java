@@ -77,7 +77,7 @@ public class ChatService {
         MessageCreateDto entity = MessageCreateDto.builder().chatId(chatId).senderNickName(dto.getSender())
                 .message(dto.getMessage()).sendTime(dto.getSendTime()).build();
         Message m = messageRespository.save(entity.toEntity(chatId));
-        // redis 캐시에 저장.
+        // redis 캐시에 저장.(마지막 채팅과, 마지막 시간)
         redisService.modifiedLastChat(chatId, m.getMessage(), m.getModifiedTime());
     }
 

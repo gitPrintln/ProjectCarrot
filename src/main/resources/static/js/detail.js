@@ -4,7 +4,7 @@
  
  
 window.addEventListener('DOMContentLoaded', () => {
-    
+    statusFontColor(); // 글의 판매 상태에 따라 폰트색상 변경
 });
     // 채팅 연결하기
     function connectChat(event){
@@ -86,3 +86,50 @@ window.addEventListener('DOMContentLoaded', () => {
         return;
     }
     
+    // 글 작성자와 로그인 유저가 동일하다면 버튼 클릭으로 status 수정 가능하도록 해주기
+    // 클릭했을 경우 변경 가능한 드롭다운 보여주기
+    function statusModifing(){
+      var optionBox = document.getElementById("statusChangeOption");
+      if (optionBox.className.indexOf("w3-show") == -1) { 
+        optionBox.className += " w3-show";
+      } else {
+        optionBox.className = optionBox.className.replace(" w3-show", "");
+      }
+    }
+    
+    // 판매중, 예약중, 판매완료 눌렀을 때 axios로 즉시 바꿔줌.
+    function statusChanging(event){
+        var postId = event.target.getAttribute('data-pid');
+        const toChangeSts = event.target.text;
+        const data = {
+            id: postId,
+            status: toChangeSts
+        };
+        axios.post('/sell/modify/status', data)
+            .then(response => {
+                const spanStatus = document.getElementById('spanStatus');
+                if(toChangeSts === "예약중"){
+                    spanStatus.style.color = 'green';
+                } else if(toChangeSts === "판매완료"){
+                    spanStatus.style.color = 'red';
+                } else{
+                    spanStatus.style.color = 'blue';
+                }
+                spanStatus.innerHTML = toChangeSts;
+                statusModifing();
+                alert(toChangeSts + ' 상태로 변경하였습니다.');
+                
+            })
+            .catch(err => {console.log(err)});
+    }    
+    
+    // 판매중, 예약중, 판매완료 각각의 조건에 따라 폰트색깔 동적으로 변경
+    function statusFontColor(){
+        const statusFontColor = document.getElementById('spanStatus');
+        const spanStatus = statusFontColor.innerHTML;
+        if(spanStatus === "예약중"){
+            statusFontColor.style.color = 'green';
+        } else if(spanStatus === "판매완료"){
+            statusFontColor.style.color = 'red';
+        }
+    }

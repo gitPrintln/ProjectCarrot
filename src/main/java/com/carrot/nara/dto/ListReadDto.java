@@ -19,6 +19,7 @@ public class ListReadDto {
     private String prices;
     private Integer chats;
     private Integer wishCount;
-    private Integer hits;    
+    private Integer hits;
+    private String status;
     private String modifiedTime;
 }

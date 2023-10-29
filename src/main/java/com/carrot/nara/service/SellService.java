@@ -113,4 +113,11 @@ public class SellService {
         }
         chatRepository.deleteByPostId(id); // 해당 postID의 채팅방 모두 삭제
     }
+
+    // 포스트글의 status를 수정함.
+    @Transactional
+    public void modifyStatus(Integer postId, String status) {
+        log.info("modifyStatus(id={},status={})", postId, status);
+        postRepository.updateStatus(postId, status);
+    }
 }
