@@ -9,11 +9,11 @@
     var senderId = $('#loginUserId').attr('src').split("/")[3]; // 보내는 사람(로그인 유저의 Id를 따옴)
     var chatId = $('#chatId').val(); // 대화방의 id
     var chatPartner = $('#chatPartnerProfileId').attr('src'); // 상대방 채팅 이미지 src를 가져오기 위함. 채팅 상단바 채팅정보에 있는 정보(/img/user/chatProfileId)
-    var chatPartnerId = chatPartner.split("/")[3];
-    
-    // invoke when DOM(Documents Object Model; HTML(<head>, <body>...etc) is ready
-    $(document).ready(connect());
-    
+    if(chatPartner != null){ // 채팅 상대방이 있는 경우에만 접속함.
+        var chatPartnerId = chatPartner.split("/")[3];
+        // invoke when DOM(Documents Object Model; HTML(<head>, <body>...etc) is ready
+        $(document).ready(connect());
+    }
     // SockJS 연결
     function connect() {
             // map URL using SockJS 
@@ -77,9 +77,10 @@
         return new Date().toLocaleString();
     }
     
-    
+    if(chatPartner != null){ // 채팅 상대방이 있는 경우에만 활성화함.
     // btn 활성화 버튼(아무것도 입력되지 않으면 보내기 버튼이 안됨) & enterkey 이벤트
     messageInput.addEventListener('keyup', activateBtn);
+    }
     function activateBtn(event){
         const messageValue = document.querySelector('#message').value;
         if(messageValue == ''){
@@ -99,8 +100,10 @@
         }
     }
     
+    if(chatPartner != null){ // 채팅 상대방이 있는 경우에만 활성화함.
     // 채팅 입력창에 포커싱을 맞출때 상대방에게 읽음 알림 보내기
     messageInput.addEventListener('focus', alarm);
+    }
     
     // HTML 형태의 메시지를 화면에 출력해줌
     // 해당되는 id 태그의 모든 하위 내용들을 message가 추가된 내용으로 갱신해줌
@@ -205,6 +208,8 @@
 // 페이지를 이탈하는 순간, 상대에게 알리기 위해 => redis loginUser 제외, 궁극적으로 안읽음 상태로 남기위해(X)
 window.addEventListener('beforeunload', function(event) {
     var chid = $('#chatId').val(); // 대화방의 id
+    
+    if(chid != null){ // 채팅방이 있는 경우에만 활성화
     var useid = $('#loginUserId').attr('src').split("/")[3];
     axios.get('/chat/redis/logOut', {
         params: {
@@ -216,4 +221,5 @@ window.addEventListener('beforeunload', function(event) {
             console.log('redis logout 완료');
         })
         .catch(err=>{console.log(err)});
+    }
 });

@@ -118,8 +118,24 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="w3-right status">
-                            <span th:text ="${ p.status }"></span>
+                        <div id="divStatus" class="w3-right status">
+                        <!-- 비회원은 그냥 보여줌 -->
+                        <div th:if="${ #authentication.name == 'anonymousUser'}">
+                            <span id="spanStatus" th:text ="${ p.status }" ></span>
+                        </div>
+                        <!-- 회원일 때 글 작성자와 동일한지 아닌지에 따라 수정가능 여부 -->
+                        <div th:if="${ #authentication.name != 'anonymousUser'}">
+                            <div class="statusDiv w3-dropdown">
+                            <span id="spanStatus" th:onclick="${ p.userId == #authentication.principal.id } ? 'statusModifing()' : ''"
+                                  th:style="${ p.userId == #authentication.principal.id } ? 'cursor: pointer;' : ''" 
+                                  th:text ="${ p.status }" ></span>
+                            <div id="statusChangeOption" class="w3-dropdown-content w3-bar-block w3-card-4">
+                            <a href="javascript:void(0)" class="w3-bar-item w3-button" th:data-pid="${p.id}" onclick="statusChanging(event)">판매중</a>
+                            <a href="javascript:void(0)" class="w3-bar-item w3-button" th:data-pid="${p.id}" onclick="statusChanging(event)">예약중</a>
+                            <a href="javascript:void(0)" class="w3-bar-item w3-button" th:data-pid="${p.id}" onclick="statusChanging(event)">판매완료</a>
+                            </div>
+                            </div>
+                        </div>
                         </div>
                     </div>
                     <div class="postContentInfo">
@@ -155,7 +171,7 @@
                             <!-- 비로그인(anonymousUser)일 때 '채팅하기' -->
                             <button type="button" th:if="${ #authentication.name == 'anonymousUser' }" onclick="anonymousLogin();" class="w3-button w3-pale-red w3-round-xlarge">채팅하기</button>
                             <!-- 글작성자와 로그인 유저가 다를 때는 '채팅하기', 같을 때는 '수정하기' -->
-                            <div th:if="${#authentication.name != 'anonymousUser'}">
+                            <div th:if="${ #authentication.name != 'anonymousUser'}">
                                 <button type="button" th:if="${ p.userId != #authentication.principal.id }" th:data-pid="${p.id}" th:data-sid="${p.userId}" th:onclick="connectChat(event);" class="w3-button w3-pale-red w3-round-xlarge">채팅하기</button> 
                                 <button type="button" th:if="${ p.userId == #authentication.principal.id }" th:data-pid="${p.id}" th:onclick="|location.href='@{ /sell/modify?postId='+ this.getAttribute('data-pid') + '}';|" class="modifiedBtn w3-button w3-pale-red w3-round-xlarge">수정하기</button> 
                             </div>
@@ -170,6 +186,8 @@
 
 
 <th:block layout:fragment="script">
+    <!-- Ajax -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script th:src="@{ /js/detail.js }" ></script>
 </th:block>
 </body>

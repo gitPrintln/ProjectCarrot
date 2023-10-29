@@ -94,6 +94,7 @@ public class ListController {
             ListReadDto listElement = ListReadDto.builder().id(p.getId()).imageFileName(imageFileName)
                     .title(p.getTitle()).region(p.getRegion())
                     .prices(p.getPrices()).chats(p.getChats()).hits(p.getHits()).wishCount(p.getWishCount())
+                    .status(p.getStatus())
                     .modifiedTime(lastModifiedTime).build();
             list.add(listElement);
         }

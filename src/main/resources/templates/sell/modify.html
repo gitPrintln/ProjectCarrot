@@ -34,18 +34,21 @@
     .pricesAndStatus {
         position: relative;
     }
-    .pricesInput {
+    .pricesDiv {
         display: inline-block;
         width: 85%;
     }
-    .statusInput {
-        text-align: center; 
+    .statusDiv {
+        display: inline-block;
         width: 14%; 
-        cursor: pointer;
         transition: transform 0.5s;
     }
     .statusInput:hover {
         transform: scale(1.1);
+        transition-duration: 0.2s;
+    }
+    .statusInput {
+        cursor: pointer;
     }
     .statusInput:focus {
         opacity: 0.8;
@@ -56,7 +59,10 @@
         top: 50%; /* 수직 중앙 정렬 */
         transform: translateY(-50%); /* 수직 중앙 조정 */
     }
-    
+    #statusContent{
+        position: absolute;
+        right: 0px;
+    }
     </style>
 </head>
 <body>
@@ -105,10 +111,20 @@
                 </div>
                 <div class="contents">
                     <label class="w3-text-brown" for="prices"><span>&#8361;</span></label>
-                    <div class="pricesAndStatus"><input class="pricesInput w3-input w3-border w3-hover-shadow w3-sand" id="prices" name="prices" oninput="inNumber(event)"
+                    <div class="pricesAndStatus">
+                        <div class="pricesDiv">
+                            <input class="pricesInput w3-input w3-border w3-hover-shadow w3-sand" id="prices" name="prices" oninput="inNumber(event)"
                      placeholder="숫자로만 입력하세요" th:value="${ p.prices }" required/>
-                        <input class="statusInput w3-input w3-border w3-hover-shadow w3-sand w3-right" th:value="${ p.status }" id="status" name="status" readOnly/>
+                        </div>
+                        <div class="statusDiv w3-dropdown-hover w3-hide-small">
+                        <input class="statusInput w3-input w3-border w3-hover-shadow w3-sand" th:value="${ p.status }" id="status" name="status" readOnly/>
                         <i class="statusIcon fa fa-caret-down"></i>
+                        <div id="statusContent" class="w3-dropdown-content w3-bar-block w3-card-4">
+                            <a href="javascript:void(0)" class="w3-bar-item w3-button" onclick="changeSts(event)">판매중</a>
+                            <a href="javascript:void(0)" class="w3-bar-item w3-button" onclick="changeSts(event)">예약중</a>
+                            <a href="javascript:void(0)" class="w3-bar-item w3-button" onclick="changeSts(event)">판매완료</a>
+                        </div>
+                        </div>
                     </div>
                 </div>
                 <div class="contents">
@@ -117,7 +133,7 @@
                     placeholder="구매자가 상품에 대해 자세히 알 수 있도록 설명해주세요." th:text="${ p.content }" required></textarea></div>
                 </div>
                 <div class="contents" id="location">
-                    <div style="width:92%; display: inline-block;">
+                    <div style="width:96%; display: inline-block;">
                         <label class="w3-text-brown"><b>지역</b></label>
                         <div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="regionMain" name="regionMain" th:value="${ regionMain }" readonly/></div>
                     </div>
