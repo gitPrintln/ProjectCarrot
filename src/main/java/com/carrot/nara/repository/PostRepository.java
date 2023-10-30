@@ -11,8 +11,8 @@ import com.carrot.nara.domain.Post;
 
 public interface PostRepository extends JpaRepository<Post, Integer> {
 
-    // 최신글의 postId들을 불러오기(최신순)
-    @Query(value = "SELECT p.id FROM POST p ORDER BY p.modified_time desc", nativeQuery = true)
+    // 최신글의 postId들을 불러오기(최신순) 판매중인 것만 가져옴.(예약중, 판매완료 X)
+    @Query(value = "SELECT p.id FROM POST p WHERE STATUS = '판매중' ORDER BY p.modified_time desc", nativeQuery = true)
     List<Integer> findRecentPostIds();
 
     // 최신글들 모두 불러오기(최신순)

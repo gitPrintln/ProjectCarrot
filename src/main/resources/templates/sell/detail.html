@@ -13,9 +13,9 @@
     <title>Carrot Nara</title>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <style>
-    
         .mySlides {
             display: none;
+            margin-bottom: 1%;
         }
         .mySlides {/* TODO: 이미지 크기 조정중*/
             /* min-width: 400px;
@@ -49,6 +49,7 @@
         
         .middlebar, .middlebar .sellerInfo{
             display: flex;
+            align-items: center;
         }
         .middlebar .sellerImage{
             flex: 0.1;
@@ -69,12 +70,16 @@
             text-align: left;
         }
         .middlebar .status {
+            margin-bottom: auto;
             margin-left: auto;
+            margin-right: 2px;
             color: blue;
             font-weight: bold;
             cursor: default;
         }
-        
+        #spanStatus {
+            font-size: 20px;
+        }
         
         
         
@@ -104,9 +109,9 @@
                 
                 <!-- 본문 내용 시작 -->
                 <div class="post" th:each="p : ${ post }">
-                    <div class="middlebar w3-pale-blue">
+                    <div class="middlebar" style="background-color: rgb(175, 186, 255);">
                         <div class="sellerInfo">
-                            <div class="sellerImage">
+                            <div class="sellerImage" style="margin-left: 5px;">
                                 <img th:src="${ '/img/user/'+ p.userId }" alt="..."/>
                             </div>
                             <div class="seller" style="margin-left: 10px;">
@@ -140,13 +145,14 @@
                     </div>
                     <div class="postContentInfo">
                         <div>
-                            <span th:text ="${ '제목: ' + p.title }"></span>
+                            <span style="font-size: 25px;" th:text ="${ p.title }"></span>
                         </div>
                         <div>
-                            <span th:text ="${ '카테고리: ' + p.category }"></span>
+                            <span style="font-size: 10px; color: gray;" th:text ="${'카테고리 : ' + p.category }"></span>
                         </div>
                         <div>
-                            <span th:text ="${ '내용: ' + p.content }"></span>
+                            <!--  white-space:pre 를 통해서 DB에 개행되어있는 그대로 textarea에서 보여지는 그대로 가져옴 -->
+                            <div style="white-space: pre; font-size: 18px;"th:text ="${ p.content }"></div>
                         </div>
                         <div class="countInfo" style="font-size: 8px; color: gray;">
                             <div style="margin: 2px; display: inline-block;">
@@ -160,10 +166,10 @@
                             </div>
                         </div>
                         <div>
-                            <span th:if="${ p.region != null }" th:text ="${ '희망 지역: ' + p.region }"></span>
+                            <span th:if="${ p.region != null }" th:text ="${ p.region }"></span>
                         </div>
                     </div>
-                    <div class="footBar" style="background-color: lightgray;">
+                    <div class="footBar" style="background-color: rgb(240, 240, 247);">
                         <div style="margin: 10px; display: inline-block;">
                             <span th:text ="${ '가격: ' + p.prices }"></span><span> 원</span>
                         </div>
