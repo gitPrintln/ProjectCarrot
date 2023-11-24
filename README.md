@@ -99,7 +99,7 @@ HTML/CSS/Java Script
         return this;
     }
    ```
-   > User.java 일부
+   > UserRole.java 일부
    ```java
     public enum UserRole {
     USER("ROLE_USER"),
