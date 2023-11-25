@@ -422,7 +422,7 @@ window.addEventListener('DOMContentLoaded', () => {
         return ResponseEntity.ok("success");
     }
    ```
-   - 편의 기능
+   - 이미지 업로드 편의 기능
    > sell.html 일부
    ```java
         <div><input type="file" style="display: none;" class="w3-input w3-border w3-sand" id="images" name="images" multiple accept=".jpg, .jpeg, .png, .jfif"/></div>
