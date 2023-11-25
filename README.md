@@ -141,19 +141,8 @@ HTML/CSS/Java Script
     }
   ```
 #### 1. 판매할 중고 상품 등록 및 수정, 삭제(이미지 여러장 등록, 카카오 위치 API)
-  ##### 1-1. 중고 상품 등록(Create)
-   > SellController.java 일부
-   ```java
-    // 판매 상품 등록 DB에 저장
-    @PreAuthorize("hasRole('USER')")
-    @PostMapping("/create")
-    public String create(@AuthenticationPrincipal UserSecurityDto userDto, PostCreateDto dto) {
-        dto.setUserId(userDto.getId());
-        log.info("sellCreate(dto={}, {})", dto, dto.getImgIds());
-        Integer postId = sellService.create(dto);
-        return "redirect:/sell/detail?id=" + postId;
-    }
-   ```
+  ##### 1-1. 중고 상품 글
+  - 등록 및 수정
    > sell.js 일부
    ```java
    window.addEventListener('DOMContentLoaded', () => {
@@ -193,7 +182,109 @@ window.addEventListener('beforeunload', function(event) {
        }
 });
    ```
-  ##### 1-2. 중고 상품 등록(이미지 등록)
+   > SellController.java 일부
+   ```java
+    // 판매 상품 등록 DB에 저장
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/create")
+    public String create(@AuthenticationPrincipal UserSecurityDto userDto, PostCreateDto dto) {
+        dto.setUserId(userDto.getId());
+        log.info("sellCreate(dto={}, {})", dto, dto.getImgIds());
+        Integer postId = sellService.create(dto);
+        return "redirect:/sell/detail?id=" + postId;
+    }
+   ```
+  - 삭제
+   > modify.js 일부
+   ```java
+    // 삭제 버튼 이벤트
+   window.addEventListener('DOMContentLoaded', () => {
+    const btnDelete = document.getElementById('btnDelete');
+    btnDelete.addEventListener('click', function(){
+        const result = confirm('글을 삭제하게 되면 현재 판매와 관련된 채팅방은 삭제됩니다. 정말 삭제하시겠습니까?');
+        if(result){
+            alert('글을 삭제했습니다.')
+            document.querySelector('#formModify').submit();
+            formModify.action = '/sell/delete';
+            formModify.method = 'post';
+            formModify.submit();
+        }
+    });
+});
+// 이미지를 추가하려고 시도했지만 최종 등록 되지 않은 이미지 삭제(이미 있는 이미지는 건드리지 않음)
+function deleteTemporaryFile(){
+    let temporaryData = [];
+    const selectedImage = document.querySelector('#selectedImage');
+    const addedImgs = selectedImage.querySelectorAll('img');
+        addedImgs.forEach(file => {
+            const imgSrc = file.getAttribute('data-src');
+            if (!initialImageData.includes(imgSrc)) { // 초기 이미지 데이터에 저장되어 있지않은 추가하려고 시도했던 이미지만 삭제행
+                temporaryData.push(imgSrc);
+            }
+        });
+        axios.delete('/img/delete/' + temporaryData)
+            .then(response => {console.log('이미지 삭제 완료');
+            })
+            .catch(err=>{console.log(err)});
+}
+   ```
+   > SellController.java 일부
+   ```java
+    // 포스트 글과 그 글의 이미지, 로컬저장소의 이미지, 관련 채팅방 모두 삭제
+    @Transactional
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/delete")
+    public String delete(@AuthenticationPrincipal UserSecurityDto userDto, Integer id) {
+        log.info("sellUpdate(postID={})", id);
+        sellService.deletePost(id);
+        return "redirect:/list";
+    }
+   ```
+  ##### 1-2. 중고 상품 글 이미지
+   - 등록
+   > img.js 일부
+   ```java
+    imageInput.addEventListener('change', (event) => {
+        const files = event.target.files; // 파일 리스트들에 대한 정보를 files에 담음
+        uploadImages(files);
+    });
+
+    // 이미지 업로드
+    function uploadImages(files) {
+        axios.post('/img/upload', files)
+            .then(drawInput)
+            .catch(err => { alert(err + '인데요, 확인해보세요!!') });
+    }
+   ```
+   > sell.js 일부
+   ```java
+            // (2) 이미지 파일들 확인
+            const selectedImage = document.querySelector('#selectedImage');
+            if(selectedImage.children.length > 0){ // 이미지가 있는 경우
+                const finalImgs = selectedImage.querySelectorAll('img');
+                
+                // Array.from()은 유사 배열 객체나 이터러블(iterable) 객체를 배열로 변환하는 메서드
+                // Array.from(iterable, mapFn, thisArg) 이런 형태
+                // iterable: 배열로 변환할 유사 배열 객체 또는 이터러블 객체
+                // mapFn (선택적): 배열의 각 요소에 대해 호출될 맵핑 함수
+                // thisArg (선택적): mapFn에서 사용할 this 값을 지정        
+                for (let file of finalImgs) {
+                    const imgSrc = file.getAttribute('data-src');
+                    console.log(file);
+                    imageData.push(imgSrc);
+                }
+                axios.post('/img/upload/db', imageData)
+                    .then(response => {
+                        const imgIds = response.data.join(', ');
+                        const imgs = document.getElementById('imgs');
+                        const imgIdsForDbSave = `<div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="imgIds" name="imgIds" value="${imgIds}" readonly/></div>`;
+                        imgs.innerHTML += imgIdsForDbSave;
+                    })
+                    .catch(err => {alert(err+"!!!!");
+                    });
+                
+              }
+   ```
    > ImageUploadController.java 일부
    ```java
     /**
@@ -257,48 +348,79 @@ window.addEventListener('beforeunload', function(event) {
         return result;
     }
    ```
-   > img.js 일부
+   - 수정 및 삭제
+   > modify.js 일부
    ```java
-    imageInput.addEventListener('change', (event) => {
-        const files = event.target.files; // 파일 리스트들에 대한 정보를 files에 담음
-        uploadImages(files);
-    });
+let initialImageData = []; // 초기 이미지 정보를 저장해두고 최종 수정하지 않거나 이탈할 경우 이용(전역 변수로 사용)
 
-    // 이미지 업로드
-    function uploadImages(files) {
-        axios.post('/img/upload', files)
-            .then(drawInput)
-            .catch(err => { alert(err + '인데요, 확인해보세요!!') });
-    }
-   ```
-   > sell.js 일부
-   ```java
+window.addEventListener('DOMContentLoaded', () => {
+        // 불러온 이미지가 있으면, 최종 수정까지 하게 될 경우를 대비해서 이미지 정보 저장
+        const initialImgs = selectedImage.querySelectorAll('img');
+        for (let file of initialImgs) {
+              const iniImgSrc = file.getAttribute('data-src');
+              initialImageData.push(iniImgSrc);
+        }
+        // * 최종이미지 DB에 저장할 dataForm(initialImgs를 제외한 추가된 이미지)
+        let imageData = []; //  HTML <form> 요소의 데이터를 캡슐화하고, Ajax를 통해 서버로 전송하기 위해 사용
+    
             // (2) 이미지 파일들 확인
             const selectedImage = document.querySelector('#selectedImage');
             if(selectedImage.children.length > 0){ // 이미지가 있는 경우
                 const finalImgs = selectedImage.querySelectorAll('img');
                 
-                // Array.from()은 유사 배열 객체나 이터러블(iterable) 객체를 배열로 변환하는 메서드
-                // Array.from(iterable, mapFn, thisArg) 이런 형태
-                // iterable: 배열로 변환할 유사 배열 객체 또는 이터러블 객체
-                // mapFn (선택적): 배열의 각 요소에 대해 호출될 맵핑 함수
-                // thisArg (선택적): mapFn에서 사용할 this 값을 지정        
+                // 로직 : 최종 저장하려는 이미지를 초기 저장되어있는 이미지와 비교를 하여
+                // 초기 이미지에 포함되지 않은 이미지면 최종 저장 이미지에 올려서 저장을 하고
+                // 초기 이미지에 포함된 이미지라면 초기 이미지에서 해당 이미지를 빼주고 남은 이미지를 추려냄
+                // 반복하면 결과는,
+                // 최종 저장하려는 이미지는 추가 저장과 초기 이미지는 삭제해야할 이미지만 남게 된다.
                 for (let file of finalImgs) {
                     const imgSrc = file.getAttribute('data-src');
                     console.log(file);
-                    imageData.push(imgSrc);
+                    if(!initialImageData.includes(imgSrc)){ // ㄱ-초기 이미지 데이터에 저장되어 있지 않은 추가하려고 하는 추가 이미지만 DB에 저장
+                        imageData.push(imgSrc);
+                    } else{ // ㄴ-초기 이미지 중 삭제된 이미지 가려내서 로컬저장소와 DB에 삭제
+                        const indexToRemove = initialImageData.indexOf(imgSrc); // 해당 요소의 인덱스 값을 찾은 후
+                        initialImageData.splice(indexToRemove, 1); // 인덱스부터 시작해서 1개의 값을 제거
+                    }
                 }
+
+                // Promise 체이닝은 비동기 작업을 순차적으로 연결하여 처리하는 방식
+                // 비동기 작업을 처리하기 위해 Promise를 사용하며, 이러한 Promise 객체들을 연속적으로 연결하여 작업을 수행하는 것을 Promise 체이닝
                 axios.post('/img/upload/db', imageData)
                     .then(response => {
                         const imgIds = response.data.join(', ');
                         const imgs = document.getElementById('imgs');
                         const imgIdsForDbSave = `<div><input class="w3-input w3-border w3-hover-shadow w3-sand" id="imgIds" name="imgIds" value="${imgIds}" readonly/></div>`;
                         imgs.innerHTML += imgIdsForDbSave;
+                        
+                        if(initialImageData.length > 0) { // 삭제되어야할 데이터가 있으면 실행
+                            axios.delete('/img/delete/db/' + initialImageData)
+                                .then(response => {console.log('이미지 삭제 완료');
+                                })
+                                .catch(err=>{console.log(err)});
+                        }
                     })
                     .catch(err => {alert(err+"!!!!");
                     });
-                
-              }
+});
+   ```
+   > ImageUploadController.java 일부
+   ```java
+    /**
+     * 저장되어 있는 이미지를 삭제하는 경우(로컬저장소와 DB에서 삭제)
+     * @param initialImageData 유저가 포스트글 업데이트를 통해 로컬저장소와 DB에 삭제하려는 이미지 파일들의 이름들의 집합.
+     * @return 성공 문자열
+     */
+    @DeleteMapping("/delete/db/{initialImageData}")
+    public ResponseEntity<String> deleteUpdatedImageFile(@PathVariable String[] initialImageData) {
+        log.info("deleteUpdatedImageFile()");
+        for (String f : initialImageData) {
+            File file = new File(uploadPath, f);
+            file.delete(); // 로컬에서 파일 삭제
+            sellService.deleteImg(f); // DB에서 파일 삭제
+        }
+        return ResponseEntity.ok("success");
+    }
    ```
   ##### 1-3. 중고 상품 등록(카카오 위치 API)
    > sell.js 일부
