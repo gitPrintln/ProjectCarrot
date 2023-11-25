@@ -13,6 +13,7 @@ HTML/CSS/Java Script
 중고 상품 CRUD (이미지 포함) 및 검색
 # 기능
 #### 0. 로그인해야 가능한 기능과 아닌 기능 구분
+  - SpringSecurity 설정
    > SecurityConfig.java 일부
    ```java
    @EnableMethodSecurity(prePostEnabled = true)
@@ -432,7 +433,7 @@ window.addEventListener('DOMContentLoaded', () => {
    ```
    * 로컬 저장소에 저장하는 시점과 DB에 이미지 파일을 불러오는 시점을 분리해뒀기 때문에 사용자 편의를 위해 업로드 후 드래그로 여러 장 업로드, 추가 업로드, 추가 삭제가 가능함.
    * (gif를 넣을 곳)
-  ##### 1-3. 중고 상품 등록(카카오 위치 API)
+  ##### 1-3. 중고 상품 글 주소(카카오 위치 API)
    > sell.js 일부
    ```java
             // (1) 전달해줄 완성된 전체 주소 input창 만들어주기
@@ -505,8 +506,88 @@ window.addEventListener('DOMContentLoaded', () => {
         </div><!-- 카드 하나 end -->
    ```
    * (gif를 넣을 곳)
-#### 3. 거래를 희망하는 유저들간의 1:1 채팅(Stomp websocket)
+#### 3. 거래를 희망하는 유저들간의 1:1 채팅(Stomp websocket, Redis)
+  - 채팅 설정
+   > WebSocketMessageBroker.java 일부
+   ```java
+      @EnableWebSocketMessageBroker
+      @Configuration
+      public class WebSocketMessageBroker implements WebSocketMessageBrokerConfigurer {
+          
+          @Override
+          public void configureMessageBroker(MessageBrokerRegistry registry) {
+              // 메시지를 구독하는 요청 url prefix => 즉 메시지 받을 때 (subscribe, sub)
+              registry.enableSimpleBroker("/user");
+      
+              // 메시지를 발행하는 요청 url prefix => 즉 메시지 보낼 때 (publish, pub)
+              registry.setApplicationDestinationPrefixes("/app");
+          }
+          
+          @Override
+          public void registerStompEndpoints(StompEndpointRegistry registry) {
+              registry.addEndpoint("/chat").setAllowedOriginPatterns("*").withSockJS();
+          }
+      }
+   ```
+   > chat.js 일부
+   ```java
 
+
+
+
+
+   ```
+   > ChatController.java 일부
+   ```java
+    public String chat(@AuthenticationPrincipal UserSecurityDto userDto, Integer postId, Integer sellerId) {
+        Optional<Chat> isPresentLoadedChat = Optional.ofNullable(chatService.loadChat(userId, postId, sellerId));
+        if(isPresentLoadedChat.isPresent()) { // 불러온 채팅이 이미 존재하는 경우
+            log.info("post글의 detail에서 채팅창으로 연결하는 경우 대화내역 이미 존재하는 경우");
+            Chat loadedChat = isPresentLoadedChat.get();
+            chatId = loadedChat.getId();
+            return "/chat?chatId="+chatId;
+        }
+        // 새로운 채팅을 생성해주는 경우
+        log.info("post글의 detail에서 채팅창으로 연결하는 경우 대화내역 없어서 생성해줄 경우");
+        Chat newChatInfo = chatService.createNewChat(userId, postId, sellerId);
+        return "/chat?chatId="+chatId;
+    }
+
+    /**
+     * 채팅 목록을 불러옴
+     * @param userId 불러오고자 하는 user의 id
+     * @return ChatListDto 타입의 리스트
+     */
+    @Transactional(readOnly = true)
+    public List<ChatListDto> loadChatList(Integer userId){
+        log.info("loadChatList(userId={})", userId);
+        
+        // 내가 속해 있는 모든 대화 채팅 목록(어디서 채팅방으로 들어가던지 공통)
+        List<Chat> chatList = chatService.myChatList(userId);
+        
+        List<ChatListDto> list = new ArrayList<>(); // chat 목록에 사용될 최종 list
+        
+        // lastTime 값이 있는지 없는지 비교해보기위한 기준 time
+        LocalDateTime benchmarkTime = LocalDateTime.of(1111, 11, 11, 11, 11);
+        for (Chat chat : chatList) {
+            String sellerNick = userService.getNickName(chat.getSellerId());
+            String partnerNick = userService.getNickName(chat.getUserId());
+            String lastChat = redisService.getLastChat(chat.getId());
+            LocalDateTime lastTimeBeforeFormat = redisService.getLastTime(chat.getId());
+            String lastTime = "";
+            if(!lastTimeBeforeFormat.isEqual(benchmarkTime)) { // 값이 없다면 formatting하면 안되기 때문에
+                lastTime = TimeFormatting.formatting(lastTimeBeforeFormat);
+            } 
+            ChatListDto entity = ChatListDto.builder()
+                                .id(chat.getId()).partnerId(chat.getUserId())
+                                .sellerId(chat.getSellerId()).sellerNickName(sellerNick).partnerNickName(partnerNick)
+                                .lastChat(lastChat).lastTime(lastTime)
+                                .build();
+            list.add(entity);
+        }
+        return list;
+    }
+   ```
 #### 4. 웹 서비스 운영을 위한 관리자와 유저들을 위한 편의 서비스
 
 #### 5. 지도 API를 이용한 검색(추정)
