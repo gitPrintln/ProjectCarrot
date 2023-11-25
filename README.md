@@ -422,6 +422,16 @@ window.addEventListener('DOMContentLoaded', () => {
         return ResponseEntity.ok("success");
     }
    ```
+   - 편의 기능
+   > sell.html 일부
+   ```java
+        <div><input type="file" style="display: none;" class="w3-input w3-border w3-sand" id="images" name="images" multiple accept=".jpg, .jpeg, .png, .jfif"/></div>
+        </div>
+        <!-- 선택한 파일이 보여지는 공간 -->
+        <div id="selectedImage"></div>
+   ```
+   * 로컬 저장소에 저장하는 시점과 DB에 이미지 파일을 불러오는 시점을 분리해뒀기 때문에 사용자 편의를 위해 업로드 후 드래그로 여러 장 업로드, 추가 업로드, 추가 삭제가 가능함.
+   * (gif를 넣을 곳)
   ##### 1-3. 중고 상품 등록(카카오 위치 API)
    > sell.js 일부
    ```java
@@ -437,6 +447,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 location.innerHTML += jusoStr;
             }
    ```
+   * (gif를 넣을 곳)
 #### 2. 최신 순으로 업데이트된 유저들의 거래 목록
 
 #### 3. 거래를 희망하는 유저들간의 1:1 채팅(Stomp websocket)
