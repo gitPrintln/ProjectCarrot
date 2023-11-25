@@ -448,8 +448,63 @@ window.addEventListener('DOMContentLoaded', () => {
             }
    ```
    * (gif를 넣을 곳)
-#### 2. 최신 순으로 업데이트된 유저들의 거래 목록
-
+#### 2. 최신 순으로 업데이트된 유저들의 거래 목록(검색)
+  - 거래 목록 불러오기(상단에서 검색 포함)
+   > ListController.java 일부
+   ```java
+    /**
+     * 해당 포스트 글 + 포스트 이미지로 구성된 ListReadDto 타입의 list를 불러옴.
+     * @param keyword 검색 키워드가 있을 경우의 keyword, 전체 리스트인 경우 null로 전달
+     * @return ListReadDto 타입의 List를 전달해줌.
+     */
+    private List<ListReadDto> loadList(String keyword){
+        log.info("loadList()");
+        List<ListReadDto> list = new ArrayList<>(); // 최종 리스트
+        List<Post> postList = new ArrayList<>(); // 포스트에 대한 리스트(이미지 x) - 최종리스트에 넣기 위해 작업해줘야함. 
+        
+        if(!keyword.equals("")) { // 검색 키워드로 리스트 불러올 때(상단의 검색창으로 검색시)
+            postList = postService.readByKeywordByUpdateTime(keyword);
+        } else { // 전체 리스트 불러올 때(상단의 중고거래 목록 보기 클릭시)
+            postList = postService.readAllByUpdateTime();
+        }
+        
+        for (Post p : postList) {
+            // 이미지가 있을 수도 있고 없을 수도 있기 때문에 optional로 조회 후 optional로 감싸서 객체를 생성
+            // 주의, 전달된 값이 null이라면 Optional.empty()를 반환함.
+            Optional<PostImage> pi = Optional.ofNullable(postService.readThumbnail(p.getId()));
+            String imageFileName = "image-fill.png"; // 포스트 글의 이미지가 없으면 기본 이미지를 넣음.
+            String lastModifiedTime = TimeFormatting.formatting(p.getModifiedTime());
+            
+            if(pi.isPresent()) { // 포스트 글의 이미지가 있으면 있는 이미지로 교체
+                PostImage pig = pi.get();
+                imageFileName = pig.getFileName();
+            }
+            ListReadDto listElement = ListReadDto.builder().id(p.getId()).imageFileName(imageFileName)
+                    .title(p.getTitle()).region(p.getRegion())
+                    .prices(p.getPrices()).chats(p.getChats()).hits(p.getHits()).wishCount(p.getWishCount())
+                    .status(p.getStatus())
+                    .modifiedTime(lastModifiedTime).build();
+            list.add(listElement);
+        }
+        
+        return list;
+    }
+   ```
+   > list.html 일부
+   ```java
+        <div class="listPostCard w3-container" th:each="list : ${ list }"><!-- 카드 하나 -->
+          <div class="title">
+            <span th:text="${ list.title }"></span>
+          </div>
+          <div class="region">
+            <span th:if="${ list.region != null }" style="font-size: 10px;" th:text="${ list.region.split(' ')[1] + ' ' + list.region.split(' ')[2] }"></span>
+          </div>
+          <div class="prices">
+             <span th:text="${ list.prices }"></span><span>&nbsp;원</span><br/><br/>
+          </div>                      
+        </div><!-- 카드 하나 end -->
+   ```
+   * (gif를 넣을 곳)
 #### 3. 거래를 희망하는 유저들간의 1:1 채팅(Stomp websocket)
 
 #### 4. 웹 서비스 운영을 위한 관리자와 유저들을 위한 편의 서비스
