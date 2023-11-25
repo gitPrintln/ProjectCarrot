@@ -169,7 +169,7 @@ HTML/CSS/Java Script
                     formSell.action = '/sell/create';
                     formSell.method = 'post';
                     formSell.submit();
-            }, 75);
+            }, 100);
            }
       });
    });
