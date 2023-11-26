@@ -529,13 +529,42 @@ window.addEventListener('DOMContentLoaded', () => {
           }
       }
    ```
+  ##### 3-1. 채팅 연결
    > chat.js 일부
    ```java
-
-
-
-
-
+    // SockJS 연결
+    function connect() {
+            // map URL using SockJS 
+            var socket = new SockJS('/chat');
+            var url = '/user/queue/messages/' + chatId;
+            var notificationUrl = '/user/notification/' + chatId + "/" + chatPartnerId;
+            // webSocket 대신 SockJS을 사용하므로 Stomp.client()가 아닌 Stomp.over()를 사용함
+            stompClient = Stomp.over(socket);
+            // connect(header, connectCallback(==연결에 성공하면 실행되는 메서드))
+            stompClient.connect({}, function() { 
+                autofocus();
+                alarm(); // redis에 채팅방에 접속했음을 저장하고 상대에게는 채팅방에 들어왔음을 알림(안읽은 메세지를 읽음으로)
+                
+                // url: 채팅방 참여자들에게 공유되는 경로(message용)
+                // callback(function()): 클라이언트가 서버(Controller broker)로부터 메시지를 수신했을 때(== STOMP send()가 실행되었을 때) 실행
+                stompClient.subscribe(url, function(output) { // 메세지에 관한 구독
+                    // html <body>에 append할 메시지 contents
+                    showBroadcastMessage(createTextNode(JSON.parse(output.body)));
+                    autofocus();
+                    updateList();
+                });
+                
+                // notificationUrl: 채팅방 참여자들에게 공유되는 경로(알림용) 읽음/안읽음 등
+                stompClient.subscribe(notificationUrl, function(output){
+                    responseAlarmCheck(output.body); // 어떤 종류의 알람인지 확인 후 그에 맞는 처리
+                });
+                }, 
+                    // connect() 에러 발생 시 실행
+                        function (err) {
+                            console.log('error' + err);
+            });
+ 
+        };
    ```
    > ChatController.java 일부
    ```java
@@ -588,6 +617,9 @@ window.addEventListener('DOMContentLoaded', () => {
         return list;
     }
    ```
+  - 채팅 연결
+  * (gif를 넣을 곳)
+  ##### 3-2. 읽음/안읽음 기능(읽었으면 1을 지워줌, redis에 저장된 캐시로 빠르게 불러옴)
 #### 4. 웹 서비스 운영을 위한 관리자와 유저들을 위한 편의 서비스
 
 #### 5. 지도 API를 이용한 검색(추정)
