@@ -21,6 +21,7 @@ import com.carrot.nara.dto.PostCreateDto;
 import com.carrot.nara.dto.PostModifyDto;
 import com.carrot.nara.dto.PostStatusUpdateDto;
 import com.carrot.nara.dto.UserSecurityDto;
+import com.carrot.nara.service.MyPageService;
 import com.carrot.nara.service.PostService;
 import com.carrot.nara.service.SellService;
 import com.carrot.nara.service.UserService;
@@ -37,6 +38,7 @@ public class SellController {
     private final SellService sellService;
     private final PostService postService;
     private final UserService userService;
+    private final MyPageService myPageService;
     
     // 판매 상품 등록
     @PreAuthorize("hasRole('USER')")
@@ -59,7 +61,7 @@ public class SellController {
     // 판매 상품 상세 보기
     @GetMapping("/detail")
     @Transactional(readOnly = true)
-    public String detail(Integer id, Model model) {
+    public String detail(@AuthenticationPrincipal UserSecurityDto userDto, Integer id, Model model) {
         log.info("sellDetail(id={})", id); // 클릭한 id를 통해서 상세하게 볼 수 있게 정보를 불러옴.
         // # Spring Data JPA(Java Persistence API)
         // spring.jpa.hibernate.ddl-auto=update
@@ -83,6 +85,11 @@ public class SellController {
 
         String createrNick = userService.getNickName(post.getUserId());
         model.addAttribute("createrNick", createrNick);
+        
+        if(userDto != null) { // 로그인 회원일 경우에만,
+            String likeStatus = myPageService.getPostLike(userDto.getId(), id);
+            model.addAttribute("like", likeStatus);
+        }
         return "sell/detail";
     }
     
@@ -142,5 +149,13 @@ public class SellController {
         log.info("changeStatusByDetail(postId={}, status={})", dto.getId(), dto.getStatus());
         sellService.modifyStatus(dto.getId(), dto.getStatus());
         return ResponseEntity.ok(dto.getStatus());
+    }
+    
+    @Transactional(readOnly = true)
+    @GetMapping("/wishCount")
+    @ResponseBody
+    public ResponseEntity<Integer> getPostWishCounts(Integer postId){
+        Integer WishCounts = postService.readWishCounts(postId);
+        return ResponseEntity.ok(WishCounts);
     }
 }

@@ -28,6 +28,16 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Modifying
     void upChats(@Param(value = "postId") Integer postId);
 
+    // 해당 id의 관심수 1증가
+    @Query(value = "UPDATE POST p SET p.wishCount = p.wishCount +1 WHERE p.id = :postId")
+    @Modifying
+    void uplikes(@Param(value = "postId") Integer postId);
+    
+    // 해당 id의 관심수 1취소
+    @Query(value = "UPDATE POST p SET p.wishCount = p.wishCount -1 WHERE p.id = :postId")
+    @Modifying
+    void uplikesCancel(@Param(value = "postId") Integer postId);
+    
     // title, content에서 keyword를 포함하는 % + keyword + %를 업데이트 순으로 정렬한 리스트
     List<Post> findByTitleContainingOrContentContainingOrderByModifiedTimeDesc(String keyword, String keyword2);
     

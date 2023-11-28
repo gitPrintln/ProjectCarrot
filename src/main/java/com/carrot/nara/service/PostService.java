@@ -64,6 +64,13 @@ public class PostService {
         postRepository.upChats(postId);
     }
 
+    // 해당 포스트 글의 관심 수를 가져옴.
+    @Transactional(readOnly = true)
+    public Integer readWishCounts(Integer postId) {
+        log.info("readWishCounts()");
+        return postRepository.findById(postId).get().getWishCount();
+    }
+
     
     
 }
