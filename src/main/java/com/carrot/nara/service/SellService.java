@@ -70,7 +70,7 @@ public class SellService {
         return imgIds;
     }
 
-    // post글 수정기능
+    // 판매 포스트 글 수정
     @Transactional
     public Integer modify(PostModifyDto dto) {
         log.info("modify(dto={})", dto);

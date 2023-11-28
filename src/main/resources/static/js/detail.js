@@ -5,6 +5,53 @@
  
 window.addEventListener('DOMContentLoaded', () => {
     statusFontColor(); // 글의 판매 상태에 따라 폰트색상 변경
+    
+    
+    // 좋아요 -> 취소, 취소 -> 좋아요
+    const btnHeart = document.querySelector('#btnHeart');
+    btnHeart.addEventListener('click', function(){
+        const postId = btnHeart.getAttribute('data-postId');
+        const emptyHeart = document.querySelector('#emptyHeart');
+        const fullHeart = document.querySelector('#fullHeart');
+        const wishNum = document.querySelector('#wishNum');
+        axios.get('/myPage/postLike', {
+                params: {
+                    postId: postId
+                }
+            })
+            .then(likeStatus => {
+                if(likeStatus.data === '좋아요'){
+                    fullHeart.style.display = '';
+                    emptyHeart.style.display = 'none';
+                    alert('좋아요!!');
+                    
+                    // 전체 관심수 개수 반영해주기
+                    axios.get('/sell/wishCount', {
+                        params: {
+                            postId: postId
+                        }
+                    }).then(wishCounts =>{
+                        wishNum.textContent = '관심 ' + wishCounts.data;
+                    }).catch(err => console.log(err + '전체 좋아요 개수 문제'));
+                }else if(likeStatus.data === '좋아요 취소'){
+                    fullHeart.style.display = 'none';
+                    emptyHeart.style.display = '';
+                    alert('좋아요 취소!!');
+                    
+                    // 전체 관심수 개수 반영해주기
+                    axios.get('/sell/wishCount', {
+                        params: {
+                            postId: postId
+                        }
+                    }).then(wishCounts =>{
+                        wishNum.textContent = '관심 ' + wishCounts.data;
+                    }).catch(err => console.log(err + '전체 좋아요 개수 문제'));
+                }else{
+                    alert('로그인 후 이용 부탁드립니다.');
+                }
+            })
+            .catch(err => console.log(err+'좋아요 에러 확인!!'));
+    });
 });
     // 채팅 연결하기
     function connectChat(event){

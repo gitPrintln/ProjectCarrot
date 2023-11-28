@@ -29,4 +29,11 @@ public class HomeController {
         
         return "home";
     }
+    
+    @GetMapping("/map")
+    public String map(Model model) {
+        log.info("map");
+        
+        return "map";
+    }
 }
