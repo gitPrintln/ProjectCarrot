@@ -508,9 +508,281 @@ window.addEventListener('DOMContentLoaded', () => {
    * (gif를 넣을 곳)
 #### 3. 중고 상품 글 자세히 보기
   ##### 3-1. 이미지 슬라이드 기능
-  ##### 3-2. 판매중/판매완료/예약중 표시 기능(작성자가 본인인 경우)
+   > detail.html 일부
+   ```html
+                <!-- 이미지 시작 -->
+                     <div class="w3-content w3-display-container imgsSlide">
+                        <div class="mySlides" th:each="i : ${ postImage }">
+                            <img th:src="${ '/img/view/'+ i.fileName }">
+                        </div>
+                        <!-- next, prev 버튼, indicator 버튼들 -->
+                        <div class="slideBtnsDiv">
+                        </div>
+                     </div>
+                <!-- 이미지 끝 -->
+   ```
+   > detail.js 일부
+   ```js
+    // slide imgs 관련
+    var slideIndex = 1;
+    var mySlidesItems = document.getElementsByClassName('mySlides');
+    indicatorsController();
+    // carousel-indicators 컨트롤러
+    function indicatorsController(){
+        const indicatorsCount = mySlidesItems.length;
+        if(indicatorsCount>1) { // 이미지 개수가 1개보다 많을 때만 가운데 버튼과 양쪽 prev, next button 보이게 하기.
+            // next, prev 버튼
+            const slideBtnsDiv = document.querySelector('.slideBtnsDiv');
+            let nextPrevBtnStr = '';
+            nextPrevBtnStr += '<div class="w3-center w3-container w3-section w3-large w3-text-white w3-display-bottommiddle" style="width:100%">'
+                + '<div class="w3-left w3-hover-text-khaki" onclick="plusDivs(-1)">&#10094;</div>'
+                + '<div class="w3-right w3-hover-text-khaki" onclick="plusDivs(1)">&#10095;</div>'
+                + '<!-- 아래쪽 버튼 개수 동적으로 변경 -->'
+                + '<div class="indicatorsBtnDiv">'
+                + '</div>'
+                + '</div>';
+                slideBtnsDiv.innerHTML += nextPrevBtnStr;
+            // indicators 버튼
+            const indicatorsBtnDiv = document.querySelector('.indicatorsBtnDiv');
+            for(let i=0; i < indicatorsCount; i++){
+                   const slideBtnStr = `<span class="w3-badge demo w3-border w3-transparent w3-hover-white" onclick="currentDiv(${i+1})"></span>`
+                       indicatorsBtnDiv.innerHTML += slideBtnStr;
+            }
+            
+            // slides script
+            showDivs(slideIndex);
+            
+        } else if(indicatorsCount === 1){ // 이미지 개수가 딱 1개일 때
+            var y = document.getElementsByClassName("mySlides");
+            y[slideIndex-1].style.display = "block";
+        }
+    }
+
+    function plusDivs(n) {
+      showDivs(slideIndex += n);
+    }
+
+    function currentDiv(n) {
+      showDivs(slideIndex = n);
+    }
+
+    function showDivs(n) {
+      var i;
+      var x = document.getElementsByClassName("mySlides");
+      var dots = document.getElementsByClassName("demo");
+      if (n > x.length) {
+          slideIndex = 1
+      }
+      if (n < 1) {
+          slideIndex = x.length
+      }
+      for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none";  
+      }
+      for (i = 0; i < dots.length; i++) {
+        dots[i].className = dots[i].className.replace(" w3-white", "");
+      }
+      x[slideIndex-1].style.display = "block";  
+      dots[slideIndex-1].className += " w3-white";
+    }
+   ```
+  ##### 3-2. 판매중/판매완료/예약중 기능(작성자가 본인인 경우)
+   > detail.html 일부
+   ```html
+                        <div id="divStatus" class="w3-right status">
+                        <!-- 비회원은 그냥 보여줌 -->
+                        <div th:if="${ #authentication.name == 'anonymousUser'}">
+                            <span id="spanStatus" th:text ="${ p.status }" ></span>
+                        </div>
+                        <!-- 회원일 때 글 작성자와 동일한지 아닌지에 따라 수정가능 여부 -->
+                        <div th:if="${ #authentication.name != 'anonymousUser'}">
+                            <div class="statusDiv w3-dropdown">
+                            <span id="spanStatus" th:onclick="${ p.userId == #authentication.principal.id } ? 'statusModifing()' : ''"
+                                  th:style="${ p.userId == #authentication.principal.id } ? 'cursor: pointer;' : ''" 
+                                  th:text ="${ p.status }" ></span>
+                            <div id="statusChangeOption" class="w3-dropdown-content w3-bar-block w3-card-4">
+                            <a href="javascript:void(0)" class="w3-bar-item w3-button" th:data-pid="${p.id}" onclick="statusChanging(event)">판매중</a>
+                            <a href="javascript:void(0)" class="w3-bar-item w3-button" th:data-pid="${p.id}" onclick="statusChanging(event)">예약중</a>
+                            <a href="javascript:void(0)" class="w3-bar-item w3-button" th:data-pid="${p.id}" onclick="statusChanging(event)">판매완료</a>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+   ```
+   > detail.js 일부
+   ```js
+window.addEventListener('DOMContentLoaded', () => {
+    statusFontColor(); // 글의 판매 상태에 따라 폰트색상 변경
+});
+    // 글 작성자와 로그인 유저가 동일하다면 버튼 클릭으로 status 수정 가능하도록 해주기
+    // 클릭했을 경우 변경 가능한 드롭다운 보여주기
+    function statusModifing(){
+      var optionBox = document.getElementById("statusChangeOption");
+      if (optionBox.className.indexOf("w3-show") == -1) { 
+        optionBox.className += " w3-show";
+      } else {
+        optionBox.className = optionBox.className.replace(" w3-show", "");
+      }
+    }
+    
+    // 판매중, 예약중, 판매완료 눌렀을 때 axios로 즉시 바꿔줌.
+    function statusChanging(event){
+        var postId = event.target.getAttribute('data-pid');
+        const toChangeSts = event.target.text;
+        const data = {
+            id: postId,
+            status: toChangeSts
+        };
+        axios.post('/sell/modify/status', data)
+            .then(response => {
+                const spanStatus = document.getElementById('spanStatus');
+                if(toChangeSts === "예약중"){
+                    spanStatus.style.color = 'green';
+                } else if(toChangeSts === "판매완료"){
+                    spanStatus.style.color = 'red';
+                } else{
+                    spanStatus.style.color = 'blue';
+                }
+                spanStatus.innerHTML = toChangeSts;
+                statusModifing();
+                alert(toChangeSts + ' 상태로 변경하였습니다.');
+                
+            })
+            .catch(err => {console.log(err)});
+    }    
+    
+    // 판매중, 예약중, 판매완료 각각의 조건에 따라 폰트색깔 동적으로 변경
+    function statusFontColor(){
+        const statusFontColor = document.getElementById('spanStatus');
+        const spanStatus = statusFontColor.innerHTML;
+        if(spanStatus === "예약중"){
+            statusFontColor.style.color = 'green';
+        } else if(spanStatus === "판매완료"){
+            statusFontColor.style.color = 'red';
+        }
+    }
+   ```
     -> 판매 상태에 따라서 거래목록에 다른 효과
   ##### 3-3. 좋아요 기능
+   > detail.html 일부
+   ```html
+                        <div id="btnHeart" th:data-postId="${p.id}" style="display: inline-block; cursor:pointer;">
+                            <img id="emptyHeart" th:style="${ like != '좋아요' } ? 'width: 30px;' : 'display: none; width: 30px;'" src="/images/empty-heart.png" alt="좋아요 누르기">
+                            <img id="fullHeart" th:style="${ like == '좋아요' } ? 'width: 30px;' : 'display: none; width: 30px;'" src="/images/full-heart.png" alt="좋아요 취소하기">
+                        </div>
+   ```
+   > detail.js 일부
+   ```js
+window.addEventListener('DOMContentLoaded', () => {
+    // 좋아요 -> 취소, 취소 -> 좋아요
+    const btnHeart = document.querySelector('#btnHeart');
+    btnHeart.addEventListener('click', function(){
+        const postId = btnHeart.getAttribute('data-postId');
+        const emptyHeart = document.querySelector('#emptyHeart');
+        const fullHeart = document.querySelector('#fullHeart');
+        const wishNum = document.querySelector('#wishNum');
+        axios.get('/myPage/postLike', {
+                params: {
+                    postId: postId
+                }
+            })
+            .then(likeStatus => {
+                if(likeStatus.data === '좋아요'){
+                    fullHeart.style.display = '';
+                    emptyHeart.style.display = 'none';
+                    alert('좋아요!!');
+                    
+                    // 전체 관심수 개수 반영해주기
+                    axios.get('/sell/wishCount', {
+                        params: {
+                            postId: postId
+                        }
+                    }).then(wishCounts =>{
+                        wishNum.textContent = '관심 ' + wishCounts.data;
+                    }).catch(err => console.log(err + '전체 좋아요 개수 문제'));
+                }else if(likeStatus.data === '좋아요 취소'){
+                    fullHeart.style.display = 'none';
+                    emptyHeart.style.display = '';
+                    alert('좋아요 취소!!');
+                    
+                    // 전체 관심수 개수 반영해주기
+                    axios.get('/sell/wishCount', {
+                        params: {
+                            postId: postId
+                        }
+                    }).then(wishCounts =>{
+                        wishNum.textContent = '관심 ' + wishCounts.data;
+                    }).catch(err => console.log(err + '전체 좋아요 개수 문제'));
+                }else{
+                    alert('로그인 후 이용 부탁드립니다.');
+                }
+            })
+            .catch(err => console.log(err+'좋아요 에러 확인!!'));
+    });
+});
+   ```
+   > MyPageController.java 일부
+   ```java
+public class MyPageController {
+    /**
+     * user가 누른 좋아요를 DB에 반영, 해당 post글의 관심수 1올려줌
+     * @param postId post글
+     * @return
+     */
+    @PreAuthorize("hasRole('USER')")
+    @Transactional
+    @GetMapping("/postLike")
+    @ResponseBody
+    public ResponseEntity<String> postLike(@AuthenticationPrincipal UserSecurityDto user, Integer postId){
+        log.info("postLike(userId={}, postId={})", user.getId(), postId);
+        String likeStatus = myPageService.likeStatusChg(user.getId(), postId);
+        return ResponseEntity.ok(likeStatus);
+    }
+}
+   ```
+   > MyPageService.java 일부
+   ```java
+public class MyPageService {
+    /**
+     * DB에 좋아요 상태를 변경하고 해당 글의 관심수를 변경해줌.
+     * @param id userId
+     * @param postId postId
+     * @return 변경 완료 후 좋아요 상태
+     */
+    @Transactional
+    public String likeStatusChg(Integer id, Integer postId) {
+        log.info("likeStatusChg()");
+        String likeStatus = "좋아요";
+        
+        // 좋아요 누른 것이 DB에 조회된다면? DB에 삭제 해주고, 상태를 좋아요 취소로 바꿔줌.
+        Optional<PostLike> postLikeByUser = Optional.ofNullable(postLikeRepository.findByUserIdAndPostId(id, postId));
+        if(postLikeByUser.isPresent()) {
+            postLikeRepository.deleteById(postLikeByUser.get().getId());
+            postRepository.uplikesCancel(postId);
+            return likeStatus = "좋아요 취소";
+        }
+        
+        // 좋아요되어 있지 않은 상태라면? DB에 추가 해주고 좋아요 상태로 전달해줌.
+        PostLike entity = PostLike.builder().userId(id).postId(postId).build();
+        postLikeRepository.save(entity);
+        postRepository.uplikes(postId);
+        return likeStatus;
+    }
+}
+   ```
+  ##### 3-4. 수정/채팅 기능(작성자가 본인인 경우/아닌 경우)
+   > detail.html 일부
+   ```html
+                        <div style="margin: 10px; display: inline-block;">
+                            <!-- 비로그인(anonymousUser)일 때 '채팅하기' -->
+                            <button type="button" th:if="${ #authentication.name == 'anonymousUser' }" onclick="anonymousLogin();" class="w3-button w3-pale-red w3-round-xlarge">채팅하기</button>
+                            <!-- 글작성자와 로그인 유저가 다를 때는 '채팅하기', 같을 때는 '수정하기' -->
+                            <div th:if="${ #authentication.name != 'anonymousUser'}">
+                                <button type="button" th:if="${ p.userId != #authentication.principal.id }" th:data-pid="${p.id}" th:data-sid="${p.userId}" th:onclick="connectChat(event);" class="w3-button w3-pale-red w3-round-xlarge">채팅하기</button> 
+                                <button type="button" th:if="${ p.userId == #authentication.principal.id }" th:data-pid="${p.id}" th:onclick="|location.href='@{ /sell/modify?postId='+ this.getAttribute('data-pid') + '}';|" class="modifiedBtn w3-button w3-pale-red w3-round-xlarge">수정하기</button> 
+                            </div>
+                        </div>
+   ```
 #### 4. 거래를 희망하는 유저들간의 1:1 채팅(Stomp websocket, Redis)
   - 채팅 설정
    > WebSocketMessageBroker.java 일부
