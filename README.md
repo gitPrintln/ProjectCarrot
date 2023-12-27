@@ -704,11 +704,162 @@ window.addEventListener('DOMContentLoaded', () => {
    ```
    * (gif를 넣을 곳)
   ##### 4-3. 리스트에 마지막 채팅 보여주기(redis에 저장된 캐시로 빠르게 불러옴)
-  
+   > RedisService.java 일부
+   ```java
+    public class RedisService {
+        // redis에 lastChat 캐시를 설정해둠.
+        private void setCacheLastChat(Integer chatId, String lastChat) {
+            log.info("cacheLastChat()");
+            String id = "lastChat. chatId: " + chatId;
+            redisTemplate.opsForValue().set(id, lastChat);
+        }
+    
+        // redis cache 중 lastChat을 가져옴.
+        private String getLastChatFromCache(Integer chatId) {
+            log.info("getLastChatFromCache()");
+            String id = "lastChat. chatId: " + chatId;
+            return redisTemplate.opsForValue().get(id);
+        }
+        
+        /**
+         * 1. redis lastChat 캐시 데이터를 확인 후 없으면 2. jpaRepository에서 찾아옴 + lastChat 캐시에 저장.
+         * @param chatId 마지막 챗을 가져올 chatId
+         * @return 마지막 챗
+         */
+        @Transactional(readOnly = true)
+        public String getLastChat(Integer chatId) {
+            log.info("getLastChat(id={})", chatId);
+            String lastChat = getLastChatFromCache(chatId);
+            if(lastChat == null) { // 캐시 데이터가 없으면 oracle sql에서 조회후 찾아와서 캐시에 저장.
+                // 방만 만들어져있고 채팅 내용이 없을 경우가 있을 수 있으므로
+                Optional<Message> message = Optional.ofNullable(messageRespository.findFirstByChatIdOrderByModifiedTimeDesc(chatId));
+                if(message.isPresent()) {
+                    lastChat = message.get().getMessage();
+                    setCacheLastChat(chatId, lastChat);
+                } else {
+                    lastChat = "";
+                }
+            }
+            return lastChat;
+        }
+        // lastChat이 바뀌었을 경우. redis lastChat 캐시도 수정해줌.(+ 시간도 추가)
+        // 메세지 내용과 시간으로 같이 한꺼번에 저장하면 관리할 키 개수는 줄어드는 장점이 있지만
+        // 유지보수 관리 측면에서 내용과 시간을 나누는 것이 더 나을 것 같다는 생각으로 나눠서 저장.
+        public void modifiedLastChat(Integer chatId, String message, LocalDateTime sendTime) {
+            log.info("modifiedLastChat()");
+            String messageId = "lastChat. chatId: " + chatId;
+            String timeId = "lastTime. chatId: " + chatId;
+            redisTemplate.opsForValue().set(messageId, message);
+            redisTemplate.opsForValue().set(timeId, sendTime.toString().substring(0, 26)); // 2023-10-25T21:20:20.181231 형식의 마지막 나노초 단위에서 6자리로 맞춰야지 나중에 불러올 때도 formatting할 때
+                                                                                            // DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS"); 형식에 맞춰서 불러올 수 있음.
+        }
+    }
+   ```
+   * (gif를 넣을 곳)
   ##### 4-4. 마지막 채팅 시간(~분 전, ~일 전, redis)
+   > RedisService.java 일부
+   ```java
+    public class RedisService {
+        // redis에 lastTime 캐시를 설정해둠.
+        private void setCacheLastTime(Integer chatId, String lastTime) {
+            log.info("cacheLastTime()");
+            String id = "lastTime. chatId: " + chatId;
+            redisTemplate.opsForValue().set(id, lastTime);
+        }
+    
+        // redis cache 중 lastTime을 가져옴.
+        private String getLastChatTimeFromCache(Integer chatId) {
+            log.info("getLastTimeFromCache()");
+            String id = "lastTime. chatId: " + chatId;
+            return redisTemplate.opsForValue().get(id);
+        }
+        
+        /**
+         * 1. redis lastTime 캐시 데이터를 확인 후 없으면 2. jpaRepository에서 찾아옴 + lastTime 캐시에 저장(String).
+         * @param chatId 마지막 시간을 가져올 chatId
+         * @return 마지막 시간(LocalDateTime으로 전송-formatting으로 표현하기 위해)
+         */
+        @Transactional(readOnly = true)
+        public LocalDateTime getLastTime(Integer chatId) {
+            log.info("getLastTime(id={})", chatId);
+            String lastTimeToString = getLastChatTimeFromCache(chatId);
+            if(lastTimeToString == null) { 
+                Optional<Message> message = Optional.ofNullable(messageRespository.findFirstByChatIdOrderByModifiedTimeDesc(chatId));
+                if(message.isPresent()) {
+                    lastTimeToString = message.get().getModifiedTime().toString();
+                    setCacheLastTime(chatId, lastTimeToString);
+                } else {
+                    lastTimeToString = "";
+                }
+            }
+            LocalDateTime lastTime = LocalDateTime.of(1111, 11, 11, 11, 11);
+            if(!lastTimeToString.equals("")) {
+                DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
+                lastTime = LocalDateTime.parse(lastTimeToString, format);
+            } 
+            return lastTime;
+        }
+    }
+   ```
+   > ChatController.java 일부
+   ```java
+    public List<ChatListDto> loadChatList(Integer userId){
+        // lastTime 값이 있는지 없는지 비교해보기위한 기준 time
+        LocalDateTime benchmarkTime = LocalDateTime.of(1111, 11, 11, 11, 11);
+        for (Chat chat : chatList) {
+                '
+                '
+                '
+            LocalDateTime lastTimeBeforeFormat = redisService.getLastTime(chat.getId());
+            String lastTime = "";
+            if(!lastTimeBeforeFormat.isEqual(benchmarkTime)) { // 값이 없다면 formatting하면 안되기 때문에
+                lastTime = TimeFormatting.formatting(lastTimeBeforeFormat);
+            }
+                '
+                '
+                '
+        }
+    }
+   ```
+   > TimeFormatting.java 일부
+   ```java
+    /**
+     * LocalDateTime 시간을 입력하면 n분 전, n초 전을 리턴함.
+     * @param writtenTime 대상 시간
+     * @return ~시간 전의 문자열
+     */
+    public static String formatting(LocalDateTime writtenTime) {
+        String msg = "";
+        
+        // 현재 시간
+        LocalDateTime nowTime = LocalDateTime.now();
+        
+        // 현재시간 - 비교시간
+        long diff = ChronoUnit.SECONDS.between(writtenTime, nowTime);
+        
+        if(diff == 0) {
+            msg = TimeFormattingType.getValue(0);
+        } else if(diff < TIME_STANDARD.SEC) {
+            msg = diff + TimeFormattingType.getValue(1);
+        } else if((diff /= TIME_STANDARD.SEC) < TIME_STANDARD.MIN) {
+            msg = diff + TimeFormattingType.getValue(2);
+        } else if((diff /= TIME_STANDARD.MIN) < TIME_STANDARD.HOUR) {
+            msg = diff + TimeFormattingType.getValue(3);
+        } else if((diff /= TIME_STANDARD.HOUR) < TIME_STANDARD.DAY) {
+            msg = diff + TimeFormattingType.getValue(4);
+        } else if((diff /= TIME_STANDARD.DAY) < TIME_STANDARD.MONTH) {
+            msg = diff + TimeFormattingType.getValue(5);
+        } else {
+            msg = writtenTime.format(DateTimeFormatter.ofPattern("yy.MM.dd"));
+        }
+        
+        return msg;
+    }
+   ```
+   * (gif를 넣을 곳)
 #### 5. 웹 서비스 운영을 위한 관리자와 유저들을 위한 편의 서비스
   ##### 5-1. 고객지원 서비스/공지사항/신고 게시판
-  ##### 5-2. 닉네임/프로필 이미지/비밀번호 변경 기능
+  ##### 5-2. 개인 정보/프로필 이미지/비밀번호 변경 기능
 #### 6. 지도 API를 이용한 검색(추정)
 
 #### 7. 유저들 간의 자유 커뮤니케이션(추정)
