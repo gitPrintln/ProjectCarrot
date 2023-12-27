@@ -624,10 +624,90 @@ window.addEventListener('DOMContentLoaded', () => {
    ```
   - 채팅 연결
   * (gif를 넣을 곳)
-  ##### 4-2. 읽음/안읽음 기능(읽었으면 1을 지워줌, redis에 저장된 캐시로 빠르게 불러옴)
-  ##### 4-3. 마지막 채팅 시간(~분 전, ~일 전)
+  ##### 4-2. 읽음/안읽음 기능
+   > Message.java 일부
+   ```java
+    public class Message extends TimeEntity {
+        @Builder.Default
+        private Integer readChk = 1; // 읽었으면 0, 안읽었으면 1(default = 1)
+    }
+   ```
+   > chat.js 일부
+   ```java
+    // SockJS 연결
+    function connect() {
+            stompClient.connect({}, function() {
+              // notificationUrl: 채팅방 참여자들에게 공유되는 경로(알림용) 읽음/안읽음 등
+              stompClient.subscribe(notificationUrl, function(output){
+              responseAlarmCheck(output.body); // 어떤 종류의 알람인지 확인 후 그에 맞는 처리
+              });
+            },
+
+    if(chatPartner != null){ // 채팅 상대방이 있는 경우에만 활성화함.
+    // 채팅 입력창에 포커싱을 맞출때 상대방에게 읽음 알림 보내기
+    messageInput.addEventListener('focus', alarm);
+    }
+    // Redis에 채팅방에 접속중인 유저로 저장하고 채팅방에 들어왔음을 알릴 때
+    // 채팅창에 포커싱 맞춰졌을 때 읽음으로 간주하고 상대에게 읽음을 알릴 때
+    function alarm(){
+        const json = {'userNick': sender, 'userId': senderId, 'partnerId': chatPartnerId};
+        stompClient.send("/app/chatNotification/" + chatId, {}, JSON.stringify(json));
+    }
+
+    // 어떤 종류의 알람인지(읽음/안읽음을 위한 처리, 로그인 알람, 채팅방 리스트 변경)
+    function responseAlarmCheck(str){
+        if(str === "ChatPartner's Notification"){
+               chatPartnerAlarm();
+        } 
+    };
+
+    // 읽음/안읽음을 위한 처리(읽었으면 1->0으로 지워줌)
+    function chatPartnerAlarm(){
+       console.log("상대방로그인입니다.");
+       const read = document.querySelectorAll('#reads');
+       for (var i = 0; i < read.length; ++i) {
+             read[i].style.visibility = 'hidden';
+             read[i].removeAttribute('id');
+       }
+    }
+    }
+   ```
+   > ChatController.java 일부
+   ```java
+    /**
+     * 채팅방 알림용(로그인, 읽음 처리)
+     * @param chatId
+     * @param dto
+     * @throws IOException
+     */
+    @MessageMapping("/chatNotification/{chatId}")
+    public void chatAlarm(@DestinationVariable Integer chatId, ChatAlarmDto dto) throws IOException{
+        log.info("chatAlarm(chatId={}, loginUser={}, loginUserId={})", chatId, dto.getUserNick(), dto.getUserId());
+        
+        // 처음 채팅방에 들어왔을 경우
+        boolean checkLoginUser = redisService.isLogInChatRoom(chatId, dto.getUserId());
+        if(!checkLoginUser) {
+            // 이제 로그인하는 경우 redis에 저장
+            redisService.registerLogInChatRoom(chatId, dto.getUserId());
+        } 
+        
+        // 서로 로그인 상태에서 대화중일 경우(따로 해줄 것은 없음)
+       
+        // DB에 로그인한 유저의 안읽은 메세지를 읽음으로 바꿔줌
+        String partnerNick = userService.getNickName(dto.getPartnerId());
+        chatService.unreadToRead(chatId, partnerNick);
+        
+        // url을 채팅 상대방에게 설정해서 convertAndSend해야지 상대방 화면에서 안읽음 메세지를 읽음으로바꾸지
+        String url = "/user/notification/" + chatId + "/" + dto.getUserId();
+        simpMessagingTemplate.convertAndSend(url, "ChatPartner's Notification");
+    }
+   ```
+   * (gif를 넣을 곳)
+  ##### 4-3. 리스트에 마지막 채팅 보여주기(redis에 저장된 캐시로 빠르게 불러옴)
+  ##### 4-4. 마지막 채팅 시간(~분 전, ~일 전, redis)
 #### 5. 웹 서비스 운영을 위한 관리자와 유저들을 위한 편의 서비스
   ##### 5-1. 고객지원 서비스/공지사항/신고 게시판
+  ##### 5-2. 닉네임/프로필 이미지/비밀번호 변경 기능
 #### 6. 지도 API를 이용한 검색(추정)
 
 #### 7. 유저들 간의 자유 커뮤니케이션(추정)
