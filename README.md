@@ -3,7 +3,7 @@
 개인 프로젝트
 # 사용기술
 Java </br>
-SQL </br>
+SQL, Redis </br>
 Spring Boot </br>
 HTML/CSS/Java Script
 # 일정
@@ -704,6 +704,7 @@ window.addEventListener('DOMContentLoaded', () => {
    ```
    * (gif를 넣을 곳)
   ##### 4-3. 리스트에 마지막 채팅 보여주기(redis에 저장된 캐시로 빠르게 불러옴)
+  
   ##### 4-4. 마지막 채팅 시간(~분 전, ~일 전, redis)
 #### 5. 웹 서비스 운영을 위한 관리자와 유저들을 위한 편의 서비스
   ##### 5-1. 고객지원 서비스/공지사항/신고 게시판
