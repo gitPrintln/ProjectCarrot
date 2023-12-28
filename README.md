@@ -1130,8 +1130,325 @@ public class MyPageService {
    ```
    * (gif를 넣을 곳)
 #### 5. 웹 서비스 운영을 위한 관리자와 유저들을 위한 편의 서비스
-  ##### 5-1. 고객지원 서비스/공지사항/신고 게시판
+  ##### 5-1. 고객 지원 서비스/공지사항/신고 게시판
+  - 고객 지원 서비스
+   * (gif를 넣을 곳)
+  - 공지사항
+   * (gif를 넣을 곳)
+  - 신고 게시판
+   > report.js 일부
+   ```js
+function toggleTitle(id){
+    const selectTitle = document.getElementById('detail' + id);
+    if(selectTitle.style.display === 'block'){
+        selectTitle.style.display = 'none';
+    } else{
+        selectTitle.style.display = 'block';        
+    }
+}
+let vParagraph = ''; // 다음에 바뀔 문단
+function toggleDetails(id) {
+    // 선택된 부분을 보이게 해줌. 기존에 있던 부분은 안보이게 바꿔줌.
+    if(vParagraph != ''){
+        const deleteDetails = document.getElementById('detail' + vParagraph);
+        deleteDetails.style.display = 'none';
+    }
+    const selectedDetails = document.getElementById('detail' + id);
+    selectedDetails.style.display = 'block';
+    vParagraph = id; // 다음에 바뀔 구문 저장해두기
+    
+}
+   ```
+   > report.html 일부
+   ```html
+<!-- left content -->
+    <aside class="leftContent" style="width: 30%; height:1000px; border:1px solid red; float: left; margin-right: 5%;">
+        <ul class="reportList list-group">
+          <li class="list-group-item list-group-item-action" aria-disabled="true">
+            <div class="detailTitles" onclick="toggleTitle(1)"><span>불량 유저 신고하기</span></div>
+            <div class="detailItems" id="detail1">
+              <p onclick="toggleDetails(11)">불량 유저 신고</p>
+              <p onclick="toggleDetails(12)">금지 물품 판매 유저 신고</p>
+              <p onclick="toggleDetails(13)">기타 유저 신고</p>
+            </div>
+          </li>
+                                      '
+                                      '
+                                      '
+    <!-- right content -->
+    <section class="rightContent" style="width: 65%; height:1000px; float: right; border:1px solid green;">
+        <div class="detailItems" id="detail11">
+            <p class="detailItemsTitles">불량 유저 신고</p>
+            <span>누군가 거래 도중 비매너, 불쾌한 언어, 욕설, 협박 등을 포함한 사기, 범죄 행위 등을 포함한 모든 행위를 신고할 수 있습니다.</span>
+        </div>
+        <div class="detailItems" id="detail12">
+            <p class="detailItemsTitles">금지 물품 판매 유저 신고</p>
+            <span>당근 나라는 현행 법령 상 판매가 허용되지 않는 불법 상품 및 유해 상품을 판매하는 행위를 제한합니다.
+                  이를 위반할 경우 이에 대해서 신고할 수 있습니다.</span>
+        </div>
+                                        '
+                                        '
+                                        '
+   ```
+   * (gif를 넣을 곳)
   ##### 5-2. 개인 정보/프로필 이미지/비밀번호 변경 기능
+  - 개인 정보 변경
+   > mypage.html 일부
+   ```html
+        <div class="infoContent">
+            <form id="formUpdate" method="post" action="/user/update">
+                <div class="label"><i class="fa-solid fa-pencil"></i>이름</div>
+                    <input class="form-control" type="text" id="name" name="name" placeholder="이름" th:value="${ u.name }" readOnly/>
+                <div class="label"><i class="fa-solid fa-user-tag"></i>닉네임<span class="labelSpan" style="font-size: 22px; color: red;">*</span></div>
+                    <input class="form-control" type="text" id="nickName" name="nickName" placeholder="사용할 닉네임" th:value="${ u.nickName }" required/>
+                    <div>
+                        <div id="nickAva" style="color: green; font-size: 8px; margin-left: 15px; display: none;">가능한 닉네임입니다.</div>
+                        <div id="nickUnava" style="color: red; font-size: 8px; margin-left: 15px; display: none;">불가능한 닉네임입니다.</div>
+                    </div>
+                    <button type="button" class="nickCheckBtn w3-button w3-orange w3-round-large w3-hover-blue">중복 확인</button>
+                <div class="label"><i class="fa-solid fa-phone"></i>휴대폰 번호<span class="labelSpan" style="font-size: 22px; color: red;">*</span></div>
+                    <input class="form-control" type="tel" id="phone" name="phone" placeholder="010-1234-5678" required maxlength="13" th:value="${ u.phone }"/>
+                                                    '
+                                                    '
+                                                    '
+   ```
+   > myPage.js 일부
+   ```js
+    // 닉네임 중복 확인 이벤트
+    const nickCheckBtn = document.querySelector('.nickCheckBtn');
+    const nickAva = document.getElementById('nickAva');
+    const nickUnava = document.getElementById('nickUnava');
+    nickCheckBtn.addEventListener('click', function(){
+        const nickName = document.getElementById('nickName').value;
+        axios.get('/user/nicknameChk', {
+            params: {
+                nickName: nickName
+            }
+        })
+            .then(response => {
+                if(response.data){
+                    nickAva.style.display = "block";
+                    nickUnava.style.display = "none";
+                    alert("멋진 닉네임이네요!");
+                    return;
+                } else{
+                    nickAva.style.display = "none";
+                    nickUnava.style.display = "block";
+                    alert("불가능한 닉네임이네요!");
+                    return;
+                }
+            })
+            .catch(error => { alert('오류체크 부탁드립니다.' + error)});
+    });
+
+    // 수정완료 버튼 이벤트
+    const submitBtn = document.querySelector('.submitBtn');
+    submitBtn.addEventListener('click', () =>{
+        const nick = document.getElementById('nickName').value;
+        const phone = document.getElementById('phone').value;
+        const formUpdate = document.getElementById('formUpdate');
+        const result = confirm('정말 수정하시겠습니까?')
+        
+        if(result){
+            alert("정보 수정 완료를 위해 다시 로그인 해주세요!")
+            if(nick != "" && phone != "" && phone.length == 13 
+            && (nickAva.style.display === "block" || initialNickName === nick)){ // 필수 입력란이 비어있지 않고, 폰번호는 13자리이며, 닉네임 중복체크 통과한 경우(닉네임이 변함 없으면 무관)에만 제출함.
+                formUpdate.action = '/user/update';
+                formUpdate.method = 'post';
+                formUpdate.submit();
+            } else if(nick == "" || phone == "") {
+                alert("빨간색으로 표시된 부분은 필수 입력 사항입니다.");
+                return;
+            } else if(phone.length != 13) {
+                alert("휴대폰 번호를 정확히 입력해 주세요.");
+                return;
+            } else if(nickAva.style.display === "none"){
+                alert("닉네임 중복 확인을 해주세요.");
+                return;
+            } 
+        }
+    });
+   ```
+   * (gif를 넣을 곳)
+  - 프로필 이미지 변경
+   > mypage.html 일부
+   ```html
+        <img class="imgUpdateBtn" src="/images/imageEditing.png" onclick="imgUpdate()"
+        alt="프로필 수정하기 버튼" title="프로필 수정하기"/>
+
+        <!-- 프로필 수정 모달 -->
+        <div class="modal" id ="imageModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                     <div class="modal-header">
+                         <i class="fa-solid fa-id-card-clip"></i><h5 class="modal-title">&nbsp;프로필 이미지</h5>
+                         <button type="button" class="imgCloseBtn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="profileForm" enctype="multipart/form-data" method="post" action="">
+                           <img id="previewProfileImg" th:src="${ '/img/user/' + #authentication.principal.id }" style="width: 350px; height: 350px;"/>
+                           <div style="color: maroon; font-size:12px;">
+                                * 프로필 사진은 JPEG, JPG, PNG, JFIF 타입만 가능합니다. <br/>
+                                * 프로필 사진의 크기에 따라서 조정이 될 수도 있습니다. <br/>
+                                &nbsp;&nbsp;&nbsp;(최대 크기 제한 : 10MB)</div>
+                           <label for="imgFile"><i class="fa-solid fa-upload" style="font-size: 24px;"></i></label>
+                           <input style="display: none;" type="file" name="file" id="imgFile"/>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                         <button type="button" id="imgChangeBtn" class="w3-button w3-orange w3-round-large w3-hover-blue">변경하기</button>
+                    </div>
+                 </div>
+            </div>
+        </div><!-- 프로필 수정 모달 END -->
+   ```
+   > myPage.js 일부
+   ```js
+window.addEventListener('DOMContentLoaded', () => {
+    // 변경할 프로필 이미지 미리보기
+    imgInput.addEventListener('change', (event) => {
+        const previewImg = event.target.files[0];
+        
+        if (previewImg) {
+        // file 미리보기 위해 파일리더를 이용
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            previewProfileImg.src = event.target.result;
+        };
+        reader.readAsDataURL(previewImg);
+        }
+    })
+    
+    // 프로필 이미지 변경 완료 이벤트
+    imgChangeBtn.addEventListener('click', function(){
+        const imgFile = document.querySelector('#imgFile');
+        /* FormData로 전송하면 서버측에서 multipartFile로 받아서 처리
+        이미지 파일을 FormData에 넣는 이유는 HTTP 요청을 보낼 때 파일 업로드와 같은 멀티파트 요청을 생성하기 위해서
+        일반적으로 웹 애플리케이션에서 파일을 업로드하거나 다른 형태의 바이너리 데이터를 전송해야 할 때, 이 데이터를 멀티파트 형식으로 인코딩하여 서버로 전송
+        */
+        const file = new FormData();
+        file.append('file', imgFile.files[0]);
+        axios.delete('/img/upload/' + userImage)
+            .then(response => {
+                console.log("원래 이미지는 로컬에서 삭제됨.");
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        axios.post('/img/upload/profile', file)
+            .then(response => { 
+                alert('프로필 이미지 변경 완료했습니다.');
+                imgCloseBtn.click();
+                location.reload();
+                })
+            .catch(error => {
+                alert('파일 확장자는 jpeg, jpg, png, jfif 타입만 가능하며 최대 10MB을 넘지 않는지 확인해 주세요.')
+                console.log(error)
+                });
+    });
+});
+    const imageModal = document.querySelector('#imageModal');
+    const imgModal = new bootstrap.Modal(imageModal);
+    function imgUpdate(){
+        imgModal.show();
+    }
+   ```
+  - 비밀번호 변경
+   > mypage.html 일부
+   ```html
+        <img class="pwUpdateBtn" src="/images/pwChange.png" onclick="pwUpdate()"
+        alt="비밀번호 변경하기 버튼" title="비밀번호 변경하기"/>
+        <!-- 비밀번호 변경 모달 -->
+        <div class="modal" id ="pwModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                     <div class="modal-header">
+                          <i class="fa-solid fa-unlock-keyhole"></i><h5 class="modal-title">&nbsp;비밀번호 변경</h5>
+                         <button type="button" class="pwCloseBtn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="pwForm" enctype="multipart/form-data" method="post" action="">
+                           <div class="formLabel">현재 비밀번호</div>
+                           <input type="password" name="nowPassword" id="nowPassword" placeholder="현재 비밀번호" required/>
+                           <div class="formLabel">새로운 비밀번호</div>
+                           <input class="passwordInput" type="password" id="password" name="password" placeholder="새로운 비밀번호" required/>
+                           <div class="formLabel">비밀번호 확인</div>
+                           <input class="passwordInput" type="password" id="passwordChk" name="passwordChk" placeholder="비밀번호 확인" required/>
+                           <div id="pwAvailable" style="color: green; margin-left: 8px; display: none;">비밀 번호가 일치합니다.</div>
+                           <div id="pwUnavailable" style="color: red; margin-left: 8px; display: none;">비밀 번호가 일치하지 않습니다.</div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                         <button type="button" id="pwChangeBtn" class="w3-button w3-orange w3-round-large w3-hover-blue" disabled>변경하기</button>
+                    </div>
+                 </div>
+            </div>
+        </div><!-- 비밀번호 변경 모달 END -->
+   ```
+   > myPage.js 일부
+   ```js
+window.addEventListener('DOMContentLoaded', () => {
+    const nowPw = document.querySelector('#nowPassword');
+    const newPw = document.querySelector('#password');
+    const newPwChk = document.querySelector('#passwordChk');
+    const pwChangeBtn = document.querySelector('#pwChangeBtn'); // 비밀번호 변경완료 버튼
+    const pwModalCloseBtn = document.querySelector('.pwCloseBtn'); // 모달창 종료 버튼
+    
+    
+    // 새로운 비밀번호 일치 여부
+    newPw.addEventListener('input', isCorrect);
+    newPwChk.addEventListener('input', isCorrect);
+    const pwAva = document.querySelector('#pwAvailable');
+    const pwUnava = document.querySelector('#pwUnavailable');
+    function isCorrect(){
+        if(newPw.value != "" && newPwChk.value != "" && newPw.value === newPwChk.value){
+            pwAva.style.display = "block";
+            pwUnava.style.display = "none";
+        } else {
+            pwAva.style.display = "none";
+            pwUnava.style.display = "block";
+        }
+        isCorrect // 비밀번호 일치여부를 상시 체크하기 위해 실행.
+    }
+    
+    // 비밀번호 변경 버튼 활성화(둘 다 일치할 경우만 활성화)
+    newPw.addEventListener('focus', activePwBtn);
+    newPwChk.addEventListener('focus', activePwBtn);
+    newPw.addEventListener('blur', activePwBtn);
+    newPwChk.addEventListener('blur', activePwBtn);
+    function activePwBtn(){
+        if(pwAva.style.display === "block"){
+            pwChangeBtn.disabled = false;
+        } else{
+            pwChangeBtn.disabled = true;
+        }
+    }
+    
+    // 비밀번호 변경 완료 이벤트
+    pwChangeBtn.addEventListener('click', function(){
+        const data = {
+            'nowPw': nowPw.value,
+            'newPw': newPw.value
+        };
+        axios.post('/user/pwUpdate', data)
+        .then(response => {
+            if(response.data){
+                alert('비밀번호를 변경했습니다. 다시 로그인 해주세요.');
+                pwModalCloseBtn.click();
+                location.href="/logout" // 로그아웃하지 않으면 DB에 새로 변경된 값이 저장되더라도 이전 값이 계속 적용됨.
+            } else{
+                alert('현재 비밀번호가 일치하지 않거나 새로운 비밀번호가 현재 비밀번호와 동일합니다.')
+            }
+        })
+        .catch(error => {console.log(error)});
+    });
+});
+    const passwordModal = document.querySelector('#pwModal');
+    const pwModal = new bootstrap.Modal(passwordModal);
+    function pwUpdate(){
+        pwModal.show();
+    }
+   ```
 #### 6. 지도 API를 이용한 검색(추정)
 
 #### 7. 유저들 간의 자유 커뮤니케이션(추정)
