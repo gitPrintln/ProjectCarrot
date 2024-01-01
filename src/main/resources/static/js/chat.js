@@ -169,7 +169,7 @@
     // 상대 리스트 갱신
     // 개별 아이디에 대한 공지용(리스트 갱신)으로 리스트를 갱신할 필요가 있음을 알림.(alarmNo: 1)
     function partnerListUpdate(){
-        const json = {'alarmNo': 1, 'userNick': sender, 'userId': senderId};
+        const json = {'alarmNo': 1, 'userNick': sender, 'userId': senderId, 'partnerId': chatPartnerId};
         stompClient.send("/app/chatNotification/" + chatId, {}, JSON.stringify(json));
     }
     
@@ -177,7 +177,7 @@
     // ChatList 새로운 채팅이 갱신될 때마다 AJAX로 갱신
     function updateList(){
         axios
-        .get('/api/chatList/'+senderId)
+        .get('/api/chatList/'+ senderId)
         .then(response => { 
             updateChatList(response.data);
         })

@@ -242,7 +242,8 @@ public class ChatController {
         String url = "/user/notification/" + chatId + "/" + dto.getUserId();
         simpMessagingTemplate.convertAndSend(url, "ChatPartner's Notification");
         } else if(dto.getAlarmNo() == 1 && checkLoginUser) { // 상대방이 채팅방에 로그인은 되어있지만 다른 채팅을 수신하는 경우 리스트만 갱신하기 위한 경우
-            String url = "/user/notification/" + dto.getUserId();
+            log.info("확인되냐");
+            String url = "/user/notification/" + dto.getPartnerId();
             simpMessagingTemplate.convertAndSend(url, "Update ChatList");
         }
     }
