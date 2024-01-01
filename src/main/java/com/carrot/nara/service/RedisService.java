@@ -118,23 +118,23 @@ public class RedisService {
     }
     
     // 채팅방에 로그인 되어 있는 지 조회(있으면 true, 없으면 false)
-    public boolean isLogInChatRoom(Integer chatId, Integer userId) {
+    public boolean isLogInChatRoom(Integer userId) {
         log.info("loginChatRoom()");
-        String ids = "loginuser. chatId: " + chatId + ", userId: " + userId;
+        String ids = "loginuser. userId: " + userId;
         return redisTemplate.hasKey(ids);
     }
     
     // 채팅방에 로그인 중인 유저로 등록. loginuser key값 등록
-    public void registerLogInChatRoom(Integer chatId, Integer userId) {
+    public void registerLogInChatRoom(Integer userId) {
         log.info("registerLoginChatRoom()");
-        String ids = "loginuser. chatId: " + chatId + ", userId: " + userId;
+        String ids = "loginuser. userId: " + userId;
         redisTemplate.opsForValue().set(ids, "Log In");
     }
     
     // 채팅방에서 로그아웃 했으므로 loginuser key값 삭제
-    public void logOutChatRoom(Integer chatId, Integer userId) {
+    public void logOutChatRoom(Integer userId) {
         log.info("logOutChatRoom()");
-        String ids = "loginuser. chatId: " + chatId + ", userId: " + userId;
+        String ids = "loginuser. userId: " + userId;
         redisTemplate.delete(ids);
     }
     
