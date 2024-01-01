@@ -214,20 +214,22 @@ public class ChatController {
     }
     
     /**
-     * 채팅방 알림용(로그인, 읽음 처리)
+     * 채팅방 알림용(로그인, 읽음 처리, 리스트 갱신)
+     * ChatAlarmDto의 alarmNo가 0: 채팅방 읽음 알람, 1: 채팅방 리스트 갱신 알람
      * @param chatId
      * @param dto
      * @throws IOException
      */
     @MessageMapping("/chatNotification/{chatId}")
     public void chatAlarm(@DestinationVariable Integer chatId, ChatAlarmDto dto) throws IOException{
-        log.info("chatAlarm(chatId={}, loginUser={}, loginUserId={})", chatId, dto.getUserNick(), dto.getUserId());
+        log.info("chatAlarm(chatId={}, alarmNo={}, loginUser={}, loginUserId={})", chatId, dto.getAlarmNo(), dto.getUserNick(), dto.getUserId());
+        boolean checkLoginUser = redisService.isLogInChatRoom(dto.getUserId());
         
+        if(dto.getAlarmNo() == 0) { // 상대방이 채팅방 읽음 알람일 경우
         // 처음 채팅방에 들어왔을 경우
-        boolean checkLoginUser = redisService.isLogInChatRoom(chatId, dto.getUserId());
         if(!checkLoginUser) {
             // 이제 로그인하는 경우 redis에 저장
-            redisService.registerLogInChatRoom(chatId, dto.getUserId());
+            redisService.registerLogInChatRoom(dto.getUserId());
         } 
         
         // 서로 로그인 상태에서 대화중일 경우(따로 해줄 것은 없음)
@@ -239,6 +241,10 @@ public class ChatController {
         // url을 채팅 상대방에게 설정해서 convertAndSend해야지 상대방 화면에서 안읽음 메세지를 읽음으로바꾸지
         String url = "/user/notification/" + chatId + "/" + dto.getUserId();
         simpMessagingTemplate.convertAndSend(url, "ChatPartner's Notification");
+        } else if(dto.getAlarmNo() == 1 && checkLoginUser) { // 상대방이 채팅방에 로그인은 되어있지만 다른 채팅을 수신하는 경우 리스트만 갱신하기 위한 경우
+            String url = "/user/notification/" + dto.getUserId();
+            simpMessagingTemplate.convertAndSend(url, "Update ChatList");
+        }
     }
     
     /**
@@ -299,8 +305,8 @@ public class ChatController {
      */
     @GetMapping("/chat/redis/logOut")
     @ResponseBody
-    public void reidsLogOut(@RequestParam Integer chatId, @RequestParam Integer userId) {
+    public void reidsLogOut(@RequestParam Integer userId) {
         log.info("reidsLogOut(userId={})", userId);
-        redisService.logOutChatRoom(chatId, userId);
+        redisService.logOutChatRoom(userId);
     }
 }

@@ -11,6 +11,7 @@ import lombok.ToString;
 @ToString
 public class ChatAlarmDto {
 
+    private Integer alarmNo; // 0: 채팅방 읽음 알람, 1: 채팅방 리스트 갱신 알람
     private String userNick;
     private Integer userId;
     private Integer partnerId;

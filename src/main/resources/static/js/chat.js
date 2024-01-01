@@ -19,7 +19,8 @@
             // map URL using SockJS 
             var socket = new SockJS('/chat');
             var url = '/user/queue/messages/' + chatId;
-            var notificationUrl = '/user/notification/' + chatId + "/" + chatPartnerId;
+            var notificationUrl = '/user/notification/' + chatId + "/" + chatPartnerId; // 상대방 채팅 읽음/안읽음용
+            var fullNotificationUrl = '/user/notification/' + senderId; // 개별 아이디에 대한 공지용(리스트 갱신)
             // webSocket 대신 SockJS을 사용하므로 Stomp.client()가 아닌 Stomp.over()를 사용함
             stompClient = Stomp.over(socket);
             // connect(header, connectCallback(==연결에 성공하면 실행되는 메서드))
@@ -33,11 +34,17 @@
                     // html <body>에 append할 메시지 contents
                     showBroadcastMessage(createTextNode(JSON.parse(output.body)));
                     autofocus();
-                    updateList();
+                    partnerListUpdate(); // 상대가 접속해있으면 상대 리스트 갱신 or 접속하지 않았으면 건너뜀
+                    updateList(); // 내 리스트 갱신
                 });
                 
-                // notificationUrl: 채팅방 참여자들에게 공유되는 경로(알림용) 읽음/안읽음 등
+                // notificationUrl: 채팅방 참여자들에게 공유되는 경로(알림용) 읽음/안읽음용
                 stompClient.subscribe(notificationUrl, function(output){
+                    responseAlarmCheck(output.body); // 어떤 종류의 알람인지 확인 후 그에 맞는 처리
+                });
+                
+                // notificationUrl: 채팅방 참여자들에게 공유되는 경로(알림용) 리스트 갱신용
+                stompClient.subscribe(fullNotificationUrl, function(output){
                     responseAlarmCheck(output.body); // 어떤 종류의 알람인지 확인 후 그에 맞는 처리
                 });
                 }, 
@@ -144,9 +151,9 @@
     }
     
     // Redis에 채팅방에 접속중인 유저로 저장하고 채팅방에 들어왔음을 알릴 때
-    // 채팅창에 포커싱 맞춰졌을 때 읽음으로 간주하고 상대에게 읽음을 알릴 때
+    // 채팅창에 포커싱 맞춰졌을 때 읽음으로 간주하고 상대에게 읽음을 알릴 때(alarmNo: 0)
     function alarm(){
-        const json = {'userNick': sender, 'userId': senderId, 'partnerId': chatPartnerId};
+        const json = {'alarmNo': 0, 'userNick': sender, 'userId': senderId, 'partnerId': chatPartnerId};
         stompClient.send("/app/chatNotification/" + chatId, {}, JSON.stringify(json));
     }
     
@@ -154,9 +161,19 @@
     function responseAlarmCheck(str){
         if(str === "ChatPartner's Notification"){
                chatPartnerAlarm();
-        } 
+        } else if(str === "Update ChatList"){
+                updateList();
+        }
     };
     
+    // 상대 리스트 갱신
+    // 개별 아이디에 대한 공지용(리스트 갱신)으로 리스트를 갱신할 필요가 있음을 알림.(alarmNo: 1)
+    function partnerListUpdate(){
+        const json = {'alarmNo': 1, 'userNick': sender, 'userId': senderId};
+        stompClient.send("/app/chatNotification/" + chatId, {}, JSON.stringify(json));
+    }
+    
+    // 내 리스트 갱신
     // ChatList 새로운 채팅이 갱신될 때마다 AJAX로 갱신
     function updateList(){
         axios
@@ -213,7 +230,6 @@ window.addEventListener('beforeunload', function(event) {
     var useid = $('#loginUserId').attr('src').split("/")[3];
     axios.get('/chat/redis/logOut', {
         params: {
-            'chatId': chid, 
             'userId': useid
             }
         })
