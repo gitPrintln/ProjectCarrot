@@ -1,8 +1,22 @@
 package com.carrot.nara.web;
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.carrot.nara.domain.Community;
+import com.carrot.nara.dto.BoardCreateDto;
+import com.carrot.nara.dto.UserSecurityDto;
+import com.carrot.nara.service.BoardService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +27,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class BoardController {
 
+    private final BoardService boardService;
+    
     @GetMapping("/notice")
     public String notice() {
         log.info("notice()");
@@ -31,4 +47,34 @@ public class BoardController {
         return "board/cs";
     }
     
+    // 공지사항 게시판의 전체공지, 자유게시판, FAQ 부분
+    @GetMapping("/notice/community/{category}")
+    @ResponseBody
+    public ResponseEntity<List<Community>> getNoticeCommunity(@PathVariable String category){
+        log.info("getNoticeCommunity()");
+        List<Community> entity = boardService.getNoticePost(category);
+        return ResponseEntity.ok(entity);
+    }
+    
+    /**
+     * 전체 공지, 자유게시판, 1:1문의 DB저장
+     * @param userDto 글(공지, 커뮤니티, 문의)를 남기는 유저 정보
+     * @param dto 글 정보
+     * @return 성공적으로 저장하면 공지사항 게시판으로 이동
+     */
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/post")
+    @Transactional
+    public String boardPost(@AuthenticationPrincipal UserSecurityDto userDto, BoardCreateDto dto) {
+        log.info("inquiry(userId={},dto={})", userDto.getId(), dto);
+        dto.setUserId(userDto.getId());
+        
+        // 카테고리가 비어있는 경우는 문의하기 글이므로 문의 카테고리를 넣어줌.
+        if(dto.getCategory() == null || dto.getCategory().equals("")) {
+            dto.setCategory("문의");
+        }
+        
+        boardService.createBoardPost(dto);
+        return "redirect:/board/notice";
+    }
 }

@@ -92,8 +92,8 @@ body {
             <button class="moreBtn w3-padding-large w3-button" title="userMore"><i class="originIcon fa fa-user"></i></button>     
             <div class="w3-dropdown-content w3-bar-block w3-card-4" style="position: absolute; right:0px;">
                 <a th:href="@{ /myPage }" class="w3-bar-item w3-button">정보 수정</a>
-                <a href="#" class="w3-bar-item w3-button">판매 목록</a>
-                <a href="#" class="w3-bar-item w3-button">관심 목록</a>
+                <a th:href="@{ /myPage/myItemsList }" class="w3-bar-item w3-button">판매 목록</a>
+                <a th:href="@{ /myPage/myWishList }" class="w3-bar-item w3-button">관심 목록</a>
                 <a th:href="@{ /logout }" class="w3-bar-item w3-button">로그 아웃</a>
             </div>
         </div><!-- 더보기 끝 -->

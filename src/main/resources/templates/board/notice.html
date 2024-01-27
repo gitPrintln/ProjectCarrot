@@ -7,14 +7,158 @@
 <div layout:fragment="content" align="center">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Carrot Nara</title>
-    
+    <style>
+    html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
+    .w3-sidebar {
+      z-index: 3;
+      width: 250px;
+      top: 52px;
+      bottom: 0;
+      height: inherit;
+    }
+    </style>
     
 </head>
 <body>
+<!-- 공지사항 sidebar -->
+<nav class="w3-sidebar w3-bar-block w3-collapse w3-large w3-theme-l5 w3-animate-left" id="mySidebar">
+  <a href="javascript:void(0)" onclick="w3_close()" class="w3-right w3-xlarge w3-padding-large w3-hover-black w3-hide-large" title="Close Menu">
+    <i class="fa fa-remove"></i>
+  </a>
+  <h4 class="w3-bar-item"><b>공지사항</b></h4>
+  <a class="w3-bar-item w3-button w3-hover-black" href="javascript:void(0)" onclick="community('전체공지')">전체공지</a>
+  <a class="w3-bar-item w3-button w3-hover-black" href="javascript:void(0)" onclick="community('자유게시판')">자유게시판</a>
+  <a class="w3-bar-item w3-button w3-hover-black" href="javascript:void(0)" onclick="community('FAQ')">FAQ</a>
+  <a class="w3-bar-item w3-button w3-hover-black" href="javascript:void(0)" onclick="">내 문의 내역</a>
+  <a class="w3-bar-item w3-button w3-hover-black" href="javascript:void(0)" onclick="leaveAnInquiry()">문의남기기</a>
+  <hr style="color: #333; background-color: #333; height: 1px; margin: 20px;"/>
+  <a class="w3-bar-item w3-button w3-hover-black" href="javascript:void(0)" onclick="writePost()">글 작성하기</a>
+</nav>
 
+<!-- Overlay effect when opening sidebar on small screens -->
+<div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+<!-- Main content: shift it to the right by 250 pixels when the sidebar is visible -->
+<div class="mainContent w3-main" style="margin-left:250px">
+  <h1 class="w3-text-teal" id="boardTitle">전체공지</h1>
+  <div class="w3-row w3-padding-64">
+    <div class="w3-twothird w3-container">
+      <h3 class="w3-text-teal">Heading</h3>
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum
+        dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </div>
+    <div class="w3-third w3-container">
+      <p class="w3-border w3-padding-large w3-padding-32 w3-center">AD</p>
+      <p class="w3-border w3-padding-large w3-padding-64 w3-center">AD</p>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="w3-center w3-padding-32">
+    <div class="w3-bar">
+      <a class="w3-button w3-black" href="#">1</a>
+      <a class="w3-button w3-hover-black" href="#">2</a>
+      <a class="w3-button w3-hover-black" href="#">3</a>
+      <a class="w3-button w3-hover-black" href="#">4</a>
+      <a class="w3-button w3-hover-black" href="#">5</a>
+      <a class="w3-button w3-hover-black" href="#">»</a>
+    </div>
+  </div>
+  
+  <!-- 문의남기기 모달 -->
+        <div class="modal" id ="inquiryModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                     <div class="modal-header">
+                          <i class="fa-solid fa-unlock-keyhole"></i><h5 class="modal-title">&nbsp;문의 남기기</h5>
+                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="inquiryForm" enctype="multipart/form-data" method="post" action="">
+                        <label>문의 제목</label>
+                        <input type="text" id="inquiryTitle" name="title" required/>
+                        <label>문의 유형</label>
+                        <select id="inquiryType" name="type" required>
+                            <option value="비매너/불량 유저">비매너/불량 유저</option>
+                            <option value="회원 계정">회원 계정</option>
+                            <option value="사이트 이용">사이트 이용</option>
+                            <option value="프로모션">프로모션 제안</option>
+                            <option value="기타">기타</option>
+                        </select>
+                        <label>문의 내용</label>
+                        <input type="text" id="inquiryContent" name="content" required/>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                         <button type="button" id="leaveBtn" class="w3-button w3-orange w3-round-large w3-hover-blue">문의하기</button>
+                    </div>
+                 </div>
+            </div>
+        </div><!-- 문의남기기 모달 END -->
+        
+  <!-- 글 남기기 모달 -->
+        <div class="modal" id ="postModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                     <div class="modal-header">
+                          <i class="fa-solid fa-unlock-keyhole"></i><h5 class="modal-title">&nbsp;글 작성하기</h5>
+                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="postCreateForm" enctype="multipart/form-data" method="post" action="">
+                        <label>게시판</label>
+                        <select id="postCategory" name="category" required>
+                            <option value="전체공지">전체공지</option>
+                            <option value="자유게시판">자유게시판</option>
+                            <option value="FAQ">FAQ</option>
+                        </select>
+                        <label>제목</label>
+                        <input type="text" id="postTitle" name="title" required/>
+                        <label>내용</label>
+                        <input type="text" id="postContent" name="content" required/>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                         <button type="button" id="postCreateBtn" class="w3-button w3-orange w3-round-large w3-hover-blue">작성하기</button>
+                    </div>
+                 </div>
+            </div>
+        </div><!-- 글 남기기 모달 END -->
+</div>
 <th:block layout:fragment="script">
-	
+<!-- Ajax -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>   
+<script th:src="@{ /js/notice.js }"></script>
+<script>
+// Get the Sidebar
+var mySidebar = document.getElementById("mySidebar");
+
+// Get the DIV with overlay effect
+var overlayBg = document.getElementById("myOverlay");
+
+// Toggle between showing and hiding the sidebar, and add overlay effect
+function w3_open() {
+  if (mySidebar.style.display === 'block') {
+    mySidebar.style.display = 'none';
+    overlayBg.style.display = "none";
+  } else {
+    mySidebar.style.display = 'block';
+    overlayBg.style.display = "block";
+  }
+}
+
+// Close the sidebar with the close button
+function w3_close() {
+  mySidebar.style.display = "none";
+  overlayBg.style.display = "none";
+}
+</script>
+
 </th:block>
 </body>
 </div>
