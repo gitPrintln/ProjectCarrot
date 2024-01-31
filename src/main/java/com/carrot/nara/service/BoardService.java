@@ -2,6 +2,8 @@ package com.carrot.nara.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,10 +21,15 @@ public class BoardService {
     
     private final CommunityRepository communityRepository;
     
-    // 공지사항 카테고리에 맞는 DB에서 가져오기
-    public List<Community> getNoticePost(String category) {
+    /**
+     * 카테고리에 해당하는 게시판 리스트를 불러옴.
+     * @param category 불러올 카테고리
+     * @return community 타입의 리스트
+     */
+    @Transactional(readOnly = true)
+    public Page<Community> getNoticePost(String category, PageRequest pageable) {
         log.info("getNoticePost(category={})", category);
-        List<Community> entity = communityRepository.findByCategory(category);
+        Page<Community> entity = communityRepository.findByCategory(category, pageable);
         return entity;
     }
 
@@ -31,5 +38,6 @@ public class BoardService {
         log.info("createBoardPost()");
         communityRepository.save(dto.toEntity());
     }
+
 
 }

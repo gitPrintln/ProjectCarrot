@@ -41,12 +41,12 @@ window.addEventListener('DOMContentLoaded', function () {
         const result = confirm('정말 글을 작성하시겠습니까?');
         
         if(result){
-                    const inquiryForm = document.querySelector('#postCreateForm');
-                    inquiryForm.action = '/board/post';
-                    inquiryForm.method = 'post';
-                    inquiryForm.submit();
+                    const postCreateForm = document.querySelector('#postCreateForm');
+                    postCreateForm.action = '/board/post';
+                    postCreateForm.method = 'post';
+                    postCreateForm.submit();
                     
-                    alert('남긴 문의는 문의 내역에서 확인가능합니다.');
+                    alert(postCategory + '글 작성 완료');
         }
     });
 });
@@ -62,7 +62,12 @@ function community(category){
                 boardTitle.innerHTML = "자유게시판";
             } else if(category === "FAQ"){
                 boardTitle.innerHTML = "FAQ";
-            } 
+            } else if(category === "내 문의 내역"){
+                boardTitle.innerHTML = "내 문의 내역";
+            }
+            // 해당 게시판의 데이터
+            const data = response.data;
+            /*const boardContent = */
         })
         .catch(err => {
             console.log(err + "!!");

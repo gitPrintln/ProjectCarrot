@@ -27,30 +27,23 @@
 <body>
 <!-- 공지사항 sidebar -->
 <nav class="w3-sidebar w3-bar-block w3-collapse w3-large w3-theme-l5 w3-animate-left" id="mySidebar">
-  <a href="javascript:void(0)" onclick="w3_close()" class="w3-right w3-xlarge w3-padding-large w3-hover-black w3-hide-large" title="Close Menu">
-    <i class="fa fa-remove"></i>
-  </a>
   <h4 class="w3-bar-item"><b>공지사항</b></h4>
   <a class="w3-bar-item w3-button w3-hover-black" href="javascript:void(0)" onclick="community('전체공지')">전체공지</a>
   <a class="w3-bar-item w3-button w3-hover-black" href="javascript:void(0)" onclick="community('자유게시판')">자유게시판</a>
   <a class="w3-bar-item w3-button w3-hover-black" href="javascript:void(0)" onclick="community('FAQ')">FAQ</a>
-  <a class="w3-bar-item w3-button w3-hover-black" href="javascript:void(0)" onclick="">내 문의 내역</a>
+  <a class="w3-bar-item w3-button w3-hover-black" href="javascript:void(0)" onclick="community('내 문의 내역')">내 문의 내역</a>
   <a class="w3-bar-item w3-button w3-hover-black" href="javascript:void(0)" onclick="leaveAnInquiry()">문의남기기</a>
   <hr style="color: #333; background-color: #333; height: 1px; margin: 20px;"/>
   <a class="w3-bar-item w3-button w3-hover-black" href="javascript:void(0)" onclick="writePost()">글 작성하기</a>
 </nav>
 
-<!-- Overlay effect when opening sidebar on small screens -->
-<div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
-
 <!-- Main content: shift it to the right by 250 pixels when the sidebar is visible -->
 <div class="mainContent w3-main" style="margin-left:250px">
   <h1 class="w3-text-teal" id="boardTitle">전체공지</h1>
-  <div class="w3-row w3-padding-64">
-    <div class="w3-twothird w3-container">
-      <h3 class="w3-text-teal">Heading</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum
-        dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+  <div class="w3-row w3-padding-64" id="boardContent">
+    <div class="w3-twothird w3-container" th:each="list : ${ list }">
+      <h3 class="w3-text-teal" th:text="${ list.title }"></h3>
+      <p th:text="${ list.content }"></p>
     </div>
     <div class="w3-third w3-container">
       <p class="w3-border w3-padding-large w3-padding-32 w3-center">AD</p>
@@ -61,12 +54,9 @@
   <!-- Pagination -->
   <div class="w3-center w3-padding-32">
     <div class="w3-bar">
-      <a class="w3-button w3-black" href="#">1</a>
-      <a class="w3-button w3-hover-black" href="#">2</a>
-      <a class="w3-button w3-hover-black" href="#">3</a>
-      <a class="w3-button w3-hover-black" href="#">4</a>
-      <a class="w3-button w3-hover-black" href="#">5</a>
-      <a class="w3-button w3-hover-black" href="#">»</a>
+      <a class="w3-button w3-hover-black" th:if="${currentPage != 0}" th:href="@{/board/notice(page=${currentPage - 1})}">«</a>
+      <a th:class="${currentPage == i ? 'w3-button w3-black' : 'w3-button w3-hover-black'}" th:each="i : ${#numbers.sequence(startPage, endPage)}" th:href="@{/board/notice(page=${i})}" th:text="${ i + 1 }"></a>
+      <a class="w3-button w3-hover-black" th:if="${currentPage != list.totalPages - 1}" th:href="@{/board/notice(page=${currentPage + 1})}">»</a>
     </div>
   </div>
   
@@ -111,7 +101,7 @@
                     </div>
                     <div class="modal-body">
                         <form id="postCreateForm" enctype="multipart/form-data" method="post" action="">
-                        <label>게시판</label>
+                        <label>카테고리</label>
                         <select id="postCategory" name="category" required>
                             <option value="전체공지">전체공지</option>
                             <option value="자유게시판">자유게시판</option>
@@ -138,25 +128,6 @@
 // Get the Sidebar
 var mySidebar = document.getElementById("mySidebar");
 
-// Get the DIV with overlay effect
-var overlayBg = document.getElementById("myOverlay");
-
-// Toggle between showing and hiding the sidebar, and add overlay effect
-function w3_open() {
-  if (mySidebar.style.display === 'block') {
-    mySidebar.style.display = 'none';
-    overlayBg.style.display = "none";
-  } else {
-    mySidebar.style.display = 'block';
-    overlayBg.style.display = "block";
-  }
-}
-
-// Close the sidebar with the close button
-function w3_close() {
-  mySidebar.style.display = "none";
-  overlayBg.style.display = "none";
-}
 </script>
 
 </th:block>
