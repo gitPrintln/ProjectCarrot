@@ -12,8 +12,9 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Carrot Nara</title>
+    <script src="https://kit.fontawesome.com/009f152c56.js" crossorigin="anonymous"></script>
     <style>
-    html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
+    html,body,h1,h2,h3,h4,h5,h6,p {font-family: "Roboto", sans-serif;}
     .w3-sidebar {
       z-index: 3;
       width: 250px;
@@ -21,6 +22,40 @@
       bottom: 0;
       height: inherit;
     }
+    .modal-header i{
+      min-width: 20px;
+    }
+    #inquiryForm {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      margin-bottom: 10px;
+    }
+    #inquiryForm div {
+      margin-bottom: 8px;
+    }
+    #inquiryForm label {
+      width: 70px;
+    }
+    #inquiryForm input, #inquiryForm select {
+      flex: 0.4;
+    }
+    #postCreateForm {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      margin-bottom: 10px;
+    }
+    #postCreateForm div {
+      margin-bottom: 8px;
+    }
+    #postCreateForm label {
+      width: 80px;
+    }
+    #postCreateForm input, #postCreateForm select {
+      flex: 0.4;
+    }
+    
     </style>
     
 </head>
@@ -28,13 +63,13 @@
 <!-- 공지사항 sidebar -->
 <nav class="w3-sidebar w3-bar-block w3-collapse w3-large w3-theme-l5 w3-animate-left" id="mySidebar">
   <h4 class="w3-bar-item"><b>공지사항</b></h4>
-  <a class="w3-bar-item w3-button w3-hover-black" href="javascript:void(0)" onclick="community('전체공지')">전체공지</a>
-  <a class="w3-bar-item w3-button w3-hover-black" href="javascript:void(0)" onclick="community('자유게시판')">자유게시판</a>
-  <a class="w3-bar-item w3-button w3-hover-black" href="javascript:void(0)" onclick="community('FAQ')">FAQ</a>
-  <a class="w3-bar-item w3-button w3-hover-black" href="javascript:void(0)" onclick="community('내 문의 내역')">내 문의 내역</a>
-  <a class="w3-bar-item w3-button w3-hover-black" href="javascript:void(0)" onclick="leaveAnInquiry()">문의남기기</a>
+  <a class="w3-bar-item w3-button w3-hover-black" href="#" onclick="community(event, '전체공지')">전체공지</a>
+  <a class="w3-bar-item w3-button w3-hover-black" href="#" onclick="community(event, '자유게시판')">자유게시판</a>
+  <a class="w3-bar-item w3-button w3-hover-black" href="#" onclick="community(event, 'FAQ')">FAQ</a>
+  <a class="w3-bar-item w3-button w3-hover-black" href="#" onclick="community(event, '내 문의 내역')">내 문의 내역</a>
+  <a class="w3-bar-item w3-button w3-hover-black" href="#" onclick="leaveAnInquiry(event)">문의남기기</a>
   <hr style="color: #333; background-color: #333; height: 1px; margin: 20px;"/>
-  <a class="w3-bar-item w3-button w3-hover-black" href="javascript:void(0)" onclick="writePost()">글 작성하기</a>
+  <a class="w3-bar-item w3-button w3-hover-black" href="#" onclick="writePost(event)">글 작성하기</a>
 </nav>
 
 <!-- Main content: shift it to the right by 250 pixels when the sidebar is visible -->
@@ -45,18 +80,15 @@
       <h3 class="w3-text-teal" th:text="${ list.title }"></h3>
       <p th:text="${ list.content }"></p>
     </div>
-    <div class="w3-third w3-container">
-      <p class="w3-border w3-padding-large w3-padding-32 w3-center">AD</p>
-      <p class="w3-border w3-padding-large w3-padding-64 w3-center">AD</p>
-    </div>
   </div>
 
   <!-- Pagination -->
   <div class="w3-center w3-padding-32">
-    <div class="w3-bar">
-      <a class="w3-button w3-hover-black" th:if="${currentPage != 0}" th:href="@{/board/notice(page=${currentPage - 1})}">«</a>
-      <a th:class="${currentPage == i ? 'w3-button w3-black' : 'w3-button w3-hover-black'}" th:each="i : ${#numbers.sequence(startPage, endPage)}" th:href="@{/board/notice(page=${i})}" th:text="${ i + 1 }"></a>
-      <a class="w3-button w3-hover-black" th:if="${currentPage != list.totalPages - 1}" th:href="@{/board/notice(page=${currentPage + 1})}">»</a>
+    <div class="w3-bar" id="pagination">
+      <a class="w3-button w3-hover-black" th:if="${currentPage != 0}" href="#" onclick="prevPage(event)">«</a>
+      <a th:class="${currentPage == i ? 'w3-button w3-black' : 'w3-button w3-hover-black'}" th:each="i : ${#numbers.sequence(startPage, endPage)}" 
+       th:data-index="${i}" href="#" th:onclick="goToPage(event, this.getAttribute('data-index'));" th:text="${ i + 1 }"></a>
+      <a class="w3-button w3-hover-black" th:if="${currentPage != list.totalPages - 1}" href="#" onclick="nextPage(event)">»</a>
     </div>
   </div>
   
@@ -65,23 +97,27 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                      <div class="modal-header">
-                          <i class="fa-solid fa-unlock-keyhole"></i><h5 class="modal-title">&nbsp;문의 남기기</h5>
+                         <i class="fa-solid fa-feather-pointed"></i><h5 class="modal-title">&nbsp;문의 남기기</h5>
                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form id="inquiryForm" enctype="multipart/form-data" method="post" action="">
-                        <label>문의 제목</label>
-                        <input type="text" id="inquiryTitle" name="title" required/>
-                        <label>문의 유형</label>
-                        <select id="inquiryType" name="type" required>
-                            <option value="비매너/불량 유저">비매너/불량 유저</option>
-                            <option value="회원 계정">회원 계정</option>
-                            <option value="사이트 이용">사이트 이용</option>
-                            <option value="프로모션">프로모션 제안</option>
-                            <option value="기타">기타</option>
-                        </select>
-                        <label>문의 내용</label>
-                        <input type="text" id="inquiryContent" name="content" required/>
+                        <div>
+                            <label>문의 제목</label>
+                            <input type="text" id="inquiryTitle" name="title" required/>
+                            <label>문의 유형</label>
+                            <select id="inquiryType" name="type" required>
+                                <option value="비매너/불량 유저">비매너/불량 유저</option>
+                                <option value="회원 계정">회원 계정</option>
+                                <option value="사이트 이용">사이트 이용</option>
+                                <option value="프로모션">프로모션 제안</option>
+                                <option value="기타">기타</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>문의 내용</label>
+                            <input type="text" id="inquiryContent" name="content" required/>
+                        </div>
                         </form>
                     </div>
                     <div class="modal-footer">
@@ -96,21 +132,27 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                      <div class="modal-header">
-                          <i class="fa-solid fa-unlock-keyhole"></i><h5 class="modal-title">&nbsp;글 작성하기</h5>
+                         <i class="fa-solid fa-leaf"></i><h5 class="modal-title">&nbsp;글 작성하기</h5>
                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form id="postCreateForm" enctype="multipart/form-data" method="post" action="">
+                        <div>
                         <label>카테고리</label>
-                        <select id="postCategory" name="category" required>
-                            <option value="전체공지">전체공지</option>
-                            <option value="자유게시판">자유게시판</option>
-                            <option value="FAQ">FAQ</option>
-                        </select>
-                        <label>제목</label>
-                        <input type="text" id="postTitle" name="title" required/>
-                        <label>내용</label>
-                        <input type="text" id="postContent" name="content" required/>
+                            <select id="postCategory" name="category" required>
+                                <option value="전체공지">전체공지</option>
+                                <option value="자유게시판">자유게시판</option>
+                                <option value="FAQ">FAQ</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>제목</label>
+                            <input type="text" id="postTitle" name="title" required/>
+                        </div>
+                        <div>
+                            <label>내용</label>
+                            <input type="text" id="postContent" name="content" required/>
+                        </div>
                         </form>
                     </div>
                     <div class="modal-footer">

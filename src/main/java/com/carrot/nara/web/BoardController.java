@@ -1,7 +1,5 @@
 package com.carrot.nara.web;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.carrot.nara.domain.Community;
 import com.carrot.nara.dto.BoardCreateDto;
+import com.carrot.nara.dto.BoardListDto;
 import com.carrot.nara.dto.UserSecurityDto;
 import com.carrot.nara.service.BoardService;
 
@@ -38,7 +37,8 @@ public class BoardController {
     public String notice(Model model, @RequestParam(defaultValue = "0") int page) {
         log.info("notice()");
         String category = "전체공지";
-        PageRequest pageable = PageRequest.of(page, 3);
+        int pageSize = 3;
+        PageRequest pageable = PageRequest.of(page, pageSize);
         Page<Community> list = boardService.getNoticePost(category, pageable);
         
         int startPage = Math.max(0, page - 2);
@@ -66,10 +66,20 @@ public class BoardController {
     @GetMapping("/notice/community/{category}")
     @ResponseBody
     @Transactional(readOnly = true)
-    public ResponseEntity<Page<Community>> getNoticeCommunity(@PathVariable String category, @RequestParam(defaultValue = "0") int page){
+    public ResponseEntity<BoardListDto> getNoticeCommunity(@PathVariable String category, @RequestParam(defaultValue = "0") int page){
         log.info("getNoticeCommunity()");
-        PageRequest pageable = PageRequest.of(page, 3);
-        Page<Community> entity = boardService.getNoticePost(category, pageable);
+        int pageSize = 3;
+        PageRequest pageable = PageRequest.of(page, pageSize);
+        
+        Page<Community> entityList = boardService.getNoticePost(category, pageable);
+        int startPage = Math.max(0, page - 2);
+        int endPage = Math.min(entityList.getTotalPages() - 1, page + 2);
+        
+        BoardListDto entity = BoardListDto.builder()
+                .category(category)
+                .currentPage(page).startPage(startPage).endPage(endPage).totalPages(entityList.getTotalPages())
+                .entity(entityList).build();
+        
         return ResponseEntity.ok(entity);
     }
     

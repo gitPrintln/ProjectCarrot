@@ -52,62 +52,112 @@ window.addEventListener('DOMContentLoaded', function () {
 });
 
 // 전체공지, 자유게시판, FAQ
-function community(category){
+function community(event, category){
+    // 링크의 기본 동작 막기
+    event.preventDefault();
+    updateMain(category);
+}
+
+// 게시판 내용 바꿔주기(axios)
+function updateMain(category, page){
     const boardTitle = document.querySelector('#boardTitle');
-    axios.get('/board/notice/community/' + category)
+    const boardContent = document.querySelector('#boardContent');
+    axios.get('/board/notice/community/' + category, { params: { page : page}})
         .then(response => {
-            if(category === "전체공지"){
-                boardTitle.innerHTML = "전체공지";
-            } else if(category === "자유게시판"){
-                boardTitle.innerHTML = "자유게시판";
-            } else if(category === "FAQ"){
-                boardTitle.innerHTML = "FAQ";
-            } else if(category === "내 문의 내역"){
-                boardTitle.innerHTML = "내 문의 내역";
-            }
-            // 해당 게시판의 데이터
+            // 해당 게시판의 불러온 데이터
             const data = response.data;
-            /*const boardContent = */
+            // 게시판 타이틀 바꿔주기
+            boardTitle.innerHTML = data.category;
+            // 기존의 게시판 내용 비우기, 페이징 비우기
+            boardContent.innerHTML = '';
+            const pagination = document.querySelector('#pagination');
+            pagination.innerHTML = '';
+            
+            if(data.entity.content.length != 0){ // 해당 게시판의 데이터가 하나라도 있으면
+                // 게시판 내용 바꿔주기
+                for(var i = 0; i < data.entity.content.length; i++){
+                        // 새로운 게시글 틀 생성
+                        var div = document.createElement('div');
+                        boardContent.appendChild(div);
+                        // 게시글 틀 설정
+                        div.className = 'w3-twothird w3-container';
+                        
+                        // h3 요소(제목)를 생성하고 제목 데이터를 추가
+                        var h3 = document.createElement('h3');
+                        h3.className = 'w3-text-teal';
+                        h3.innerText = data.entity.content[i].title;
+                        
+                        // p 요소(내용)를 생성하고 내용 데이터를 추가
+                        var p = document.createElement('p');
+                        p.innerText = data.entity.content[i].content;
+                        
+                        // 생성한 h3와 p를 div에 추가
+                        div.appendChild(h3);
+                        div.appendChild(p);
+                }
+                
+                // 페이징 새 게시판에 맞게 적용시키기
+                let str = '';
+                if(data.currentPage != 0){
+                    str += '<a class="w3-button w3-hover-black" href="#" onclick="prevPage(event)">«</a>';
+                }
+                for(var i = data.startPage; i <= data.endPage; i++){
+                    str += '<a class="w3-button ';
+                        if(i == data.currentPage){
+                    str += 'w3-black';
+                        } else{
+                    str += 'w3-hover-black';
+                        }
+                    str += '" href="#" onclick="goToPage(event, ' + i +')">' + ( i + 1 ) + '</a>';
+                }
+                if(data.currentPage != data.totalPages - 1){
+                    str += '<a class="w3-button w3-hover-black" href="#" onclick="nextPage(event)">»</a>';
+                }
+                pagination.innerHTML = str;
+                
+            } else { // 해당 게시판의 데이터가 하나도 없으면
+                // 내용 없음을 알릴 게시글 틀 생성
+                var div = document.createElement('div');
+                boardContent.appendChild(div);
+                div.className = 'w3-row w3-container';
+
+                // 해당 카테고리의 게시판의 내용이 하나도 없음을 알림
+                var p = document.createElement('p');
+                p.innerText = category + ' 글이 하나도 없습니다.';
+                div.appendChild(p);
+            }
         })
         .catch(err => {
             console.log(err + "!!");
         });
-    /*
-    const boardContent =    '<h1 class="w3-text-teal" id="boardTitle">전체공지</h1>'
-                       +    '<div class="w3-row w3-padding-64">'
-                       +      '<div class="w3-twothird w3-container">'
-                       +        '<h3 class="w3-text-teal">Heading</h3>'
-                       +        '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum'
-                       +          'dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>'
-                       +      '</div>'
-                       +      '<div class="w3-third w3-container">'
-                       +        '<p class="w3-border w3-padding-large w3-padding-32 w3-center">AD</p>'
-                       +        '<p class="w3-border w3-padding-large w3-padding-64 w3-center">AD</p>'
-                       +      '</div>'
-                       +    '</div>'
-
-                       +    '<!-- Pagination -->'
-                       +    '<div class="w3-center w3-padding-32">'
-                       +      '<div class="w3-bar">'
-                       +        '<a class="w3-button w3-black" href="#">1</a>'
-                       +        '<a class="w3-button w3-black" href="#">2</a>'
-                       +        '<a class="w3-button w3-black" href="#">3</a>'
-                       +        '<a class="w3-button w3-black" href="#">4</a>'
-                       +        '<a class="w3-button w3-black" href="#">5</a>'
-                       +        '<a class="w3-button w3-black" href="#">»</a>'
-                       +      '</div>'
-                       +    '</div>';*/
 }
-
 // 문의남기기
-function leaveAnInquiry(){
+function leaveAnInquiry(event){
+    event.preventDefault();
     const inquiryModal = document.querySelector('#inquiryModal');
     const inquiry = new bootstrap.Modal(inquiryModal);
     inquiry.show();
 }
 // 게시글 남기기
-function writePost(){
+function writePost(event){
+    event.preventDefault();
     const postModal = document.querySelector('#postModal');
     const postCreate = new bootstrap.Modal(postModal);
     postCreate.show();
+}
+
+ // 페이지 이동(goToPage(i))
+function goToPage(event, page){
+    event.preventDefault();
+    const category = document.querySelector('#boardTitle').innerHTML;
+    updateMain(category, page);
+    
+}
+ // 이전 페이지 이동
+function prevPage(event){
+    event.preventDefault();
+}
+ // 다음 페이지 이동
+function nextPage(event){
+    event.preventDefault();
 }
