@@ -55,7 +55,23 @@ window.addEventListener('DOMContentLoaded', function () {
 function community(event, category){
     // 링크의 기본 동작 막기
     event.preventDefault();
-    updateMain(category);
+    if(category === '내 문의 내역'){ // 로그인 이용 서비스일 경우
+        isUserLoggedIn()
+            .then(loggedIn =>{
+                if(!loggedIn){ // 로그인 되어 있지 않다면
+                    alert('로그인 후 이용 부탁드립니다.');
+                    // 로그인 페이지로 리디렉션
+                    window.location.href = '/user/signin';
+                } else{ // 로그인 되어 있다면
+                    updateMain(category);
+                }
+            })
+            .catch(err => {
+                console.error('로그인 상태 확인 중 오류:', err);
+            });
+    }else{ // 로그인 이용 상관 없는 서비스일 경우
+        updateMain(category);
+    }
 }
 
 // 게시판 내용 바꿔주기(axios)
@@ -134,16 +150,42 @@ function updateMain(category, page){
 // 문의남기기
 function leaveAnInquiry(event){
     event.preventDefault();
-    const inquiryModal = document.querySelector('#inquiryModal');
-    const inquiry = new bootstrap.Modal(inquiryModal);
-    inquiry.show();
+    // 로그인 상태 체크
+    isUserLoggedIn()
+        .then(loggedIn =>{
+        if(!loggedIn){ // 로그인 되어 있지 않다면
+                alert('로그인 후 이용 부탁드립니다.');
+                window.location.href = '/user/signin';
+        } else{ // 로그인 되어 있다면
+            const inquiryModal = document.querySelector('#inquiryModal');
+            const inquiry = new bootstrap.Modal(inquiryModal);
+            inquiry.show();
+        }
+        })
+        .catch(err => {
+            console.error('로그인 상태 확인 중 오류:', err);
+        });
 }
 // 게시글 남기기
 function writePost(event){
     event.preventDefault();
-    const postModal = document.querySelector('#postModal');
-    const postCreate = new bootstrap.Modal(postModal);
-    postCreate.show();
+    // 로그인 상태 체크
+    isUserLoggedIn()
+        .then(loggedIn =>{
+        if(!loggedIn){ // 로그인 되어 있지 않다면
+                alert('로그인 후 이용 부탁드립니다.');
+                // TODO: ?? session 인식이;;
+                sessionStorage.setItem('prevPage', window.location.href);
+                window.location.href = '/user/signin';
+        } else{ // 로그인 되어 있다면
+            const postModal = document.querySelector('#postModal');
+            const postCreate = new bootstrap.Modal(postModal);
+            postCreate.show();
+        }
+        })
+        .catch(err => {
+            console.error('로그인 상태 확인 중 오류:', err);
+        });
 }
 
  // 페이지 이동(goToPage(i))
@@ -151,7 +193,6 @@ function goToPage(event, page){
     event.preventDefault();
     const category = document.querySelector('#boardTitle').innerHTML;
     updateMain(category, page);
-    
 }
  // 이전 페이지 이동
 function prevPage(event){
@@ -160,4 +201,24 @@ function prevPage(event){
  // 다음 페이지 이동
 function nextPage(event){
     event.preventDefault();
+}
+
+// 로그인 상태 체크
+// Promise는 비동기 작업이 성공하거나 실패할 때의 상태와 결과를 나타내는 객체
+// isUserLoggedIn() 함수가 반환하는 것은 Promise 객체이기 때문에
+// then() 함수는 Promise 객체의 성공(resolve) 상태에 대한 콜백 함수를 등록하는 데 사용
+// catch() 함수는 실패(reject) 상태에 대한 콜백 함수를 등록하는 데 사용
+function isUserLoggedIn(){
+    return axios.post('/user/loggedInChk')
+        .then(response => {
+            if(response.data === true){ // 로그인 정보가 있음
+                return true;
+            } else { // 로그인 정보가 없음
+                return false;
+            }
+        })
+        .catch(err => {
+            console.log(err + ">> 로그인 상태 체크 에러!!");
+            return false; // 오류 발생 시에도 일단 로그인되어 있지 않은 것으로 간주
+        });
 }
