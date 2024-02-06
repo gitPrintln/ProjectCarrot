@@ -174,8 +174,9 @@ function writePost(event){
         .then(loggedIn =>{
         if(!loggedIn){ // 로그인 되어 있지 않다면
                 alert('로그인 후 이용 부탁드립니다.');
-                // TODO: ?? session 인식이;;
-                sessionStorage.setItem('prevPage', window.location.href);
+                /*ar prevPage = window.location.href;
+                //TODO: 잘안됨;;
+                window.location.href = '/user/signin?prevPage=' + encodeURIComponent(prevPage);*/
                 window.location.href = '/user/signin';
         } else{ // 로그인 되어 있다면
             const postModal = document.querySelector('#postModal');
