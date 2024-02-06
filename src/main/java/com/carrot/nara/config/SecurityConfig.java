@@ -1,5 +1,6 @@
 package com.carrot.nara.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,11 +14,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import com.carrot.nara.handler.CustomAuthenticationSuccessHandler;
+
 
 @EnableMethodSecurity(prePostEnabled = true)
 @Configuration
 public class SecurityConfig {
 
+    @Autowired
+    private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+
+    
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -29,6 +36,7 @@ public class SecurityConfig {
         
         http.formLogin()
             .loginPage("/user/signin")
+            /*.successHandler(customAuthenticationSuccessHandler)*/
             .defaultSuccessUrl("/")
             .permitAll();
         

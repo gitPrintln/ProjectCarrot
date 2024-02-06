@@ -33,8 +33,27 @@ public class MyPageController {
         log.info("myPage()");
         User u = userService.readById(user.getId());
         model.addAttribute("user", u);
-        return "mypage";
+        return "mypage/mypage";
     }
+    
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/myItemsList")
+    public String myItemsList(@AuthenticationPrincipal UserSecurityDto user, Model model) {
+        log.info("myItemsList()");
+        User u = userService.readById(user.getId());
+        model.addAttribute("user", u);
+        return "mypage/myitems";
+    }
+    
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/myWishList")
+    public String myWishList(@AuthenticationPrincipal UserSecurityDto user, Model model) {
+        log.info("myWishList()");
+        User u = userService.readById(user.getId());
+        model.addAttribute("user", u);
+        return "mypage/mywish";
+    }
+    
     
     /**
      * user가 누른 좋아요를 DB에 반영, 해당 post글의 관심수 1올려줌

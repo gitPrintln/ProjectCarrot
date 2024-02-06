@@ -134,4 +134,20 @@ public class UserController {
         return "redirect:/logout";
     }
     
+    /**
+     * 공지사항 기능에서 내 문의 내역, 문의남기기, 글 작성하기 기능은 로그인 유저만 이용할 수 있도록 하기 위함
+     * 유저가 로그인되어있는 상태인지 아닌 상태인지 체크하기 위한 함수
+     * @param user 체크하려는 유저
+     * @return 로그인 정보가 있으면, true 없으면 false 반환
+     */
+    @PostMapping("/loggedInChk")
+    @ResponseBody
+    public ResponseEntity<Boolean> userLoggedInChk(@AuthenticationPrincipal UserSecurityDto user){
+        log.info("isUserLoggedIn(user={}, userId={})",user);
+        boolean isUserLoggedIn = false;
+        if(user != null && user.getId() != null) {
+            isUserLoggedIn = true;
+        }
+        return ResponseEntity.ok(isUserLoggedIn);
+    }
 }

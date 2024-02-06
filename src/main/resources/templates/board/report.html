@@ -8,13 +8,63 @@
 <head>
     <meta charset="UTF-8">
     <title>Carrot Nara</title>
+    <script src="https://kit.fontawesome.com/009f152c56.js" crossorigin="anonymous"></script>
     <style>
+        body {
+          margin: 0;
+          font-family: Arial, sans-serif;
+        }
+        #reportHeader{
+            position: fixed;
+            background-color: rgb(252, 252, 252);
+            top: 40px;
+            width: 100%;
+            left: 0;
+            margin: 0;
+        }
+        @media (max-width: 798px) { /* 넓이가 798이하 되면서부터는 fixed가 아니라 static으로 사용*/
+          #reportHeader {
+            position: static; /* 미디어 쿼리에 따라 position을 static으로 변경 */
+            top: auto; /* 기존에 지정한 top을 해제 */
+          }
+        }
+        #reportHeader i {
+            margin-right: 5px;
+        }
+        .leftContent{
+            background-color: rgb(252, 248, 252);
+            position: fixed;
+            top: 150px;
+            left: 0;
+            height: 555px;
+            overflow-y: auto;
+        }
+        .leftContent ul li div{
+            background-color: rgb(252, 248, 252);
+        }
+        #implementing{
+            background-color: rgb(252, 248, 252);
+        }
+        .rightContent{
+            margin-top: 90px;
+            padding: 20px;
+        }
+        .btnTop{ /*layout 위로가기 버튼*/
+            position: fixed;
+            bottom: 0;
+            right: 0;
+        }
         #footer{
-            clear: both;
+            margin-left: 25%;
+            clear: both; /* float 된 요소들을 모두 해제 */
         }
         .detailTitles {
+            padding: 10px;
             font-size: 25px;
             font-style: oblique;
+        }
+        .detailTitles:hover, .detailItems p:hover {
+            background-color: rgb(241, 241, 241);
         }
         .detailItems {
             font-size: 15px;
@@ -38,14 +88,14 @@
 <body>
 <main class="mainContent">
     <!-- header -->
-    <div id="header"style="height:140px; border:1px solid gold; margin-bottom: 2%;">
+    <div id="reportHeader" style="height:110px; border-bottom: 1px solid gold; margin-bottom: 5%;">
         <div>
-            <h3>신고는 어떻게 하나요?</h3>
+            <h3><i class="fa-solid fa-land-mine-on"></i>신고는 어떻게 하나요?</h3>
         </div>
     </div>
     
     <!-- left content -->
-    <aside class="leftContent" style="width: 30%; height:1000px; border:1px solid red; float: left; margin-right: 5%;">
+    <aside class="leftContent" style="width: 25%; border-right: 1px solid rgb(234, 230, 234); float: left; margin-right: 1%;">
         <ul class="reportList list-group">
           <li class="list-group-item list-group-item-action" aria-disabled="true">
             <div class="detailTitles" onclick="toggleTitle(1)"><span>불량 유저 신고하기</span></div>
@@ -78,12 +128,12 @@
               <p onclick="toggleDetails(42)">1:1 문의하기</p>
             </div>
           </li>
-          <li class="detailTitles list-group-item list-group-item-action disabled">구현중..</li>
+          <li id="implementing" class="detailTitles list-group-item list-group-item-action disabled">구현중..</li>
         </ul>
     </aside><!-- left content end -->
     
     <!-- right content -->
-    <section class="rightContent" style="width: 65%; height:1000px; float: right; border:1px solid green;">
+    <section class="rightContent" style="width: 70%; height:1500px; float: right;">
         <div class="detailItems" id="detail11">
             <p class="detailItemsTitles">불량 유저 신고</p>
             <span>누군가 거래 도중 비매너, 불쾌한 언어, 욕설, 협박 등을 포함한 사기, 범죄 행위 등을 포함한 모든 행위를 신고할 수 있습니다.</span>
