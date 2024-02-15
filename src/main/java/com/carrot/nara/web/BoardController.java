@@ -84,7 +84,7 @@ public class BoardController {
     }
     
     /**
-     * 전체 공지, 자유게시판, 1:1문의 DB저장
+     * 전체 공지, 자유게시판, 1:1문의 작성한 내용 DB저장
      * @param userDto 글(공지, 커뮤니티, 문의)를 남기는 유저 정보
      * @param dto 글 정보
      * @return 성공적으로 저장하면 공지사항 게시판으로 이동
