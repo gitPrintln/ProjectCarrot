@@ -180,6 +180,7 @@
         .get('/api/chatList/'+ senderId)
         .then(response => { 
             updateChatList(response.data);
+            selectedChatRoom();
         })
         .catch(err => { console.log(err) });
     }
@@ -219,6 +220,26 @@
                 +  '</table>';
         
         chatList.innerHTML = str;
+    }
+    
+    selectedChatRoom();
+    
+    // 현재 채팅방 표시(다른 색깔)
+    function selectedChatRoom (){
+        const chatListElement = document.querySelectorAll('.listElement');
+        chatListElement.forEach(element => {
+            const urlInfo = element.getAttribute('onclick'); // 해당 채팅방의 onclick에 대한 정보를 가져옴
+            const selectedChatElement = urlInfo.match(/chat[?&]chatId=(\d+)/); // 정규표현식으로 숫자를 가져옴(\d+는 하나 이상의 숫자를 나타내는 정규표현식), [?&] : 문자 클래스로, '?' 또는 '&' 중 하나와 일치
+            if(selectedChatElement[1] === chatId){ // 이 코드에서도 첫 번째 요소가 전체 일치한 부분이고, 두 번째 요소부터는 각 캡처 그룹에 해당하는 값이 포함
+                element.style.backgroundColor = 'seashell';
+                if(element.offsetTop>=400){ // chatList 스크롤 자동 조절
+                    $chatListScroll = $('#chatList');
+                    $chatListScroll.scrollTop(element.offsetTop);
+                }
+            } else{
+                element.style.backgroundColor = '';
+            }
+        });
     }
 });
 

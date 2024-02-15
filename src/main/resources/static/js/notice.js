@@ -4,14 +4,14 @@
  
  
 window.addEventListener('DOMContentLoaded', function () {
+    const inquiryTitle = document.querySelector('#inquiryTitle');
+    const inquiryType = document.querySelector('#inquiryType');
+    const inquiryContent = document.querySelector('#inquiryContent');
     // 문의 남기기 모달 event
     const leaveBtn = document.querySelector('#leaveBtn');
     leaveBtn.addEventListener('click', function(){
-        const inquiryTitle = document.querySelector('#inquiryTitle').value;
-        const inquiryType = document.querySelector('#inquiryType').value;
-        const inquiryContent = document.querySelector('#inquiryContent').value;
         
-        if (inquiryTitle == '' || inquiryType == '' || inquiryContent == '') {
+        if (inquiryTitle.value == '' || inquiryType.value == '' || inquiryContent.value == '') {
             alert('빠진 부분을 채워넣어주세요!');
             return;
         }
@@ -26,15 +26,15 @@ window.addEventListener('DOMContentLoaded', function () {
                     alert('남긴 문의는 문의 내역에서 확인가능합니다.');
         }
     });
-    
+
+    const postTitle = document.querySelector('#postTitle');
+    const postCategory = document.querySelector('#postCategory');
+    const postContent = document.querySelector('#postContent');
     // 게시글 남기기 모달 event
     const postCreateBtn = document.querySelector('#postCreateBtn');
     postCreateBtn.addEventListener('click', function(){
-        const postTitle = document.querySelector('#postTitle').value;
-        const postCategory = document.querySelector('#postCategory').value;
-        const postContent = document.querySelector('#postContent').value;
         
-        if (postTitle == '' || postCategory == '' || postContent == '') {
+        if (postTitle.value == '' || postCategory.value == '' || postContent.value == '') {
             alert('빠진 부분을 채워넣어주세요!');
             return;
         }
@@ -46,8 +46,23 @@ window.addEventListener('DOMContentLoaded', function () {
                     postCreateForm.method = 'post';
                     postCreateForm.submit();
                     
-                    alert(postCategory + '글 작성 완료');
+                    alert(postCategory.value + '글 작성 완료');
         }
+    });
+    
+    // 문의 남기기 모달창 그냥 닫을 때 데이터 초기화 해주기
+    const inquiryModalCloseBtn = document.querySelector('#inquiryModalCloseBtn');
+    inquiryModalCloseBtn.addEventListener('click',() => {
+         inquiryTitle.value = '';
+         inquiryContent.value = '';
+         inquiryType.value = '비매너/불량 유저';
+    });
+    // 글 남기기 모달창 그냥 닫을 때 데이터 초기화 해주기
+    const postModalCloseBtn = document.querySelector('#postModalCloseBtn');
+    postModalCloseBtn.addEventListener('click',() => {
+         postTitle.value = '';
+         postContent.value = '';
+         postCategory.value = '전체공지';
     });
 });
 
@@ -63,6 +78,7 @@ function community(event, category){
                     // 로그인 페이지로 리디렉션
                     window.location.href = '/user/signin';
                 } else{ // 로그인 되어 있다면
+                    category = '문의';
                     updateMain(category);
                 }
             })

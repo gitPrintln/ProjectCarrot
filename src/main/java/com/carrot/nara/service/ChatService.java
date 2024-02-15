@@ -30,7 +30,19 @@ public class ChatService {
     @Transactional(readOnly = true)
     public List<Chat> myChatList(Integer userId){
         log.info("myChatList()");
+        /*
         // userId, sellerId 둘 중에 하나라도 속하는 채팅방을 모두 가져오기 위함.
+        List<Chat> chat = chatRepository.findByUserIdOrSellerIdOrderByModifiedTimeDesc(userId, userId);
+        List<Integer> chatIds = new ArrayList<>();
+        for (Chat c : chat) {
+            log.info("test: c.getId()={}", c.getId());
+            chatIds.add(c.getId());
+        }
+        List<Chat> testChat = chatRepository.testingQr(chatIds);
+        for (Chat c : testChat) {
+            log.info("test2: c.getId()={}", c.getId());
+            chatIds.add(c.getId());
+        }*/
         return chatRepository.findByUserIdOrSellerIdOrderByModifiedTimeDesc(userId, userId);
     }
     

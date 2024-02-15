@@ -37,7 +37,10 @@
     #inquiryForm label {
       width: 70px;
     }
-    #inquiryForm input, #inquiryForm select {
+    #inquiryContent{
+      vertical-align: top;
+    }
+    #inquiryForm input, #inquiryForm select, #inquiryForm textarea  {
       flex: 0.4;
     }
     #postCreateForm {
@@ -50,12 +53,15 @@
       margin-bottom: 8px;
     }
     #postCreateForm label {
+      vertical-align: top;
       width: 80px;
     }
-    #postCreateForm input, #postCreateForm select {
+    #postCreateForm input, #postCreateForm select, #postCreateForm textarea {
       flex: 0.4;
     }
-    
+    #postCreateForm input{
+      width: 358px;
+    }
     </style>
     
 </head>
@@ -98,14 +104,14 @@
                 <div class="modal-content">
                      <div class="modal-header">
                          <i class="fa-solid fa-feather-pointed"></i><h5 class="modal-title">&nbsp;문의 남기기</h5>
-                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                         <button type="button" id="inquiryModalCloseBtn" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form id="inquiryForm" enctype="multipart/form-data" method="post" action="">
                         <div>
-                            <label>문의 제목</label>
+                            <label for="inquiryTitle">문의 제목</label>
                             <input type="text" id="inquiryTitle" name="title" required/>
-                            <label>문의 유형</label>
+                            <label for="inquiryType">문의 유형</label>
                             <select id="inquiryType" name="type" required>
                                 <option value="비매너/불량 유저">비매너/불량 유저</option>
                                 <option value="회원 계정">회원 계정</option>
@@ -115,8 +121,8 @@
                             </select>
                         </div>
                         <div>
-                            <label>문의 내용</label>
-                            <input type="text" id="inquiryContent" name="content" required/>
+                            <label for="inquiryContent">문의 내용</label>
+                            <textarea rows="12" cols="50" id="inquiryContent" name="content" required></textarea>
                         </div>
                         </form>
                     </div>
@@ -133,12 +139,12 @@
                 <div class="modal-content">
                      <div class="modal-header">
                          <i class="fa-solid fa-leaf"></i><h5 class="modal-title">&nbsp;글 작성하기</h5>
-                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                         <button type="button" id="postModalCloseBtn" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form id="postCreateForm" enctype="multipart/form-data" method="post" action="">
                         <div>
-                        <label>카테고리</label>
+                        <label for="postCategory">카테고리</label>
                             <select id="postCategory" name="category" required>
                                 <option value="전체공지">전체공지</option>
                                 <option value="자유게시판">자유게시판</option>
@@ -146,12 +152,12 @@
                             </select>
                         </div>
                         <div>
-                            <label>제목</label>
+                            <label for="postTitle">제목</label>
                             <input type="text" id="postTitle" name="title" required/>
                         </div>
                         <div>
-                            <label>내용</label>
-                            <input type="text" id="postContent" name="content" required/>
+                            <label for="postContent">내용</label>
+                            <textarea rows="12" cols="45" id="postContent" name="content" required></textarea>
                         </div>
                         </form>
                     </div>

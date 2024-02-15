@@ -29,7 +29,7 @@ public class BoardService {
     @Transactional(readOnly = true)
     public Page<Community> getNoticePost(String category, PageRequest pageable) {
         log.info("getNoticePost(category={})", category);
-        Page<Community> entity = communityRepository.findByCategory(category, pageable);
+        Page<Community> entity = communityRepository.findByCategoryOrderByModifiedTimeDesc(category, pageable);
         return entity;
     }
 
