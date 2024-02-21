@@ -1,10 +1,15 @@
 package com.carrot.nara.web;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -34,7 +39,7 @@ public class BoardController {
     
     @GetMapping("/notice")
     @Transactional(readOnly = true)
-    public String notice(Model model, @RequestParam(defaultValue = "0") int page) {
+    public String notice(@AuthenticationPrincipal UserSecurityDto userDto, Model model, @RequestParam(defaultValue = "0") int page) {
         log.info("notice()");
         String category = "전체공지";
         int pageSize = 3;
@@ -72,8 +77,8 @@ public class BoardController {
         PageRequest pageable = PageRequest.of(page, pageSize);
         
         Page<Community> entityList = boardService.getNoticePost(category, pageable);
-        int startPage = Math.max(0, page - 2);
-        int endPage = Math.min(entityList.getTotalPages() - 1, page + 2);
+        int startPage = Math.max(0, page - page%5);
+        int endPage = Math.min(entityList.getTotalPages() - 1, page - page%5 + 4);
         
         BoardListDto entity = BoardListDto.builder()
                 .category(category)

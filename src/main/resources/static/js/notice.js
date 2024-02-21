@@ -131,7 +131,9 @@ function updateMain(category, page){
                 // 페이징 새 게시판에 맞게 적용시키기
                 let str = '';
                 if(data.currentPage != 0){
-                    str += '<a class="w3-button w3-hover-black" href="#" onclick="prevPage(event)">«</a>';
+                    str += '<a class="w3-button w3-hover-black" href="#" onclick="goToPage(event, ' + (data.currentPage - 1)+ ')">«</a>';
+                } else{
+                    str += '<a class="w3-button" href="#" style="pointer-events: none; color: gray; text-decoration: none;">«</a>';
                 }
                 for(var i = data.startPage; i <= data.endPage; i++){
                     str += '<a class="w3-button ';
@@ -143,7 +145,9 @@ function updateMain(category, page){
                     str += '" href="#" onclick="goToPage(event, ' + i +')">' + ( i + 1 ) + '</a>';
                 }
                 if(data.currentPage != data.totalPages - 1){
-                    str += '<a class="w3-button w3-hover-black" href="#" onclick="nextPage(event)">»</a>';
+                    str += '<a class="w3-button w3-hover-black" href="#" onclick="goToPage(event, ' + (data.currentPage + 1) + ')">»</a>';
+                } else{
+                    str += '<a class="w3-button" href="#" style="pointer-events: none; color: gray; text-decoration: none;">»</a>';
                 }
                 pagination.innerHTML = str;
                 
@@ -205,19 +209,11 @@ function writePost(event){
         });
 }
 
- // 페이지 이동(goToPage(i))
+ // 페이지 이동(goToPage(i)), 이전/다음 페이지(현재페이지-1, 현재페이지+1)
 function goToPage(event, page){
     event.preventDefault();
     const category = document.querySelector('#boardTitle').innerHTML;
     updateMain(category, page);
-}
- // 이전 페이지 이동
-function prevPage(event){
-    event.preventDefault();
-}
- // 다음 페이지 이동
-function nextPage(event){
-    event.preventDefault();
 }
 
 // 로그인 상태 체크
