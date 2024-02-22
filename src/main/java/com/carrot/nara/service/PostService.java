@@ -1,5 +1,6 @@
 package com.carrot.nara.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -7,7 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.carrot.nara.domain.Post;
 import com.carrot.nara.domain.PostImage;
+import com.carrot.nara.domain.PostLike;
 import com.carrot.nara.repository.PostImageRepository;
+import com.carrot.nara.repository.PostLikeRepository;
 import com.carrot.nara.repository.PostRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -20,7 +23,7 @@ public class PostService {
 
     private final PostImageRepository postImageRepository;
     private final PostRepository postRepository;
-    
+    private final PostLikeRepository postLikeRepository;
     
     // 모든 포스트글들을 최신순으로 불러와서 리스트를 전달.
     @Transactional(readOnly = true)
@@ -36,7 +39,7 @@ public class PostService {
         return postRepository.findByTitleContainingOrContentContainingOrderByModifiedTimeDesc(keyword, keyword);
     }
     
-    // 모든 포스트글들을 최신순으로 불러와서 리스트를 전달.
+    // 해당 post 글에 있는 첫 번째 이미지(썸네일)
     @Transactional(readOnly = true)
     public PostImage readThumbnail(Integer postId){
         log.info("readThumbnail()");
@@ -71,6 +74,23 @@ public class PostService {
         return postRepository.findById(postId).get().getWishCount();
     }
 
-    
+    // userId에 해당하는 post(내 판매)글 모두 불러오기
+    @Transactional(readOnly = true)
+    public List<Post> readAllMySellList(Integer userId) {
+        log.info("readAllMySellList()");
+        return postRepository.findByUserId(userId);
+    }
+
+    // userId에 해당하는 post(내 판매)글 모두 불러오기
+    @Transactional(readOnly = true)
+    public List<Post> readAllMyLikeList(Integer userId) {
+        log.info("readAllMyLikeList()");
+        List<Post> list = new ArrayList<>();
+        List<PostLike> likeList = postLikeRepository.findByUserId(userId);
+        for (PostLike pl : likeList) {
+            list.add(postRepository.findById(pl.getPostId()).get());
+        }
+        return list;
+    }
     
 }

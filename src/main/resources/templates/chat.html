@@ -50,6 +50,9 @@
     .sellInfo{
         text-align: left;
     }
+    .sellInfo #partnerInfo{ /* 상대 닉네임과 이미지는 가리기로 */
+        display: none;
+    }
     .postTitle {
         font-size: 20px;
     }
@@ -138,7 +141,7 @@
             <div class="sellInfo" th:if="${not #lists.isEmpty(currentChat)}" th:each="sellInfo : ${ currentChat }">
                 <table>
                 <!-- 상대 정보 -->
-                    <tr>
+                    <tr id="partnerInfo">
                         <td>
                             <img id="chatPartnerProfileId" th:src="${ sellInfo.sellerId != #authentication.principal.id ? '/img/user/'+ sellInfo.sellerId : '/img/user/'+ sellInfo.partnerId }" alt="상대 프사"/>
                         </td>
