@@ -1,5 +1,6 @@
 package com.carrot.nara.web;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,12 +47,28 @@ public class BoardController {
         PageRequest pageable = PageRequest.of(page, pageSize);
         Page<Community> list = boardService.getNoticePost(category, pageable);
         
-        int startPage = Math.max(0, page - 2);
-        int endPage = Math.min(list.getTotalPages() - 1, page + 2);
+        int startPage = Math.max(0, page - page%5);
+        int endPage = Math.min(list.getTotalPages() - 1, page - page%5 + 4);
         model.addAttribute("list", list);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
         model.addAttribute("currentPage", page);
+        // 로그인 정보가 있는 경우에는 권한을 가져와보고 관리자인지 유저인지 확인해서 정보를 넘겨준다.
+        if(userDto != null && userDto.getId() != null) {
+            // 확인을 원하는 권한
+            String admin = "ROLE_ADMIN";
+            // 사용자 권한을 가져와서 각 역할을 SimpleGrantedAuthority로 변환하고 확인을 원하는 권한을 확인한다.
+            // 권한 정보를 SimpleGrantedAuthority로 변환하면 Spring Security가 이를 더 효과적으로 인식하고 처리할 수 있다.
+            Collection<GrantedAuthority> roles = userDto.getAuthorities();
+            List<SimpleGrantedAuthority> role = roles.stream().map(x -> new SimpleGrantedAuthority(x.getAuthority())).collect(Collectors.toList());
+            /*role.stream().filter(s -> s.getAuthority().contains(admin)).
+            forEach(x -> System.out.println(userDto.getId() + "'s authority = " + x.getAuthority()));*/
+            for (SimpleGrantedAuthority s : role) {
+                if(s.getAuthority().contains(admin)) {
+                    model.addAttribute("admin", admin);
+                }
+            }
+        }
         return "board/notice";
     }
     
