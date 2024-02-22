@@ -22,10 +22,21 @@
             left: 0;
             margin: 0;
         }
-        @media (max-width: 798px) { /* 넓이가 798이하 되면서부터는 fixed가 아니라 static으로 사용*/
+        @media (max-width: 898px) { /* 넓이가 898이하 되면서부터는 fixed가 아니라 static으로 사용*/
           #reportHeader {
             position: static; /* 미디어 쿼리에 따라 position을 static으로 변경 */
             top: auto; /* 기존에 지정한 top을 해제 */
+          }
+        }
+        @media (max-width: 705px) { /* 넓이가 705이하 되면서부터는 margin-top 40 적용*/
+          #reportHeader {
+            margin-top: 40px;
+          }
+        }
+        @media (max-width: 601px) { /* 넓이가 601이하 되면서부터는 원래대로 되돌림*/
+          #reportHeader {
+            margin-top: 0px;
+            top: 40px;
           }
         }
         #reportHeader i {

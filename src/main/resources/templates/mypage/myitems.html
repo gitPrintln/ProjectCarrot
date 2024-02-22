@@ -21,35 +21,84 @@
       bottom: 0;
       height: inherit;
     }
+    @media (max-width: 698px) { /* 넓이가 700이하 되면서부터는 margin-top을 적용*/
+      .contentTitle {
+        margin-top: 52px;
+      }
+    }
+    @media (max-width: 601px) { /* 넓이가 601이하 되면서부터는 아래 속성으로 되돌림*/
+      .contentTitle {
+        margin-top: 0px;
+        top: 52px;
+      }
+    }
+    .mainCard{
+      cursor: pointer;
+      height: 320px;
+      width: 23%;
+      margin-right: 2%;
+      margin-bottom: 100px;
+    }
+    .soldOutTag{
+      background-color: green; /* 사선 색상 설정 */
+      transform: rotate(-20deg);
+      transform-origin: 0 0;
+      position: absolute; 
+    }
+    .preOrderTag{
+      background-color: orange; 
+      transform: rotate(-20deg);
+      transform-origin: 0 0;
+      position: absolute; 
+    }
+    #title, .countInfo, .region, .prices {
+      white-space: nowrap; /* 줄 바꿈 방지 */
+      text-overflow: ellipsis; /* 넘치는 부분에 ... 표시 */
+      overflow: hidden; /* 내용이 넘치면 숨김 */
+    }
+    .region {
+      text-align: right;
+      margin-right: 5px;
+    }
     </style>
     
 </head>
 <body>
-<h2 class="w3-bar-item"><b>내 판매 목록</b></h2>
+<h2 class="contentTitle w3-bar-item"><b>내 판매 목록</b></h2>
 <!-- !PAGE CONTENT! -->
-<div class="w3-main w3-content w3-padding" style="max-width:1200px;margin-top:70px">
-  <!-- First Photo Grid-->
-  <div class="w3-row-padding w3-padding-16 w3-center" id="food">
-    <div class="w3-quarter">
-      <img src="/w3images/sandwich.jpg" alt="Sandwich" style="width:100%">
-      <h3>The Perfect Sandwich, A Real NYC Classic</h3>
-      <p>Just some random text, lorem ipsum text praesent tincidunt ipsum lipsum.</p>
+<div class="w3-main w3-content w3-padding" style="max-width: 1200px; margin-top: 70px">
+  <!-- Photo Grid-->
+  <div class="w3-row-padding w3-padding-16 w3-center">
+    <div class="mainCard w3-quarter w3-card-4" th:each="list : ${ list }"
+      th:classappend="${list.status == '판매완료'} ? ' w3-opacity-max' : ''"
+      th:id="${ list.id }" 
+      th:onclick="|location.href='@{ /sell/detail?id=' + this.getAttribute('id') + '}';|">
+      <p class="soldOutTag" th:if="${list.status == '판매완료'}">판매 완료</p>
+      <p class="preOrderTag" th:if="${list.status == '예약중'}">예약중</p>
+      <img th:src="${ '/img/view/'+ list.imageFileName }" 
+      th:style="${list.imageFileName != 'image-fill.png'} ? 'width:100%; height:200px;' : 'width:40%; height:90px; margin-top: 55px; margin-bottom: 55px;'">
+      <h3 id="title" th:text="${ list.title }"></h3>
+      <div class="region">
+          <span th:if="${ list.region != null }" style="font-size: 8px;" th:text="${ list.region.split(' ')[1] + ' ' + list.region.split(' ')[2] }"></span>
+      </div>
+      <div class="prices">
+          <span th:text="${ list.prices }"></span><span>&nbsp;원</span><br/>
+      </div>
+      <div class="countInfo" style="font-size: 10px; color: gray;">
+          <div style="margin: 2px; display: inline-block;">
+               <span th:text ="${ '채팅 ' + list.chats }"></span>
+          </div>
+          <div style="margin: 2px; display: inline-block;">
+               <span th:text ="${ '관심 ' + list.wishCount }"></span>
+          </div>
+          <div style="margin: 2px; display: inline-block;">
+               <span th:text ="${ '조회 ' + list.hits }"></span>
+          </div>
+      </div>
     </div>
-    <div class="w3-quarter">
-      <img src="/w3images/steak.jpg" alt="Steak" style="width:100%">
-      <h3>Let Me Tell You About This Steak</h3>
-      <p>Once again, some random text to lorem lorem lorem lorem ipsum text praesent tincidunt ipsum lipsum.</p>
-    </div>
-    <div class="w3-quarter">
-      <img src="/w3images/cherries.jpg" alt="Cherries" style="width:100%">
-      <h3>Cherries, interrupted</h3>
-      <p>Lorem ipsum text praesent tincidunt ipsum lipsum.</p>
-      <p>What else?</p>
-    </div>
-    <div class="w3-quarter">
-      <img src="/w3images/wine.jpg" alt="Pasta and Wine" style="width:100%">
-      <h3>Once Again, Robust Wine and Vegetable Pasta</h3>
-      <p>Lorem ipsum text praesent tincidunt ipsum lipsum.</p>
+    <!-- 판매 목록이 하나도 없는 경우 -->
+    <div th:if="${ #lists.isEmpty(list) }">
+        <p>등록된 상품이 없습니다. 등록하기를 통해 내 상품을 판매해 볼까요?</p>
     </div>
   </div>
 

@@ -25,6 +25,17 @@
     .modal-header i{
       min-width: 20px;
     }
+    @media (max-width: 700px) { /* 넓이가 700이하 되면서부터는 margin-top을 적용*/
+      #boardTitle {
+        margin-top: 52px;
+      }
+    }
+    @media (max-width: 601px) { /* 넓이가 601이하 되면서부터는 아래 속성으로 되돌림*/
+      #boardTitle {
+        margin-top: 0px;
+        top: 52px;
+      }
+    }
     #inquiryForm {
       display: flex;
       flex-direction: column;
