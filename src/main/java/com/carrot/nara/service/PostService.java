@@ -1,6 +1,7 @@
 package com.carrot.nara.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -78,7 +79,7 @@ public class PostService {
     @Transactional(readOnly = true)
     public List<Post> readAllMySellList(Integer userId) {
         log.info("readAllMySellList()");
-        return postRepository.findByUserId(userId);
+        return postRepository.findByUserIdOrderByModifiedTimeDesc(userId);
     }
 
     // userId에 해당하는 post(내 판매)글 모두 불러오기
@@ -90,6 +91,8 @@ public class PostService {
         for (PostLike pl : likeList) {
             list.add(postRepository.findById(pl.getPostId()).get());
         }
+        // 수정 시간순으로 list 정렬
+        list.sort(Comparator.comparing(Post::getModifiedTime).reversed());
         return list;
     }
     

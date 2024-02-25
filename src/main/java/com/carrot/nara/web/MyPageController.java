@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.carrot.nara.domain.Post;
@@ -49,15 +53,32 @@ public class MyPageController {
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/myItemsList")
     @Transactional(readOnly = true)
-    public String myItemsList(@AuthenticationPrincipal UserSecurityDto user, Model model) {
+    public String myItemsList(@AuthenticationPrincipal UserSecurityDto user, Model model, @RequestParam(defaultValue = "0") int page) {
         log.info("myItemsList()");
+        
+        // 유저 정보
         User u = userService.readById(user.getId());
         model.addAttribute("user", u);
+        
         // type : 0(판매 목록)
         Integer type = 0;
-        // 최종 리스트
+        
+        // 페이지 크기
+        int pageSize = 8;
+        
+        // 최종 리스트(Page 변환 전)
         List<ListReadDto> list = loadMyList(type, user.getId());
-        model.addAttribute("list", list);
+        // 리스트를 Page로 변환
+        Page<ListReadDto> pagingList = getPageList(list, page, pageSize);
+        model.addAttribute("list", pagingList);
+        
+        // 시작페이지, 끝 페이지
+        int startPage = Math.max(0, page - page%5);
+        int endPage = Math.min(pagingList.getTotalPages() - 1, page - page%5 + 4);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("currentPage", page);
+        
         return "mypage/myitems";
     }
     
@@ -125,5 +146,19 @@ public class MyPageController {
         }
         
         return list;
+    }
+    
+    /**
+     * ListReadDto 타입의 List를 받아서 Page로 변환해주는 메서드
+     * @param list 변환하고자 하는 ListReadDto 타입의 List
+     * @param page 요청된 page
+     * @param pageSize page의 크기
+     * @return ListReadDto 타입의 Page
+     */
+    private Page<ListReadDto> getPageList(List<ListReadDto> list, int page, int pageSize){
+        PageRequest pageable = PageRequest.of(page, pageSize);
+        int start = (int) pageable.getOffset(); // Spring Data의 Pageable 객체에서 시작 오프셋을 가져와서 사용(현재 페이지의 시작 위치를 나타내는 값을 반환)
+        int end = Math.min((start + pageable.getPageSize()), list.size());
+        return new PageImpl<>(list.subList(start, end), pageable, list.size());
     }
 }

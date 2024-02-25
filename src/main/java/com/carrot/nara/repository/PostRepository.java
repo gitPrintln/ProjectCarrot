@@ -47,5 +47,5 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     void updateStatus(@Param(value = "postId") Integer postId, @Param(value = "status") String status);
 
     // userId에 해당하는 post글 모두 불러오기
-    List<Post> findByUserId(Integer userId);
+    List<Post> findByUserIdOrderByModifiedTimeDesc(Integer userId);
 }
