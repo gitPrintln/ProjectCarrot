@@ -84,15 +84,32 @@ public class MyPageController {
     
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/myWishList")
-    public String myWishList(@AuthenticationPrincipal UserSecurityDto user, Model model) {
+    public String myWishList(@AuthenticationPrincipal UserSecurityDto user, Model model, @RequestParam(defaultValue = "0") int page) {
         log.info("myWishList()");
+
+        // 유저 정보
         User u = userService.readById(user.getId());
         model.addAttribute("user", u);
+        
         // type : 1(관심 목록)
         Integer type = 1;
-        // 최종 리스트
+        
+        // 페이지 크기
+        int pageSize = 8;
+        
+        // 최종 리스트(Page 변환 전)
         List<ListReadDto> list = loadMyList(type, user.getId());
-        model.addAttribute("list", list);
+        // 리스트를 Page로 변환
+        Page<ListReadDto> pagingList = getPageList(list, page, pageSize);
+        model.addAttribute("list", pagingList);
+        
+        // 시작페이지, 끝 페이지
+        int startPage = Math.max(0, page - page%5);
+        int endPage = Math.min(pagingList.getTotalPages() - 1, page - page%5 + 4);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("currentPage", page);
+        
         return "mypage/mywish";
     }
     

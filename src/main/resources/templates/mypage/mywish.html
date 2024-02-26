@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Carrot Nara</title>
+    <script src="https://kit.fontawesome.com/009f152c56.js" crossorigin="anonymous"></script>
     <style>
     html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
     .w3-sidebar {
@@ -21,56 +22,101 @@
       bottom: 0;
       height: inherit;
     }
+    @media (max-width: 698px) { /* 넓이가 700이하 되면서부터는 margin-top을 적용*/
+      .contentTitle {
+        margin-top: 52px;
+      }
+    }
+    @media (max-width: 601px) { /* 넓이가 601이하 되면서부터는 아래 속성으로 되돌림*/
+      .contentTitle {
+        margin-top: 0px;
+        top: 52px;
+      }
+    }
+    .mainCard{
+      cursor: pointer;
+      height: 320px;
+      width: 23%;
+      margin-right: 2%;
+      margin-bottom: 100px;
+      border-radius: 5px;
+    }
+    .soldOutTag{
+      background-color: green; /* 사선 색상 설정 */
+      transform: rotate(-20deg);
+      transform-origin: 0 0;
+      position: absolute;
+    }
+    .preOrderTag{
+      background-color: orange; 
+      transform: rotate(-20deg);
+      transform-origin: 0 0;
+      position: absolute;
+    }
+    #title, .countInfo, .region, .prices {
+      white-space: nowrap; /* 줄 바꿈 방지 */
+      text-overflow: ellipsis; /* 넘치는 부분에 ... 표시 */
+      overflow: hidden; /* 내용이 넘치면 숨김 */
+    }
+    .region {
+      text-align: right;
+      margin-right: 5px;
+    }
     </style>
     
 </head>
 <body>
-
-<!-- Overlay effect when opening sidebar on small screens -->
-<div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
-
+<h2 class="contentTitle w3-bar-item"><b>내 관심 목록</b></h2>
 <!-- !PAGE CONTENT! -->
-<div class="w3-main w3-content w3-padding" style="max-width:1200px;margin-top:100px">
-
-  <!-- First Photo Grid-->
-  <div class="w3-row-padding w3-padding-16 w3-center" id="food">
-    <div class="w3-quarter">
-      <img src="/w3images/sandwich.jpg" alt="Sandwich" style="width:100%">
-      <h3>The Perfect Sandwich, A Real NYC Classic</h3>
-      <p>Just some random text, lorem ipsum text praesent tincidunt ipsum lipsum.</p>
+<div class="w3-main w3-content w3-padding" style="max-width: 1200px; margin-top: 70px">
+  <!-- Photo Grid-->
+  <div class="w3-row-padding w3-padding-16 w3-center">
+    <div class="mainCard w3-quarter w3-card-4" th:each="list : ${ list }"
+      th:classappend="${list.status == '판매완료'} ? ' w3-opacity-max' : ''"
+      th:id="${ list.id }" 
+      th:onclick="|location.href='@{ /sell/detail?id=' + this.getAttribute('id') + '}';|">
+      <p class="soldOutTag" th:if="${list.status == '판매완료'}">판매 완료</p>
+      <p class="preOrderTag" th:if="${list.status == '예약중'}">예약중</p>
+      <img th:src="${ '/img/view/'+ list.imageFileName }" 
+      th:style="${list.imageFileName != 'image-fill.png'} ? 'width:100%; height:200px;' : 'width:40%; height:90px; margin-top: 55px; margin-bottom: 55px;'">
+      <h5 id="title" th:text="${ list.title }"></h5>
+      <div class="region">
+          <span th:if="${ list.region != null }" style="font-size: 8px;" th:text="${ list.region.split(' ')[1] + ' ' + list.region.split(' ')[2] }"></span>
+      </div>
+      <div class="prices">
+          <span th:text="${ list.prices }"></span><span>&nbsp;원</span><br/>
+      </div>
+      <div class="countInfo" style="font-size: 10px; color: gray;">
+          <div style="margin: 2px; display: inline-block;">
+               <span th:text ="${ '채팅 ' + list.chats }"></span>
+          </div>
+          <div style="margin: 2px; display: inline-block;">
+               <span th:text ="${ '관심 ' + list.wishCount }"></span>
+          </div>
+          <div style="margin: 2px; display: inline-block;">
+               <span th:text ="${ '조회 ' + list.hits }"></span>
+          </div>
+      </div>
     </div>
-    <div class="w3-quarter">
-      <img src="/w3images/steak.jpg" alt="Steak" style="width:100%">
-      <h3>Let Me Tell You About This Steak</h3>
-      <p>Once again, some random text to lorem lorem lorem lorem ipsum text praesent tincidunt ipsum lipsum.</p>
-    </div>
-    <div class="w3-quarter">
-      <img src="/w3images/cherries.jpg" alt="Cherries" style="width:100%">
-      <h3>Cherries, interrupted</h3>
-      <p>Lorem ipsum text praesent tincidunt ipsum lipsum.</p>
-      <p>What else?</p>
-    </div>
-    <div class="w3-quarter">
-      <img src="/w3images/wine.jpg" alt="Pasta and Wine" style="width:100%">
-      <h3>Once Again, Robust Wine and Vegetable Pasta</h3>
-      <p>Lorem ipsum text praesent tincidunt ipsum lipsum.</p>
+    <!-- 관심 목록이 하나도 없는 경우 -->
+    <div th:if="${ #lists.isEmpty(list) }">
+        <p>관심 상품이 없습니다. 중고거래 항목을 통해 상품을 구경해볼까요?</p>
     </div>
   </div>
 
   <!-- Pagination -->
   <div class="w3-center w3-padding-32">
     <div class="w3-bar">
-      <a class="w3-button w3-black" href="#">1</a>
-      <a class="w3-button w3-hover-black" href="#">2</a>
-      <a class="w3-button w3-hover-black" href="#">3</a>
-      <a class="w3-button w3-hover-black" href="#">4</a>
-      <a class="w3-button w3-hover-black" href="#">5</a>
-      <a class="w3-button w3-hover-black" href="#">»</a>
+      <a class="w3-button w3-hover-black" th:if="${currentPage != 0}"
+       th:href="@{/myPage/myWishList(page = ${currentPage - 1})}">«</a>
+      <a th:class="${currentPage == i ? 'w3-button w3-black disabled' : 'w3-button w3-hover-black'}" th:each="i : ${#numbers.sequence(startPage, endPage)}" 
+       th:href="@{/myPage/myWishList(page = ${i})}" th:text="${ i + 1 }"></a>
+      <a class="w3-button w3-hover-black" th:if="${currentPage != list.totalPages - 1}"
+       th:href="@{/myPage/myWishList(page = ${currentPage + 1})}">»</a>
     </div>
   </div>
 </div>
 <th:block layout:fragment="script">
-	
 </th:block>
 </body>
 </div>
