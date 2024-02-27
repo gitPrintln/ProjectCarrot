@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -134,11 +135,12 @@ public class SellController {
     // 포스트 글과 그 글의 이미지, 로컬저장소의 이미지, 관련 채팅방 모두 삭제
     @Transactional
     @PreAuthorize("hasRole('USER')")
-    @PostMapping("/delete")
-    public String delete(@AuthenticationPrincipal UserSecurityDto userDto, Integer id) {
+    @DeleteMapping("/delete")
+    @ResponseBody
+    public ResponseEntity<String> delete(@AuthenticationPrincipal UserSecurityDto userDto, Integer id) {
         log.info("sellUpdate(postID={})", id);
         sellService.deletePost(id);
-        return "redirect:/list";
+        return ResponseEntity.ok("delete");
     }
     
     // Detail 페이지에서 post글 status 즉시 수정

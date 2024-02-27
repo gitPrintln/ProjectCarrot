@@ -84,15 +84,32 @@ public class MyPageController {
     
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/myWishList")
-    public String myWishList(@AuthenticationPrincipal UserSecurityDto user, Model model) {
+    public String myWishList(@AuthenticationPrincipal UserSecurityDto user, Model model, @RequestParam(defaultValue = "0") int page) {
         log.info("myWishList()");
+
+        // 유저 정보
         User u = userService.readById(user.getId());
         model.addAttribute("user", u);
+        
         // type : 1(관심 목록)
         Integer type = 1;
-        // 최종 리스트
+        
+        // 페이지 크기
+        int pageSize = 8;
+        
+        // 최종 리스트(Page 변환 전)
         List<ListReadDto> list = loadMyList(type, user.getId());
-        model.addAttribute("list", list);
+        // 리스트를 Page로 변환
+        Page<ListReadDto> pagingList = getPageList(list, page, pageSize);
+        model.addAttribute("list", pagingList);
+        
+        // 시작페이지, 끝 페이지
+        int startPage = Math.max(0, page - page%5);
+        int endPage = Math.min(pagingList.getTotalPages() - 1, page - page%5 + 4);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("currentPage", page);
+        
         return "mypage/mywish";
     }
     
@@ -160,5 +177,24 @@ public class MyPageController {
         int start = (int) pageable.getOffset(); // Spring Data의 Pageable 객체에서 시작 오프셋을 가져와서 사용(현재 페이지의 시작 위치를 나타내는 값을 반환)
         int end = Math.min((start + pageable.getPageSize()), list.size());
         return new PageImpl<>(list.subList(start, end), pageable, list.size());
+    }
+    
+    /**
+     * 글쓴이와 로그인 유저가 같은지 체크하고 글을 수정, 삭제, 채팅 각각 기능을 허용
+     * @param postId post글
+     * @return 같으면 true, 다르면 false
+     */
+    @PreAuthorize("hasRole('USER')")
+    @Transactional(readOnly = true)
+    @GetMapping("/writerChk")
+    @ResponseBody
+    public ResponseEntity<Boolean> writerAndAuthenticationUserChk(@AuthenticationPrincipal UserSecurityDto user, Integer postId){
+        log.info("writerAndAuthenticationUserChk(userId={}, postId={})", user.getId(), postId);
+        Boolean chk = false;
+        Integer writerId = postService.readByPostId(postId).getUserId();
+        if(writerId.equals(user.getId())) {
+            chk = true;
+        }
+        return ResponseEntity.ok(chk);
     }
 }

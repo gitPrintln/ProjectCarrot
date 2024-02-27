@@ -105,7 +105,7 @@
       <a class="w3-button" style="pointer-events: none; color: gray; text-decoration: none;" href="#">«</a>
       <a th:class="${currentPage == i ? 'w3-button w3-black' : 'w3-button w3-hover-black'}" th:each="i : ${#numbers.sequence(startPage, endPage)}" 
        th:data-index="${i}" href="#" th:onclick="goToPage(event, this.getAttribute('data-index'));" th:text="${ i + 1 }"></a>
-      <a class="w3-button w3-hover-black" th:if="${currentPage != list.totalPages - 1}" 
+      <a class="w3-button w3-hover-black" th:style="${currentPage != list.totalPages - 1 ? '' : 'pointer-events: none; color: gray; text-decoration: none;'}" 
        th:data-index="${currentPage + 1}" href="#" th:onclick="goToPage(event, this.getAttribute('data-index'));">»</a>
     </div>
   </div>
