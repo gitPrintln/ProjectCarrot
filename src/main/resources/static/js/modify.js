@@ -129,11 +129,16 @@ window.addEventListener('DOMContentLoaded', () => {
     btnDelete.addEventListener('click', function(){
         const result = confirm('글을 삭제하게 되면 현재 판매와 관련된 채팅방은 삭제됩니다. 정말 삭제하시겠습니까?');
         if(result){
-            alert('글을 삭제했습니다.')
-            document.querySelector('#formModify').submit();
-            formModify.action = '/sell/delete';
-            formModify.method = 'post';
-            formModify.submit();
+            const postId = document.getElementById('id').value;
+            axios.delete('/sell/delete?id=' + postId)
+                .then(response => {
+                    alert('글을 삭제했습니다.');
+                    // axios 작업 기다려 준 후 페이지 이탈
+                    setTimeout(function(){
+                        location.href = '/list';
+                    }, 300);
+                })
+                .catch(err => console.log(err + "판매글 삭제 오류!"));
         }
     });
     

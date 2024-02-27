@@ -178,4 +178,23 @@ public class MyPageController {
         int end = Math.min((start + pageable.getPageSize()), list.size());
         return new PageImpl<>(list.subList(start, end), pageable, list.size());
     }
+    
+    /**
+     * 글쓴이와 로그인 유저가 같은지 체크하고 글을 수정, 삭제, 채팅 각각 기능을 허용
+     * @param postId post글
+     * @return 같으면 true, 다르면 false
+     */
+    @PreAuthorize("hasRole('USER')")
+    @Transactional(readOnly = true)
+    @GetMapping("/writerChk")
+    @ResponseBody
+    public ResponseEntity<Boolean> writerAndAuthenticationUserChk(@AuthenticationPrincipal UserSecurityDto user, Integer postId){
+        log.info("writerAndAuthenticationUserChk(userId={}, postId={})", user.getId(), postId);
+        Boolean chk = false;
+        Integer writerId = postService.readByPostId(postId).getUserId();
+        if(writerId.equals(user.getId())) {
+            chk = true;
+        }
+        return ResponseEntity.ok(chk);
+    }
 }
