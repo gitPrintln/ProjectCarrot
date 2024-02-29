@@ -42,6 +42,12 @@ public class BoardController {
     @Transactional(readOnly = true)
     public String notice(@AuthenticationPrincipal UserSecurityDto userDto, Model model, @RequestParam(defaultValue = "0") int page) {
         log.info("notice()");
+        if(userDto != null && userDto.getId() != null) { // 로그인인 경우 user가 작성한 글을 통제할 수 있게 하기 위해 userid를 전달
+            model.addAttribute("userid", userDto.getId());
+        } else { // 비로그인인 경우 userid가 없음을 나타내기위해 id = -1000을 넣어둠.
+            model.addAttribute("userid", -1000); 
+        }
+        
         String category = "전체공지";
         int pageSize = 3;
         PageRequest pageable = PageRequest.of(page, pageSize);
