@@ -13,6 +13,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Carrot Nara</title>
     <script src="https://kit.fontawesome.com/009f152c56.js" crossorigin="anonymous"></script>
+    <!-- JQuery & summernote lite -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     <style>
     html,body,h1,h2,h3,h4,h5,h6,p {font-family: "Roboto", sans-serif;}
     .w3-sidebar {
@@ -21,6 +25,15 @@
       top: 52px;
       bottom: 0;
       height: inherit;
+    }
+    .listContainer{
+      display: flex;
+      flex-direction: column;
+    }
+    #postContentDeleteBtn{
+      flex: 0.4; 
+      margin-left: auto;
+      font-size: 8px;
     }
     .modal-header i{
       min-width: 20px;
@@ -84,8 +97,10 @@
   <a class="w3-bar-item w3-button w3-hover-black" href="#" onclick="community(event, '자유게시판')">자유게시판</a>
   <a class="w3-bar-item w3-button w3-hover-black" href="#" onclick="community(event, 'FAQ')">FAQ</a>
   <a class="w3-bar-item w3-button w3-hover-black" href="#" onclick="community(event, '내 문의 내역')">내 문의 내역</a>
-  <a class="w3-bar-item w3-button w3-hover-black" href="#" onclick="leaveAnInquiry(event)">문의남기기</a>
   <hr style="color: #333; background-color: #333; height: 1px; margin: 20px;"/>
+  <a class="w3-bar-item w3-button w3-hover-black" href="#">이벤트(준비중)</a>
+  <hr style="color: #333; background-color: #333; height: 1px; margin: 20px;"/>
+  <a class="w3-bar-item w3-button w3-hover-black" href="#" onclick="leaveAnInquiry(event)">문의 남기기</a>
   <a class="w3-bar-item w3-button w3-hover-black" href="#" onclick="writePost(event)">글 작성하기</a>
 </nav>
 
@@ -93,12 +108,15 @@
 <div class="mainContent w3-main" style="margin-left:250px">
   <h1 class="w3-text-teal" id="boardTitle">전체공지</h1>
   <div class="w3-row w3-padding-64" id="boardContent">
-    <div class="w3-twothird w3-container" th:each="list : ${ list }">
+    <div class="listContainer w3-twothird w3-container" th:each="list : ${ list }">
+      <button th:if="${ list.userId == userid }" type="button" id="postContentDeleteBtn" th:data-pid="${ list.id }" class="btn-close"></button>
       <h3 class="w3-text-teal" th:text="${ list.title }"></h3>
-      <p th:text="${ list.content }"></p>
+      <span id="listContent" style="white-space: pre-wrap;" th:utext="${ list.content }"></span>
     </div>
   </div>
+  <div>
 
+  </div>
   <!-- Pagination -->
   <div class="w3-center w3-padding-32">
     <div class="w3-bar" id="pagination">
@@ -110,6 +128,9 @@
     </div>
   </div>
   
+  <!-- 로그인/비로그인 user id -->
+  <input type="text" id="loginUsersid" th:value="${ userid }"/>
+    
   <!-- 문의남기기 모달 -->
         <div class="modal" id ="inquiryModal" tabindex="-1">
             <div class="modal-dialog">
@@ -169,7 +190,7 @@
                         </div>
                         <div>
                             <label for="postContent">내용</label>
-                            <textarea rows="12" cols="45" id="postContent" name="content" required></textarea>
+                            <textarea class="summernote" rows="12" cols="45" id="postContent" name="content" required></textarea>
                         </div>
                         </form>
                     </div>
@@ -182,7 +203,9 @@
 </div>
 <th:block layout:fragment="script">
 <!-- Ajax -->
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>   
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<!-- summernote 언어 : 한글 -->
+<script src="/summernote/summernote-ko-KR.js"></script>
 <script th:src="@{ /js/notice.js }"></script>
 <script>
 // Get the Sidebar

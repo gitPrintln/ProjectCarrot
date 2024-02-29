@@ -60,9 +60,19 @@ window.addEventListener('DOMContentLoaded', function () {
     // 글 남기기 모달창 그냥 닫을 때 데이터 초기화 해주기
     const postModalCloseBtn = document.querySelector('#postModalCloseBtn');
     postModalCloseBtn.addEventListener('click',() => {
+         const noteEditable = document.querySelector('.note-editable'); // summernote 안의 내용 비우기위해
          postTitle.value = '';
-         postContent.value = '';
+         noteEditable.innerHTML = '';
          postCategory.value = '전체공지';
+    });
+    
+    // 내가 작성한 글이면 x 버튼 눌렀을 때 글을 삭제할 수 있도록
+    const postContentDeleteBtns = document.querySelectorAll('#postContentDeleteBtn');
+    postContentDeleteBtns.forEach(deleteBtn => {
+        deleteBtn.addEventListener('click', (event) => {
+        const postContentId = event.target.getAttribute('data-pid');
+                console.log(postContentId)  
+        });
     });
 });
 
@@ -106,13 +116,28 @@ function updateMain(category, page){
             pagination.innerHTML = '';
             
             if(data.entity.content.length != 0){ // 해당 게시판의 데이터가 하나라도 있으면
+                // 로그인 유저 확인 후 작성자와 같은 id이면 삭제 버튼 생성(input은 string으로 변환되어 저장되므로 형 변환해줌)
+                const loginusersidValue = document.getElementById('loginUsersid').value;
+                const loginUsersid = parseInt(loginusersidValue, 10);
+
                 // 게시판 내용 바꿔주기
                 for(var i = 0; i < data.entity.content.length; i++){
                         // 새로운 게시글 틀 생성
                         var div = document.createElement('div');
                         boardContent.appendChild(div);
                         // 게시글 틀 설정
-                        div.className = 'w3-twothird w3-container';
+                        div.className = 'listContainer w3-twothird w3-container';
+                        
+                        // 삭제 버튼(조건에 따라 버튼 생성), 문의 내역은 삭제 버튼이 없음
+                        if(data.entity.content[i].userId === loginUsersid && category !== '문의'){
+                            var button = document.createElement('button');
+                            button.type = 'button';
+                            button.id = 'postContentDeleteBtn';
+                            button.className = 'btn-close';
+                            button.setAttribute('data-pid', data.entity.content[i].id);
+                            // 생성한 button을 div에 추가
+                            div.appendChild(button);
+                        }
                         
                         // h3 요소(제목)를 생성하고 제목 데이터를 추가
                         var h3 = document.createElement('h3');
@@ -120,12 +145,12 @@ function updateMain(category, page){
                         h3.innerText = data.entity.content[i].title;
                         
                         // p 요소(내용)를 생성하고 내용 데이터를 추가
-                        var p = document.createElement('p');
-                        p.innerText = data.entity.content[i].content;
+                        var span = document.createElement('span');
+                        span.innerText = data.entity.content[i].content;
                         
-                        // 생성한 h3와 p를 div에 추가
+                        // 생성한 h3와 span를 div에 추가
                         div.appendChild(h3);
-                        div.appendChild(p);
+                        div.appendChild(span);
                 }
                 
                 // 페이징 새 게시판에 맞게 적용시키기
@@ -162,6 +187,15 @@ function updateMain(category, page){
                 p.innerText = category + ' 글이 하나도 없습니다.';
                 div.appendChild(p);
             }
+            
+            // 내가 작성한 글이면 x 버튼 눌렀을 때 글을 삭제할 수 있도록(새로 생긴 postDeleteBtn에 이벤트 다시 걸어주기)
+            const postContentDeleteBtns = document.querySelectorAll('#postContentDeleteBtn');
+            postContentDeleteBtns.forEach(deleteBtn => {
+                deleteBtn.addEventListener('click', (event) => {
+                const postContentId = event.target.getAttribute('data-pid');
+                        console.log(postContentId)  
+                });
+            });
         })
         .catch(err => {
             console.log(err + "!!");
@@ -235,3 +269,22 @@ function isUserLoggedIn(){
             return false; // 오류 발생 시에도 일단 로그인되어 있지 않은 것으로 간주
         });
 }
+
+// summernote lite
+$('.summernote').summernote({
+        tabsize: 2,
+        width: 445,
+        height: 200,
+        lang: "ko-KR",
+        toolbar: [
+          ['style', ['style']],
+          ['fontname', ['fontname']],
+          ['fontsize', ['fontsize']],
+          ['color', ['color']],
+          ['font', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
+          ['para', ['ul', 'ol', 'paragraph']],
+          ['height', ['height']],
+          ['view', ['fullscreen']]
+        ],
+        fontNames: ['Roboto', 'Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','맑은 고딕','궁서','굴림체','굴림','돋움체','바탕체']            
+});

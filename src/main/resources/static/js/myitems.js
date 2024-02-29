@@ -44,6 +44,7 @@ function updatePost(event, type){
                 }
             })
             .then(chkResult =>{
+                // chkResult.data = true면 글 작성자와 로그인 유저와 동일, false면 다름
                 if(chkResult.data){
                     if(type === 'u'){
                         location.href = '/sell/modify?postId=' + postId;
