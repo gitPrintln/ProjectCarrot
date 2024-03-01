@@ -1,7 +1,5 @@
 package com.carrot.nara.service;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -37,6 +35,12 @@ public class BoardService {
     public void createBoardPost(BoardCreateDto dto) {
         log.info("createBoardPost()");
         communityRepository.save(dto.toEntity());
+    }
+
+    @Transactional
+    public void deleteBoardPost(Integer postId) {
+        log.info("createBoardPost()");
+        communityRepository.deleteById(postId);
     }
 
 

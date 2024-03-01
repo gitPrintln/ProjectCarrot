@@ -71,7 +71,10 @@ window.addEventListener('DOMContentLoaded', function () {
     postContentDeleteBtns.forEach(deleteBtn => {
         deleteBtn.addEventListener('click', (event) => {
         const postContentId = event.target.getAttribute('data-pid');
-                console.log(postContentId)  
+               const result = confirm('글을 삭제하면 복구할 수 없습니다. 정말 삭제하시겠습니까?');
+               if(result){
+                   deleteNoticePost(postContentId); 
+               }
         });
     });
 });
@@ -163,7 +166,7 @@ function updateMain(category, page){
                 for(var i = data.startPage; i <= data.endPage; i++){
                     str += '<a class="w3-button ';
                         if(i == data.currentPage){
-                    str += 'w3-black';
+                    str += 'w3-black currentPageData';
                         } else{
                     str += 'w3-hover-black';
                         }
@@ -193,7 +196,10 @@ function updateMain(category, page){
             postContentDeleteBtns.forEach(deleteBtn => {
                 deleteBtn.addEventListener('click', (event) => {
                 const postContentId = event.target.getAttribute('data-pid');
-                        console.log(postContentId)  
+                        const result = confirm('글을 삭제하면 복구할 수 없습니다. 정말 삭제하시겠습니까?');
+                           if(result){
+                                deleteNoticePost(postContentId); 
+                           }
                 });
             });
         })
@@ -241,6 +247,19 @@ function writePost(event){
         .catch(err => {
             console.error('로그인 상태 확인 중 오류:', err);
         });
+}
+
+// 게시글 삭제
+function deleteNoticePost(postId){
+    const cpd = document.querySelector('.currentPageData'); // 현재 페이지 정보   
+    const page = cpd.text-1;
+    const category = boardTitle.innerText; // 현재 카테고리 정보 
+    axios.delete('/board/post/' + postId)
+        .then(response =>{
+            alert('글을 삭제했습니다.');
+            updateMain(category, page);
+        })
+        .catch(err => { console.log('게시글 삭제 에러 : ' + err); });
 }
 
  // 페이지 이동(goToPage(i)), 이전/다음 페이지(현재페이지-1, 현재페이지+1)
