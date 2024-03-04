@@ -29,6 +29,7 @@
     .listContainer{
       display: flex;
       flex-direction: column;
+      white-space: pre-wrap;
     }
     #postContentDeleteBtn{
       flex: 0.4; 
@@ -111,7 +112,7 @@
     <div class="listContainer w3-twothird w3-container" th:each="list : ${ list }">
       <button th:if="${ list.userId == userid }" type="button" id="postContentDeleteBtn" th:data-pid="${ list.id }" class="btn-close"></button>
       <h3 class="w3-text-teal" th:text="${ list.title }"></h3>
-      <span id="listContent" style="white-space: pre-wrap;" th:utext="${ list.content }"></span>
+      <span id="listContent" th:utext="${ list.content }"></span>
     </div>
   </div>
   <div>
@@ -121,7 +122,7 @@
   <div class="w3-center w3-padding-32">
     <div class="w3-bar" id="pagination">
       <a class="w3-button" style="pointer-events: none; color: gray; text-decoration: none;" href="#">«</a>
-      <a th:class="${currentPage == i ? 'w3-button w3-black' : 'w3-button w3-hover-black'}" th:each="i : ${#numbers.sequence(startPage, endPage)}" 
+      <a th:class="${currentPage == i ? 'w3-button w3-black currentPageData' : 'w3-button w3-hover-black'}" th:each="i : ${#numbers.sequence(startPage, endPage)}" 
        th:data-index="${i}" href="#" th:onclick="goToPage(event, this.getAttribute('data-index'));" th:text="${ i + 1 }"></a>
       <a class="w3-button w3-hover-black" th:style="${currentPage != list.totalPages - 1 ? '' : 'pointer-events: none; color: gray; text-decoration: none;'}" 
        th:data-index="${currentPage + 1}" href="#" th:onclick="goToPage(event, this.getAttribute('data-index'));">»</a>
@@ -129,7 +130,7 @@
   </div>
   
   <!-- 로그인/비로그인 user id -->
-  <input type="text" id="loginUsersid" th:value="${ userid }"/>
+  <input type="hidden" id="loginUsersid" th:value="${ userid }"/>
     
   <!-- 문의남기기 모달 -->
         <div class="modal" id ="inquiryModal" tabindex="-1">

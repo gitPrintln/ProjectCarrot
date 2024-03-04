@@ -147,13 +147,13 @@ function updateMain(category, page){
                         h3.className = 'w3-text-teal';
                         h3.innerText = data.entity.content[i].title;
                         
-                        // p 요소(내용)를 생성하고 내용 데이터를 추가
-                        var span = document.createElement('span');
-                        span.innerText = data.entity.content[i].content;
+                        // span 요소(내용)를 생성하고 내용 데이터를 추가(summernote를 사용해서 그냥 바로 div에 삽입)
+                        var spanElements = '';
+                        spanElements += '<span id="listContent">' + data.entity.content[i].content + '</span>';
                         
                         // 생성한 h3와 span를 div에 추가
                         div.appendChild(h3);
-                        div.appendChild(span);
+                        div.innerHTML += spanElements;
                 }
                 
                 // 페이징 새 게시판에 맞게 적용시키기
