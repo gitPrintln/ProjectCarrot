@@ -443,7 +443,8 @@ window.addEventListener('DOMContentLoaded', () => {
         <div id="selectedImage"></div>
    ```
    * 로컬 저장소에 저장하는 시점과 DB에 이미지 파일을 불러오는 시점을 분리해뒀기 때문에 사용자 편의를 위해 업로드 후 드래그로 여러 장 업로드, 추가 업로드, 추가 삭제가 가능함.
-   * (gif를 넣을 곳)
+   * ![bandicam 2024-01-01 00-17-46-453](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/007dc382-df23-434e-b0de-589e84390907)
+
   ##### 1-3. 중고 상품 글 주소(카카오 위치 API)
    > sell.js 일부
    ```java
@@ -516,7 +517,9 @@ window.addEventListener('DOMContentLoaded', () => {
           </div>                      
         </div><!-- 카드 하나 end -->
    ```
-   * (gif를 넣을 곳)
+   * ![bandicam 2024-01-01 00-33-15-686](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/d67c39be-28a1-42c0-a2f2-5a69fb6859b8)
+   * ![bandicam2024-01-0100-33-15-686-ezgif com-video-to-gif-converter](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/cdf01a82-3740-4908-ba55-090c50a79af2)
+
 #### 3. 중고 상품 글 자세히 보기
   ##### 3-1. 이미지 슬라이드 기능
    > detail.html 일부
