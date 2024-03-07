@@ -255,6 +255,7 @@ function deleteTemporaryFile(){
   ##### 1-2. 중고 상품 글 이미지
    - 이미지 업로드 편의 기능
    * 로컬 저장소에 저장하는 시점과 DB에 이미지 파일을 불러오는 시점을 분리해뒀기 때문에 사용자 편의를 위해 업로드 후 드래그로 여러 장 업로드, 추가 업로드, 추가 삭제가 가능함.
+
    ![bandicam 2024-01-01 00-17-46-453](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/007dc382-df23-434e-b0de-589e84390907)
    
    - 등록
@@ -463,6 +464,7 @@ window.addEventListener('DOMContentLoaded', () => {
    * (gif를 넣을 곳)
 #### 2. 최신 순으로 업데이트된 유저들의 거래 목록(검색)
   - 거래 목록 불러오기(상단에서 검색 포함)
+
   ![bandicam 2024-01-01 00-33-15-686](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/d67c39be-28a1-42c0-a2f2-5a69fb6859b8)
    > ListController.java 일부
    ```java
