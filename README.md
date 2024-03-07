@@ -518,7 +518,6 @@ window.addEventListener('DOMContentLoaded', () => {
         </div><!-- 카드 하나 end -->
    ```
    * ![bandicam 2024-01-01 00-33-15-686](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/d67c39be-28a1-42c0-a2f2-5a69fb6859b8)
-   * ![bandicam2024-01-0100-33-15-686-ezgif com-video-to-gif-converter](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/cdf01a82-3740-4908-ba55-090c50a79af2)
 
 #### 3. 중고 상품 글 자세히 보기
   ##### 3-1. 이미지 슬라이드 기능
