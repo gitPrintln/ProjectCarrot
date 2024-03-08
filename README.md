@@ -1152,7 +1152,9 @@ public class MyPageService {
   - 고객 지원 서비스
    * (gif를 넣을 곳)
   - 공지사항
-   * (gif를 넣을 곳)
+
+  ![bandicam 2024-03-04 18-54-16-981](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/02627db1-1f9d-4a7f-8152-2ea6a1488f30)
+
   - 신고 게시판
    > report.js 일부
    ```js
@@ -1372,6 +1374,8 @@ window.addEventListener('DOMContentLoaded', () => {
     }
    ```
   - 비밀번호 변경
+
+  ![bandicam 2024-01-02 01-35-28-882](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/67897885-7470-4366-84e0-aedddbd0867b)
    > mypage.html 일부
    ```html
         <img class="pwUpdateBtn" src="/images/pwChange.png" onclick="pwUpdate()"
