@@ -1213,6 +1213,8 @@ function toggleDetails(id) {
    * (gif를 넣을 곳)
   ##### 5-2. 개인 정보/프로필 이미지/비밀번호 변경 기능
   - 개인 정보 변경
+
+  ![bandicam 2024-01-02 01-32-04-882](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/bf69caaf-1043-416d-9a1a-fadac5323c90)
    > mypage.html 일부
    ```html
         <div class="infoContent">
@@ -1291,6 +1293,8 @@ function toggleDetails(id) {
    ```
    * (gif를 넣을 곳)
   - 프로필 이미지 변경
+
+  ![bandicam 2024-01-02 01-34-28-420](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/973a52f7-2a4e-4693-bbbc-7aab4b70ee15)
    > mypage.html 일부
    ```html
         <img class="imgUpdateBtn" src="/images/imageEditing.png" onclick="imgUpdate()"
