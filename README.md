@@ -607,6 +607,9 @@ window.addEventListener('DOMContentLoaded', () => {
     }
    ```
   ##### 3-2. 판매중/판매완료/예약중 기능(작성자가 본인인 경우)
+
+  ![bandicam 2024-03-11 17-10-50-841](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/a162c4d2-47d9-4301-be7c-2102af68856b)
+
    > detail.html 일부
    ```html
                         <div id="divStatus" class="w3-right status">
@@ -684,6 +687,9 @@ window.addEventListener('DOMContentLoaded', () => {
    ```
     -> 판매 상태에 따라서 거래목록에 다른 효과
   ##### 3-3. 좋아요 기능
+
+  ![bandicam 2024-01-01 01-14-23-879](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/45ac30b9-9502-4478-bb2e-be3168aa67c6)
+
    > detail.html 일부
    ```html
                         <div id="btnHeart" th:data-postId="${p.id}" style="display: inline-block; cursor:pointer;">
