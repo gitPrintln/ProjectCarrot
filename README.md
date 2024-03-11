@@ -1163,7 +1163,8 @@ public class MyPageService {
   ##### 5-1. 고객 지원 서비스/공지사항/신고 게시판
   - 고객 지원 서비스
    
-  ![bandicam 2024-02-14 23-38-20-985](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/b8dd815e-fa99-470d-8fac-33d7968aa414)
+  ![bandicam 2024-03-11 17-35-13-678](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/2e3fda6e-784f-4424-8513-913d0e6d97cc)
+
 
   - 공지사항
 
