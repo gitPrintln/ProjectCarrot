@@ -467,7 +467,8 @@ window.addEventListener('DOMContentLoaded', () => {
 #### 2. 최신 순으로 업데이트된 유저들의 거래 목록(검색)
   - 거래 목록 불러오기(상단에서 검색 포함)
 
-  ![bandicam 2024-01-01 00-33-15-686](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/d67c39be-28a1-42c0-a2f2-5a69fb6859b8)
+  ![bandicam 2024-03-11 16-06-56-065](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/0c8f9140-9b85-4a2a-a6e9-e1c9a6aec64c)
+
    > ListController.java 일부
    ```java
     /**
