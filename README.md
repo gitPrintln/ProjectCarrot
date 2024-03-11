@@ -447,6 +447,9 @@ window.addEventListener('DOMContentLoaded', () => {
         <div id="selectedImage"></div>
    ```
   ##### 1-3. 중고 상품 글 주소(카카오 위치 API)
+ 
+  ![bandicam 2024-03-11 16-22-33-076](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/094915d9-a087-498d-906e-615643f573dc)
+
    > sell.js 일부
    ```java
             // (1) 전달해줄 완성된 전체 주소 input창 만들어주기
@@ -461,7 +464,6 @@ window.addEventListener('DOMContentLoaded', () => {
                 location.innerHTML += jusoStr;
             }
    ```
-   * (gif를 넣을 곳)
 #### 2. 최신 순으로 업데이트된 유저들의 거래 목록(검색)
   - 거래 목록 불러오기(상단에서 검색 포함)
 
@@ -523,6 +525,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
 #### 3. 중고 상품 글 자세히 보기
   ##### 3-1. 이미지 슬라이드 기능
+
+  ![bandicam 2024-03-11 16-46-08-245](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/e1b10cac-353e-4d20-8da8-11af996117fb)
+
    > detail.html 일부
    ```html
                 <!-- 이미지 시작 -->
