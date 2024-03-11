@@ -1161,7 +1161,9 @@ public class MyPageService {
 #### 5. 웹 서비스 운영을 위한 관리자와 유저들을 위한 편의 서비스
   ##### 5-1. 고객 지원 서비스/공지사항/신고 게시판
   - 고객 지원 서비스
-   * (gif를 넣을 곳)
+   
+  ![bandicam 2024-02-14 23-38-20-985](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/b8dd815e-fa99-470d-8fac-33d7968aa414)
+
   - 공지사항
 
   ![bandicam 2024-03-04 18-54-16-981](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/02627db1-1f9d-4a7f-8152-2ea6a1488f30)
@@ -1302,7 +1304,6 @@ function toggleDetails(id) {
         }
     });
    ```
-   * (gif를 넣을 곳)
   - 프로필 이미지 변경
 
   ![bandicam 2024-01-02 01-34-28-420](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/973a52f7-2a4e-4693-bbbc-7aab4b70ee15)
