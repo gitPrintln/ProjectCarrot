@@ -1172,6 +1172,9 @@ public class MyPageService {
 
 
   - 신고 게시판
+
+  ![bandicam 2024-03-11 17-42-43-049](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/d12c2766-afeb-4799-98c6-467a915a04b0)
+
    > report.js 일부
    ```js
 function toggleTitle(id){
@@ -1226,7 +1229,6 @@ function toggleDetails(id) {
                                         '
                                         '
    ```
-   * (gif를 넣을 곳)
   ##### 5-2. 개인 정보/프로필 이미지/비밀번호 변경 기능
   - 개인 정보 변경
 
@@ -1495,11 +1497,11 @@ window.addEventListener('DOMContentLoaded', () => {
   ##### 5-3. 내 판매 목록/관심 목록
   - 내 판매 목록
 
-    ![bandicam 2024-03-11 17-50-12-157](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/636b911f-352d-44c5-a0e2-c638a971a4cd)
+  ![bandicam 2024-03-11 17-50-12-157](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/636b911f-352d-44c5-a0e2-c638a971a4cd)
 
   - 내 관심 목록
 
-    ![bandicam 2024-03-12 22-27-01-660](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/4e4ae708-f512-4a2d-853f-740597816f8d)
+  ![bandicam 2024-03-12 22-27-01-660](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/4e4ae708-f512-4a2d-853f-740597816f8d)
 
 #### 6. 지도 API를 이용한 검색(추정)
 
