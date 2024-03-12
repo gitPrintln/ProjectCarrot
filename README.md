@@ -1168,7 +1168,8 @@ public class MyPageService {
 
   - 공지사항
 
-  ![bandicam 2024-03-04 18-54-16-981](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/02627db1-1f9d-4a7f-8152-2ea6a1488f30)
+  ![bandicam 2024-03-11 18-15-17-908](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/070dc35f-82eb-4e8b-8c49-7beb308f197b)
+
 
   - 신고 게시판
    > report.js 일부
@@ -1308,7 +1309,8 @@ function toggleDetails(id) {
    ```
   - 프로필 이미지 변경
 
-  ![bandicam 2024-01-02 01-34-28-420](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/973a52f7-2a4e-4693-bbbc-7aab4b70ee15)
+  ![bandicam 2024-03-12 00-18-29-827](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/87a52b09-442d-4aae-a63e-cf51f755d7d5)
+
    > mypage.html 일부
    ```html
         <img class="imgUpdateBtn" src="/images/imageEditing.png" onclick="imgUpdate()"
@@ -1393,7 +1395,8 @@ window.addEventListener('DOMContentLoaded', () => {
    ```
   - 비밀번호 변경
 
-  ![bandicam 2024-01-02 01-35-28-882](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/67897885-7470-4366-84e0-aedddbd0867b)
+  ![bandicam 2024-03-12 00-14-49-399](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/f667c81a-ad33-403a-88ea-f9560143247e)
+
    > mypage.html 일부
    ```html
         <img class="pwUpdateBtn" src="/images/pwChange.png" onclick="pwUpdate()"
