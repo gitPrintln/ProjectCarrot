@@ -1492,6 +1492,15 @@ window.addEventListener('DOMContentLoaded', () => {
         pwModal.show();
     }
    ```
+  ##### 5-3. 내 판매 목록/관심 목록
+  - 내 판매 목록
+
+    ![bandicam 2024-03-11 17-50-12-157](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/636b911f-352d-44c5-a0e2-c638a971a4cd)
+
+  - 내 관심 목록
+
+    ![bandicam 2024-03-12 22-27-01-660](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/4e4ae708-f512-4a2d-853f-740597816f8d)
+
 #### 6. 지도 API를 이용한 검색(추정)
 
 #### 7. 유저들 간의 자유 커뮤니케이션(추정)
