@@ -834,6 +834,7 @@ public class MyPageService {
       }
    ```
   ##### 4-1. 채팅 연결
+  - 채팅 연결
    > chat.js 일부
    ```java
     // SockJS 연결
@@ -921,9 +922,10 @@ public class MyPageService {
         return list;
     }
    ```
-  - 채팅 연결
-  * (gif를 넣을 곳)
   ##### 4-2. 읽음/안읽음 기능
+
+  ![bandicam 2024-02-14 23-27-36-317](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/51e82504-112f-40f9-8598-8e0bb4715bf8)
+
    > Message.java 일부
    ```java
     public class Message extends TimeEntity {
@@ -1004,8 +1006,10 @@ public class MyPageService {
         } 
     }
    ```
-   * (gif를 넣을 곳)
   ##### 4-3. 리스트에 마지막 채팅 보여주기(redis에 저장된 캐시로 빠르게 불러옴)
+
+  ![bandicam 2024-02-14 23-32-24-898](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/f44b192b-993e-4eb3-b6ee-a52444e95fdb)
+
    > RedisService.java 일부
    ```java
     public class RedisService {
@@ -1057,7 +1061,6 @@ public class MyPageService {
         }
     }
    ```
-   * (gif를 넣을 곳)
   ##### 4-4. 마지막 채팅 시간(~분 전, ~일 전, redis)
    > RedisService.java 일부
    ```java
@@ -1158,7 +1161,6 @@ public class MyPageService {
         return msg;
     }
    ```
-   * (gif를 넣을 곳)
 #### 5. 웹 서비스 운영을 위한 관리자와 유저들을 위한 편의 서비스
   ##### 5-1. 고객 지원 서비스/공지사항/신고 게시판
   - 고객 지원 서비스
