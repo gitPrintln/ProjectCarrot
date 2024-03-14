@@ -1172,7 +1172,130 @@ public class MyPageService {
 
   ![bandicam 2024-03-11 18-15-17-908](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/070dc35f-82eb-4e8b-8c49-7beb308f197b)
 
+   > notice.js 일부
+   ```js
+// 게시판 내용 바꿔주기(axios)
+function updateMain(category, page){
+    const boardTitle = document.querySelector('#boardTitle');
+    const boardContent = document.querySelector('#boardContent');
+    axios.get('/board/notice/community/' + category, { params: { page : page}})
+        .then(response => {
+            // 해당 게시판의 불러온 데이터
+            const data = response.data;
+            // 게시판 타이틀 바꿔주기
+            boardTitle.innerHTML = data.category;
+            // 기존의 게시판 내용 비우기, 페이징 비우기
+            boardContent.innerHTML = '';
+            const pagination = document.querySelector('#pagination');
+            pagination.innerHTML = '';
+            
+            if(data.entity.content.length != 0){ // 해당 게시판의 데이터가 하나라도 있으면
+                // 로그인 유저 확인 후 작성자와 같은 id이면 삭제 버튼 생성(input은 string으로 변환되어 저장되므로 형 변환해줌)
+                const loginusersidValue = document.getElementById('loginUsersid').value;
+                const loginUsersid = parseInt(loginusersidValue, 10);
 
+                // 게시판 내용 바꿔주기
+                for(var i = 0; i < data.entity.content.length; i++){
+                        // 새로운 게시글 틀 생성
+                        var div = document.createElement('div');
+                        boardContent.appendChild(div);
+                        // 게시글 틀 설정
+                        div.className = 'listContainer w3-twothird w3-container';
+                        
+                        // 삭제 버튼(조건에 따라 버튼 생성), 문의 내역은 삭제 버튼이 없음
+                        if(data.entity.content[i].userId === loginUsersid && category !== '문의'){
+                            var button = document.createElement('button');
+                            button.type = 'button';
+                            button.id = 'postContentDeleteBtn';
+                            button.className = 'btn-close';
+                            button.setAttribute('data-pid', data.entity.content[i].id);
+                            // 생성한 button을 div에 추가
+                            div.appendChild(button);
+                        }
+                        
+                        // h3 요소(제목)를 생성하고 제목 데이터를 추가
+                        var h3 = document.createElement('h3');
+                        h3.className = 'w3-text-teal';
+                        h3.innerText = data.entity.content[i].title;
+                        
+                        // span 요소(내용)를 생성하고 내용 데이터를 추가(summernote를 사용해서 그냥 바로 div에 삽입)
+                        var spanElements = '';
+                        spanElements += '<span id="listContent">' + data.entity.content[i].content + '</span>';
+                        
+                        // 생성한 h3와 span를 div에 추가
+                        div.appendChild(h3);
+                        div.innerHTML += spanElements;
+                }
+                
+                // 페이징 새 게시판에 맞게 적용시키기
+                let str = '';
+                if(data.currentPage != 0){
+                    str += '<a class="w3-button w3-hover-black" href="#" onclick="goToPage(event, ' + (data.currentPage - 1)+ ')">«</a>';
+                } else{
+                    str += '<a class="w3-button" href="#" style="pointer-events: none; color: gray; text-decoration: none;">«</a>';
+                }
+                for(var i = data.startPage; i <= data.endPage; i++){
+                    str += '<a class="w3-button ';
+                        if(i == data.currentPage){
+                    str += 'w3-black currentPageData';
+                        } else{
+                    str += 'w3-hover-black';
+                        }
+                    str += '" href="#" onclick="goToPage(event, ' + i +')">' + ( i + 1 ) + '</a>';
+                }
+                if(data.currentPage != data.totalPages - 1){
+                    str += '<a class="w3-button w3-hover-black" href="#" onclick="goToPage(event, ' + (data.currentPage + 1) + ')">»</a>';
+                } else{
+                    str += '<a class="w3-button" href="#" style="pointer-events: none; color: gray; text-decoration: none;">»</a>';
+                }
+                pagination.innerHTML = str;
+                
+            }
+                                                                    '
+                                                                    '
+                                                                    '
+
+   ```
+   > notice.html 일부
+   ```html
+<!-- 공지사항 sidebar -->
+<nav class="w3-sidebar w3-bar-block w3-collapse w3-large w3-theme-l5 w3-animate-left" id="mySidebar">
+  <h4 class="w3-bar-item"><b>공지사항</b></h4>
+  <a class="w3-bar-item w3-button w3-hover-black" href="#" onclick="community(event, '전체공지')">전체공지</a>
+  <a class="w3-bar-item w3-button w3-hover-black" href="#" onclick="community(event, '자유게시판')">자유게시판</a>
+  <a class="w3-bar-item w3-button w3-hover-black" href="#" onclick="community(event, 'FAQ')">FAQ</a>
+  <a class="w3-bar-item w3-button w3-hover-black" href="#" onclick="community(event, '내 문의 내역')">내 문의 내역</a>
+  <hr style="color: #333; background-color: #333; height: 1px; margin: 20px;"/>
+  <a class="w3-bar-item w3-button w3-hover-black" href="#">이벤트(준비중)</a>
+  <hr style="color: #333; background-color: #333; height: 1px; margin: 20px;"/>
+  <a class="w3-bar-item w3-button w3-hover-black" href="#" onclick="leaveAnInquiry(event)">문의 남기기</a>
+  <a class="w3-bar-item w3-button w3-hover-black" href="#" onclick="writePost(event)">글 작성하기</a>
+</nav>
+
+<!-- Main content: shift it to the right by 250 pixels when the sidebar is visible -->
+<div class="mainContent w3-main" style="margin-left:250px">
+  <h1 class="w3-text-teal" id="boardTitle">전체공지</h1>
+  <div class="w3-row w3-padding-64" id="boardContent">
+    <div class="listContainer w3-twothird w3-container" th:each="list : ${ list }">
+      <button th:if="${ list.userId == userid }" type="button" id="postContentDeleteBtn" th:data-pid="${ list.id }" class="btn-close"></button>
+      <h3 class="w3-text-teal" th:text="${ list.title }"></h3>
+      <span id="listContent" th:utext="${ list.content }"></span>
+    </div>
+  </div>
+  <div>
+
+  </div>
+  <!-- Pagination -->
+  <div class="w3-center w3-padding-32">
+    <div class="w3-bar" id="pagination">
+      <a class="w3-button" style="pointer-events: none; color: gray; text-decoration: none;" href="#">«</a>
+      <a th:class="${currentPage == i ? 'w3-button w3-black currentPageData' : 'w3-button w3-hover-black'}" th:each="i : ${#numbers.sequence(startPage, endPage)}" 
+       th:data-index="${i}" href="#" th:onclick="goToPage(event, this.getAttribute('data-index'));" th:text="${ i + 1 }"></a>
+      <a class="w3-button w3-hover-black" th:style="${currentPage != list.totalPages - 1 ? '' : 'pointer-events: none; color: gray; text-decoration: none;'}" 
+       th:data-index="${currentPage + 1}" href="#" th:onclick="goToPage(event, this.getAttribute('data-index'));">»</a>
+    </div>
+  </div>
+   ```
   - 신고 게시판
 
   ![bandicam 2024-03-11 17-42-43-049](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/d12c2766-afeb-4799-98c6-467a915a04b0)
@@ -1501,6 +1624,46 @@ window.addEventListener('DOMContentLoaded', () => {
 
   ![bandicam 2024-03-11 17-50-12-157](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/636b911f-352d-44c5-a0e2-c638a971a4cd)
 
+   > myitems.js 일부
+   ```js
+var selectedPostId;
+// 드롭다운 열어줌.
+function myitemsDropdown(event, id) {
+      const dropdown = document.getElementById("itemsDropdown");
+
+      // 클릭한 위치에서의 좌표
+      const x = event.clientX;
+      const y = event.clientY;
+      // 클릭한 위치의 postId 등록
+      selectedPostId = id;
+      // 드롭다운을 클릭한 위치에 위치시키기
+      dropdown.style.position = 'fixed';
+      dropdown.style.top = y + 'px';
+      dropdown.style.left = x + 'px';
+
+      // 드롭다운이 열려있으면 닫고, 닫혀있으면 열기
+      dropdown.classList.toggle("show");
+
+      // 이벤트 전파(stopPropagation)를 막아서 document의 클릭 이벤트가 실행되지 않도록 함
+      event.stopPropagation();
+    }
+
+// 글 보러가기 이동
+function goDetail(event){
+    // 드롭다운 내부에 클릭시 document 클릭이벤트 실행되지 않도록해줌.
+    event.stopPropagation();
+    const postId = selectedPostId;
+    // detail 보기로 바로 이동시켜줌.
+    location.href = '/sell/detail?id='+ postId;
+};
+// 문서 전체를 클릭했을 때 드롭다운을 닫음
+document.addEventListener("click", function(event) {
+  const dropdown = document.getElementById("itemsDropdown");
+  if (dropdown.classList.contains("show")) {
+    dropdown.classList.remove("show");
+  }
+});
+   ```
   - 내 관심 목록
 
   ![bandicam 2024-03-12 22-27-01-660](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/4e4ae708-f512-4a2d-853f-740597816f8d)
