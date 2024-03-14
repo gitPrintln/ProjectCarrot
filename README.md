@@ -13,7 +13,7 @@ HTML/CSS/Java Script
 중고 거래를 위한 유저들 간의 채팅 기능 </br>
 유저 활성화를 위한 서비스
 # 기능 소개
-#### 0. 로그인해야 가능한 기능과 아닌 기능 구분
+[0. 로그인해야 가능한 기능과 아닌 기능 구분](#0-로그인해야-가능한-기능과-아닌 기능-구분)
 #### 1. 판매할 중고 상품 등록 및 수정, 삭제(이미지 여러장 등록, 카카오 위치 API)
 #### 2. 최신 순으로 업데이트된 유저들의 거래 목록(검색)
 #### 3. 중고 상품 글 자세히 보기
@@ -23,7 +23,7 @@ HTML/CSS/Java Script
 #### 7. 유저들 간의 자유 커뮤니케이션(추정)
 #### 8. (희망)파이썬을 이용한 인공지능 기능
 # 기능 구현
-#### 0. 로그인해야 가능한 기능과 아닌 기능 구분
+#### 0 로그인해야 가능한 기능과 아닌 기능 구분
   - SpringSecurity 설정
    > SecurityConfig.java 일부
    ```java
@@ -152,6 +152,13 @@ HTML/CSS/Java Script
                                      .
     }
   ```
+
+<div align="right">
+  
+[목차로 이동](#기능-소개)
+
+</div>
+
 #### 1. 판매할 중고 상품 등록 및 수정, 삭제(이미지 여러장 등록, 카카오 위치 API)
   ##### 1-1. 중고 상품 글
   - 등록 및 수정
@@ -464,6 +471,13 @@ window.addEventListener('DOMContentLoaded', () => {
                 location.innerHTML += jusoStr;
             }
    ```
+
+<div align="right">
+  
+[목차로 이동](#기능-소개)
+
+</div>
+
 #### 2. 최신 순으로 업데이트된 유저들의 거래 목록(검색)
   - 거래 목록 불러오기(상단에서 검색 포함)
 
@@ -523,6 +537,12 @@ window.addEventListener('DOMContentLoaded', () => {
           </div>                      
         </div><!-- 카드 하나 end -->
    ```
+
+<div align="right">
+  
+[목차로 이동](#기능-소개)
+
+</div>
 
 #### 3. 중고 상품 글 자세히 보기
   ##### 3-1. 이미지 슬라이드 기능
@@ -810,6 +830,13 @@ public class MyPageService {
                             </div>
                         </div>
    ```
+
+<div align="right">
+  
+[목차로 이동](#기능-소개)
+
+</div>
+
 #### 4. 거래를 희망하는 유저들간의 1:1 채팅(Stomp websocket, Redis)
   - 채팅 설정
    > WebSocketMessageBroker.java 일부
@@ -1006,6 +1033,13 @@ public class MyPageService {
         } 
     }
    ```
+
+<div align="right">
+  
+[목차로 이동](#기능-소개)
+
+</div>
+
   ##### 4-3. 리스트에 마지막 채팅 보여주기(redis에 저장된 캐시로 빠르게 불러옴)
 
   ![bandicam 2024-02-14 23-32-24-898](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/f44b192b-993e-4eb3-b6ee-a52444e95fdb)
@@ -1161,6 +1195,13 @@ public class MyPageService {
         return msg;
     }
    ```
+
+<div align="right">
+  
+[목차로 이동](#기능-소개)
+
+</div>
+
 #### 5. 웹 서비스 운영을 위한 관리자와 유저들을 위한 편의 서비스
   ##### 5-1. 고객 지원 서비스/공지사항/신고 게시판
   - 고객 지원 서비스
@@ -1354,6 +1395,13 @@ function toggleDetails(id) {
                                         '
                                         '
    ```
+
+<div align="right">
+  
+[목차로 이동](#기능-소개)
+
+</div>
+
   ##### 5-2. 개인 정보/프로필 이미지/비밀번호 변경 기능
   - 개인 정보 변경
 
@@ -1619,6 +1667,13 @@ window.addEventListener('DOMContentLoaded', () => {
         pwModal.show();
     }
    ```
+
+<div align="right">
+  
+[목차로 이동](#기능-소개)
+
+</div>
+
   ##### 5-3. 내 판매 목록/관심 목록
   - 내 판매 목록
 
@@ -1667,6 +1722,12 @@ document.addEventListener("click", function(event) {
   - 내 관심 목록
 
   ![bandicam 2024-03-12 22-27-01-660](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/4e4ae708-f512-4a2d-853f-740597816f8d)
+
+<div align="right">
+  
+[목차로 이동](#기능-소개)
+
+</div>
 
 #### 6. 지도 API를 이용한 검색(추정)
 
