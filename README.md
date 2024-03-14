@@ -155,7 +155,7 @@ HTML/CSS/Java Script
 
 <div align="right">
   
-[목차로 이동](#기능-소개)
+[🧾 목차로 이동](#기능-소개)
 
 </div>
 
@@ -474,7 +474,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 <div align="right">
   
-[목차로 이동](#기능-소개)
+[🧾 목차로 이동](#기능-소개)
 
 </div>
 
@@ -540,7 +540,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 <div align="right">
   
-[목차로 이동](#기능-소개)
+[🧾 목차로 이동](#기능-소개)
 
 </div>
 
@@ -833,7 +833,7 @@ public class MyPageService {
 
 <div align="right">
   
-[목차로 이동](#기능-소개)
+[🧾 목차로 이동](#기능-소개)
 
 </div>
 
@@ -1036,7 +1036,7 @@ public class MyPageService {
 
 <div align="right">
   
-[목차로 이동](#기능-소개)
+[🧾 목차로 이동](#기능-소개)
 
 </div>
 
@@ -1198,7 +1198,7 @@ public class MyPageService {
 
 <div align="right">
   
-[목차로 이동](#기능-소개)
+[🧾 목차로 이동](#기능-소개)
 
 </div>
 
@@ -1398,7 +1398,7 @@ function toggleDetails(id) {
 
 <div align="right">
   
-[목차로 이동](#기능-소개)
+[🧾 목차로 이동](#기능-소개)
 
 </div>
 
@@ -1670,7 +1670,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 <div align="right">
   
-[목차로 이동](#기능-소개)
+[🧾 목차로 이동](#기능-소개)
 
 </div>
 
@@ -1725,7 +1725,7 @@ document.addEventListener("click", function(event) {
 
 <div align="right">
   
-[목차로 이동](#기능-소개)
+[🧾 목차로 이동](#기능-소개)
 
 </div>
 
