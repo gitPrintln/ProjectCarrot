@@ -129,7 +129,10 @@ HTML/CSS/Java Script
    }
    ```
 
-  ##### - 로그인해야 가능한 기능 일부
+  ##### - 회원가입 UI/로그인해야 가능한 기능 일부
+
+  ![bandicam 2024-03-23 21-41-55-952](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/8f370f72-f3e7-4c5e-ac95-88876389cbe8)
+
   > SellController.java 일부
   ```java
     // 판매 상품 등록 DB에 저장
@@ -709,7 +712,7 @@ window.addEventListener('DOMContentLoaded', () => {
     -> 판매 상태에 따라서 거래목록에 다른 효과
   ##### 3-3. 좋아요 기능
 
-  ![bandicam 2024-01-01 01-14-23-879](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/45ac30b9-9502-4478-bb2e-be3168aa67c6)
+  ![bandicam 2024-03-23 22-14-03-264](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/3cf52ef3-331c-430b-a99f-231ad0d7faa1)
 
    > detail.html 일부
    ```html
@@ -1405,7 +1408,8 @@ function toggleDetails(id) {
   ##### 5-2. 개인 정보/프로필 이미지/비밀번호 변경 기능
   - 개인 정보 변경
 
-  ![bandicam 2024-01-02 01-32-04-882](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/bf69caaf-1043-416d-9a1a-fadac5323c90)
+  ![bandicam 2024-03-23 21-57-45-780](https://github.com/gitPrintln/ProjectCarrot/assets/117698468/e8b1f7dc-3d32-4534-8ace-0fa0c0ad8e00)
+
    > mypage.html 일부
    ```html
         <div class="infoContent">
